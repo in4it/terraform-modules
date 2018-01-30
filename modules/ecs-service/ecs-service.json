@@ -1,0 +1,24 @@
+[
+  {
+    "name": "${APPLICATION_NAME}",
+    "image": "${ECR_URL}:${APPLICATION_VERSION}",
+    "cpu": ${CPU_RESERVATION},
+    "memoryReservation": ${MEMORY_RESERVATION},
+    "essential": true,
+    "mountPoints": [],
+    "portMappings" : [
+      {
+        "containerPort": ${APPLICATION_PORT},
+        "hostPort": 0
+      }
+    ],
+    "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+              "awslogs-group": "${LOG_GROUP}",
+              "awslogs-region": "${AWS_REGION}",
+              "awslogs-stream-prefix": "${APPLICATION_NAME}"
+          }
+    }
+  }
+]
