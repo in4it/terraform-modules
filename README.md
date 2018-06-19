@@ -42,7 +42,7 @@ module "my-service" {
 ## ALB
 ```
 module "my-alb" {
-  source             = "github.com/in4it/terraform-modules//modules/alb"
+  source             = "github.com/in4it/terraform-modules/modules/alb"
   VPC_ID             = "vpc-id"
   ALB_NAME           = "my-alb"
   VPC_SUBNETS        = "subnetId-1,subnetId-2"
@@ -50,5 +50,17 @@ module "my-alb" {
   DOMAIN             = "*.my-ecs.com"
   INTERNAL           = false
   ECS_SG             = "${module.my-ecs.cluster_sg}"
+}
+```
+
+## ALB Rule
+```
+module "my-alb-rule" {
+  source             = "github.com/in4it/terraform-modules/modules/alb-rule"
+  LISTENER_ARN       = "${module.my-alb.http_listener_arn}"
+  PRIORITY           = 100
+  TARGET_GROUP_ARN   = "${module.my-service.target_group_arn}"
+  CONDITION_FIELD    = "host-header"
+  CONDITION_VALUES   = ["subdomain.my-ecs.com"]
 }
 ```
