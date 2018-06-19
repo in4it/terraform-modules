@@ -2,7 +2,7 @@
 # target
 #
 resource "aws_alb_target_group" "ecs-service" {
-  name                 = "ecs-service"
+  name                 = "${var.APPLICATION_NAME}"
   port                 = "${var.APPLICATION_PORT}"
   protocol             = "HTTP"
   vpc_id               = "${var.VPC_ID}"

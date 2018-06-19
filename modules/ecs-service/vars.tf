@@ -26,3 +26,7 @@ variable "HEALTHCHECK_MATCHER" {
 variable "CPU_RESERVATION" {}
 variable "MEMORY_RESERVATION" {}
 variable "LOG_GROUP" {}
+
+variable "TASK_ROLE_ARN" {
+  default = ""
+}

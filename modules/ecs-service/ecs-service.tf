@@ -11,6 +11,7 @@ resource "aws_ecr_repository" "ecs-service" {
 #
 data "aws_ecs_task_definition" "ecs-service" {
   task_definition = "${aws_ecs_task_definition.ecs-service-taskdef.family}"
+  depends_on = ["aws_ecs_task_definition.ecs-service-taskdef"]
 }
 
 #
@@ -39,6 +40,7 @@ data "template_file" "ecs-service" {
 resource "aws_ecs_task_definition" "ecs-service-taskdef" {
   family                = "${var.APPLICATION_NAME}"
   container_definitions = "${data.template_file.ecs-service.rendered}"
+  task_role_arn         = "${var.TASK_ROLE_ARN}"
 }
 
 #
@@ -59,4 +61,9 @@ resource "aws_ecs_service" "ecs-service" {
     container_name   = "${var.APPLICATION_NAME}"
     container_port   = "${var.APPLICATION_PORT}"
   }
+  lifecycle {
+    create_before_destroy = true
+  }
 }
+
+
