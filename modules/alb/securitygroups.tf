@@ -25,8 +25,13 @@ resource "aws_security_group" "alb" {
   }
 }
 
+# workaround for https://github.com/hashicorp/terraform/issues/12570
+locals {
+  ecs_sg_count = "${ var.ECS_SG == "" ? 0 : 1 }"
+}
+
 resource "aws_security_group_rule" "cluster-allow-alb" {
-  count                    = "${ var.ECS_SG == "" ? 0 : 1 }"
+  count                    = "${local.ecs_sg_count}"
   security_group_id        = "${var.ECS_SG}"
   type                     = "ingress"
   from_port                = 32768
