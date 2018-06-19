@@ -2,7 +2,10 @@ variable "LISTENER_ARN" {}
 variable "PRIORITY" {}
 variable "TARGET_GROUP_ARN" {}
 variable "CONDITION_FIELD" {}
-variable "CONDITION_VALUES" {}
+
+variable "CONDITION_VALUES" {
+  type = "list"
+}
 
 resource "aws_lb_listener_rule" "alb_rule" {
   listener_arn = "${var.LISTENER_ARN}"
