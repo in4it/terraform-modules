@@ -11,7 +11,7 @@ resource "aws_ecr_repository" "ecs-service" {
 #
 data "aws_ecs_task_definition" "ecs-service" {
   task_definition = "${aws_ecs_task_definition.ecs-service-taskdef.family}"
-  depends_on = ["aws_ecs_task_definition.ecs-service-taskdef"]
+  depends_on      = ["aws_ecs_task_definition.ecs-service-taskdef"]
 }
 
 #
@@ -61,9 +61,12 @@ resource "aws_ecs_service" "ecs-service" {
     container_name   = "${var.APPLICATION_NAME}"
     container_port   = "${var.APPLICATION_PORT}"
   }
-  lifecycle {
-    create_before_destroy = true
-  }
+
+  depends_on = ["null_resource.alb_exists"]
 }
 
-
+resource "null_resource" "alb_exists" {
+  triggers {
+    alb_name = "${var.ALB_ARN}"
+  }
+}

@@ -30,3 +30,5 @@ variable "LOG_GROUP" {}
 variable "TASK_ROLE_ARN" {
   default = ""
 }
+
+variable "ALB_ARN" {}
