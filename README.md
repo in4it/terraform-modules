@@ -36,6 +36,7 @@ module "my-service" {
   MEMORY_RESERVATION  = "1024"
   LOG_GROUP           = "my-log-group"
   DESIRED_COUNT       = 2
+  ALB_ARN             = "${module.my-alb.alb_arn}"
 }
 ```
 
