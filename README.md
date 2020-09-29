@@ -6,7 +6,7 @@ repository of useful terraform modules
 ## ECS Cluster
 ```
 module "my-ecs" {
-  source         = "github.com/in4it/terraform-modules//modules/ecs-cluster"
+  source         = "github.com/in4it/terraform-modules/modules/ecs-cluster"
   VPC_ID         = "vpc-id"
   CLUSTER_NAME   = "my-ecs"
   INSTANCE_TYPE  = "t2.small"
@@ -23,7 +23,7 @@ module "my-ecs" {
 ## ECS Service
 ```
 module "my-service" {
-  source              = "github.com/in4it/terraform-modules//modules/ecs-service"
+  source              = "github.com/in4it/terraform-modules/modules/ecs-service"
   VPC_ID              = "vpc-id"
   APPLICATION_NAME    = "my-service"
   APPLICATION_PORT    = "8080"
