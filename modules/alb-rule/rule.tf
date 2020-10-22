@@ -24,8 +24,18 @@ resource "aws_lb_listener_rule" "alb_rule" {
   }
 
   condition {
-    field  = var.CONDITION_FIELD
-    values = var.CONDITION_VALUES
+    dynamic host_header {
+      for_each = var.CONDITION_FIELD == "host-header" ? [1] : []
+      content {
+        values = var.CONDITION_VALUES
+      }
+    }
+    dynamic path_pattern {
+      for_each = var.CONDITION_FIELD == "path-pattern" ? [1] : []
+      content {
+        values = var.CONDITION_VALUES
+      }
+    }
   }
 }
 
