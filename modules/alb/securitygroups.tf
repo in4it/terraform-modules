@@ -1,7 +1,7 @@
-resource "aws_security_group" "alb" {
-  name        = var.ALB_NAME
-  vpc_id      = var.VPC_ID
-  description = var.ALB_NAME
+resource "aws_security_group" "lb" {
+  name        = var.lb_name
+  vpc_id      = var.vpc_id
+  description = var.lb_name
 
   ingress {
     from_port   = 80
@@ -25,12 +25,13 @@ resource "aws_security_group" "alb" {
   }
 }
 
-resource "aws_security_group_rule" "cluster-allow-alb" {
-  security_group_id        = var.ECS_SG
+resource "aws_security_group_rule" "cluster-allow-lb" {
+  count                    = var.ecs_sg == "" ? 0 : 1
+  security_group_id        = var.ecs_sg
   type                     = "ingress"
   from_port                = 32768
   to_port                  = 61000
   protocol                 = "tcp"
-  source_security_group_id = aws_security_group.alb.id
+  source_security_group_id = aws_security_group.lb.id
 }
 
