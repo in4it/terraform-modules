@@ -5,6 +5,7 @@ variable "aws_region" {
 }
 
 variable "launch_type" {
+  default = "EC2"
 }
 
 variable "application_name" {
