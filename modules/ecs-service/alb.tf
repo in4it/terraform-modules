@@ -1,31 +1,33 @@
+locals {
+  single_target_group = toset([
+  var.application_name
+])
+blue_green_target_group = toset([
+  "${var.application_name}-blue",
+  "${var.application_name}-green"
+])
+}
+
 #
 # target
 #
-resource "aws_alb_target_group" "ecs-service" {
-  name = "${var.APPLICATION_NAME}-${substr(
-    md5(
-      format(
-        "%s%s%s",
-        var.APPLICATION_PORT,
-        var.DEREGISTRATION_DELAY,
-        var.HEALTHCHECK_MATCHER,
-      ),
-    ),
-    0,
-    12,
-  )}"
-  port                 = var.APPLICATION_PORT
+
+resource "aws_lb_target_group" "ecs-service" {
+  for_each             = var.enable_blue_green ? local.blue_green_target_group : local.single_target_group
+  name                 = each.value
+  port                 = var.application_port
   protocol             = "HTTP"
-  vpc_id               = var.VPC_ID
-  deregistration_delay = var.DEREGISTRATION_DELAY
+  vpc_id               = var.vpc_id
+  deregistration_delay = var.deregistration_delay
+  target_type          = var.launch_type == "FARGATE" ? "ip" : "instance"
 
   health_check {
     healthy_threshold   = 3
     unhealthy_threshold = 3
     protocol            = "HTTP"
-    path                = "/"
+    path                = var.healthcheck_path
     interval            = 60
-    matcher             = var.HEALTHCHECK_MATCHER
+    matcher             = var.healthcheck_matcher
   }
 }
 
