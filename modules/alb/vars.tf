@@ -18,7 +18,7 @@ variable "default_target_arn" {
 }
 
 variable "ecs_sg" {
-  default = ""
+  default = []
 }
 
 variable "tls" {

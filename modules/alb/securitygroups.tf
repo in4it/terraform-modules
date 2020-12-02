@@ -26,8 +26,8 @@ resource "aws_security_group" "lb" {
 }
 
 resource "aws_security_group_rule" "cluster-allow-lb" {
-  count                    = var.ecs_sg == "" ? 0 : 1
-  security_group_id        = var.ecs_sg
+  count                    = length(var.ecs_sg)
+  security_group_id        = element(var.ecs_sg, count.index)
   type                     = "ingress"
   from_port                = 32768
   to_port                  = 61000
