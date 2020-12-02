@@ -2,7 +2,7 @@
 # ECS service role
 #
 resource "aws_iam_role" "cluster-service-role" {
-  name = "ecs-service-role-${var.CLUSTER_NAME}"
+  name = "ecs-service-role-${var.cluster_name}"
 
   assume_role_policy = <<EOF
 {
@@ -23,7 +23,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "cluster-service-role" {
-  name = "${var.CLUSTER_NAME}-policy"
+  name = "${var.cluster_name}-policy"
   role = aws_iam_role.cluster-service-role.name
 
   policy = <<EOF
@@ -53,7 +53,7 @@ EOF
 # IAM EC2 role
 #
 resource "aws_iam_role" "cluster-ec2-role" {
-name = "ecs-${var.CLUSTER_NAME}-ec2-role"
+name = "ecs-${var.cluster_name}-ec2-role"
 
 assume_role_policy = <<EOF
 {
@@ -74,7 +74,7 @@ EOF
 }
 
 resource "aws_iam_instance_profile" "cluster-ec2-role" {
-name = "ecs-${var.CLUSTER_NAME}-ec2-role"
+name = "ecs-${var.cluster_name}-ec2-role"
 role = aws_iam_role.cluster-ec2-role.name
 }
 
@@ -112,7 +112,7 @@ policy = <<EOF
               "logs:*"
           ],
           "Resource": [
-              "arn:aws:logs:${var.AWS_REGION}:${var.AWS_ACCOUNT_ID}:log-group:${var.LOG_GROUP}:*"
+              "arn:aws:logs:${var.aws_region}:${var.aws_account_id}:log-group:${var.log_group}:*"
           ]
         }
     ]

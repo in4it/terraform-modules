@@ -8,16 +8,16 @@ repository of useful terraform modules
 ```
 module "my-ecs" {
   source         = "github.com/in4it/terraform-modules//modules/ecs-cluster"
-  VPC_ID         = "vpc-id"
-  CLUSTER_NAME   = "my-ecs"
-  INSTANCE_TYPE  = "t2.small"
-  SSH_KEY_NAME   = "mykeypairName"
-  VPC_SUBNETS    = "subnetId-1,subnetId-2"
-  ENABLE_SSH     = true
-  SSH_SG         = "my-ssh-sg"
-  LOG_GROUP      = "my-log-group"
-  AWS_ACCOUNT_ID = "1234567890"
-  AWS_REGION     = "us-east-1"
+  vpc_id         = "vpc-id"
+  cluster_name   = "my-ecs"
+  instance_type  = "t2.small"
+  ssh_key_name   = "mykeypairName"
+  vpc_subnets    = "subnetId-1,subnetId-2"
+  enable_ssh     = true
+  ssh_sg         = "my-ssh-sg"
+  log_group      = "my-log-group"
+  aws_account_id = "1234567890"
+  aws_region     = "us-east-1"
 }
 ```
 
