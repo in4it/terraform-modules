@@ -13,6 +13,7 @@ resource "aws_lb" "lb" {
 
 # certificate
 data "aws_acm_certificate" "certificate" {
+  count = var.domain != "" ? 1 : 0
   domain   = var.domain
   statuses = ["ISSUED", "PENDING_VALIDATION"]
 }
@@ -41,7 +42,7 @@ resource "aws_lb_listener" "lb-https" {
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = var.tls_policy
-  certificate_arn   = data.aws_acm_certificate.certificate.arn
+  certificate_arn   = data.aws_acm_certificate.certificate[0].arn
 
   dynamic default_action {
     for_each = var.default_target_arn == "" ? local.fixed_response : local.forward_response
