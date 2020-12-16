@@ -13,6 +13,7 @@
       }
     ],
     "secrets": ${secrets},
+    "mountpoints": ${mountpoints},
     "logconfiguration": {
           "logdriver": "awslogs",
           "options": {

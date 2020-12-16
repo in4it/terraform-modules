@@ -116,3 +116,12 @@ variable "volumes" {
     })
   }))
 }
+
+variable "mountpoints" {
+  description = "mountpoints to in container definition"
+  default     = []
+  type = list(object({
+    containerPath = string
+    sourceVolume  = string
+  }))
+}
