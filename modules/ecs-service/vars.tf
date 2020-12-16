@@ -129,3 +129,8 @@ variable "mountpoints" {
 variable "platform_version" {
   default = "LATEST"
 }
+
+variable "task_security_groups" {
+  description = "extra security groups to add. Expects security group ID"
+  default     = []
+}

@@ -99,7 +99,7 @@ resource "aws_ecs_service" "ecs-service" {
   dynamic "network_configuration" {
     for_each = var.launch_type == "FARGATE" ? list(var.launch_type) : []
     content {
-      security_groups = [aws_security_group.ecs-service.id]
+      security_groups = concat([aws_security_group.ecs-service.id], var.task_security_groups)
       subnets         = var.fargate_service_subnetids
     }
   }
