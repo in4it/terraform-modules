@@ -125,3 +125,7 @@ variable "mountpoints" {
     sourceVolume  = string
   }))
 }
+
+variable "platform_version" {
+  default = "LATEST"
+}
