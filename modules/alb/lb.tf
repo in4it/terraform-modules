@@ -7,7 +7,7 @@ resource "aws_lb" "lb" {
   internal        = var.internal
   security_groups = [aws_security_group.lb.id]
   subnets         = var.vpc_subnets
-
+  idle_timeout    = var.idle_timeout
   enable_deletion_protection = false
 }
 
