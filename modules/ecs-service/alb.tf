@@ -1,11 +1,11 @@
 locals {
   single_target_group = toset([
-  var.application_name
-])
-blue_green_target_group = toset([
-  "${var.application_name}-blue",
-  "${var.application_name}-green"
-])
+    var.application_name
+  ])
+  blue_green_target_group = toset([
+    "${var.application_name}-blue",
+    "${var.application_name}-green"
+  ])
 }
 
 #

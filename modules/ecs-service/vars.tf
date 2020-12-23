@@ -83,6 +83,15 @@ variable "secrets" {
   }))
 }
 
+variable "environments" {
+  description = "environments to set"
+  default     = []
+  type = list(object({
+    name  = string
+    value = string
+  }))
+}
+
 variable "ingress_rules" {
   default = []
   type = list(object({
@@ -105,9 +114,9 @@ variable "volumes" {
   description = "volumes to create in task definition"
   default     = []
   type = list(object({
-    name      = string
+    name = string
     efs_volume_configuration = object({
-      file_system_id      = string
+      file_system_id     = string
       transit_encryption = string
       authorization_config = object({
         access_point_id = string

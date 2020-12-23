@@ -32,8 +32,9 @@ locals {
     memory_reservation  = var.memory_reservation
     log_group           = var.log_group
 
-    secrets     = jsonencode([for secret in var.secrets : secret])
-    mountpoints = jsonencode([for mountpoint in var.mountpoints : mountpoint])
+    secrets      = jsonencode([for secret in var.secrets : secret])
+    environments = jsonencode([for environment in var.environments : environment])
+    mountpoints  = jsonencode([for mountpoint in var.mountpoints : mountpoint])
   }
 }
 
@@ -57,15 +58,15 @@ resource "aws_ecs_task_definition" "ecs-service-taskdef" {
       dynamic efs_volume_configuration {
         for_each = length(volume.value.efs_volume_configuration) > 0 ? [volume.value.efs_volume_configuration] : []
         content {
-          file_system_id =  efs_volume_configuration.value.file_system_id
+          file_system_id     = efs_volume_configuration.value.file_system_id
           transit_encryption = efs_volume_configuration.value.transit_encryption
           dynamic authorization_config {
-             for_each = length(efs_volume_configuration.value.authorization_config) > 0 ? [efs_volume_configuration.value.authorization_config] : []
-             content {
-               access_point_id = authorization_config.value.access_point_id
-               iam             = authorization_config.value.iam
-             }
-           }
+            for_each = length(efs_volume_configuration.value.authorization_config) > 0 ? [efs_volume_configuration.value.authorization_config] : []
+            content {
+              access_point_id = authorization_config.value.access_point_id
+              iam             = authorization_config.value.iam
+            }
+          }
         }
       }
     }
@@ -91,7 +92,7 @@ resource "aws_ecs_service" "ecs-service" {
   platform_version                   = var.launch_type == "FARGATE" ? var.platform_version : "LATEST"
 
   load_balancer {
-    target_group_arn = element([for ecs-service in aws_lb_target_group.ecs-service: ecs-service.arn], 0)
+    target_group_arn = element([for ecs-service in aws_lb_target_group.ecs-service : ecs-service.arn], 0)
     container_name   = var.application_name
     container_port   = var.application_port
   }
