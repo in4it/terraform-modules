@@ -89,7 +89,7 @@ resource "aws_ecs_service" "ecs-service" {
   deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
   deployment_maximum_percent         = var.deployment_maximum_percent
   launch_type                        = var.launch_type
-  platform_version                   = var.launch_type == "FARGATE" ? var.platform_version : "LATEST"
+  platform_version                   = var.launch_type == "FARGATE" ? var.platform_version : null
 
   load_balancer {
     target_group_arn = element([for ecs-service in aws_lb_target_group.ecs-service : ecs-service.arn], 0)
