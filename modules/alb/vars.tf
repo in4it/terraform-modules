@@ -32,3 +32,9 @@ variable "tls_policy" {
 variable "idle_timeout" {
   default = 60
 }
+
+variable "access_logs" {
+  description = "An access logs block"
+  type        = map(string)
+  default     = {}
+}

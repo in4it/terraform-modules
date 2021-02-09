@@ -3,17 +3,25 @@
 #
 # lb main definition
 resource "aws_lb" "lb" {
-  name            = var.lb_name
-  internal        = var.internal
-  security_groups = [aws_security_group.lb.id]
-  subnets         = var.vpc_subnets
-  idle_timeout    = var.idle_timeout
+  name                       = var.lb_name
+  internal                   = var.internal
+  security_groups            = [aws_security_group.lb.id]
+  subnets                    = var.vpc_subnets
+  idle_timeout               = var.idle_timeout
   enable_deletion_protection = false
+
+  dynamic "access_logs" {
+    for_each = length(keys(var.access_logs)) == 0 ? [] : [var.access_logs]
+    content {
+      bucket  = lookup(access_logs.value, "bucket", "${var.lb_name}-lb-logs")
+      enabled = lookup(access_logs.value, "enabled", true)
+    }
+  }
 }
 
 # certificate
 data "aws_acm_certificate" "certificate" {
-  count = var.domain != "" ? 1 : 0
+  count    = var.domain != "" ? 1 : 0
   domain   = var.domain
   statuses = ["ISSUED", "PENDING_VALIDATION"]
 }
@@ -44,12 +52,12 @@ resource "aws_lb_listener" "lb-https" {
   ssl_policy        = var.tls_policy
   certificate_arn   = data.aws_acm_certificate.certificate[0].arn
 
-  dynamic default_action {
+  dynamic "default_action" {
     for_each = var.default_target_arn == "" ? local.fixed_response : local.forward_response
     content {
       target_group_arn = default_action.value.target_group_arn
       type             = default_action.value.type
-      dynamic fixed_response {
+      dynamic "fixed_response" {
         for_each = default_action.value.type == "fixed-response" ? [1] : []
         content {
           content_type = default_action.value.content_type
@@ -67,12 +75,12 @@ resource "aws_lb_listener" "lb-http" {
   port              = "80"
   protocol          = "HTTP"
 
-  dynamic default_action {
+  dynamic "default_action" {
     for_each = var.default_target_arn == "" ? local.fixed_response : local.forward_response
     content {
       target_group_arn = default_action.value.target_group_arn
       type             = default_action.value.type
-      dynamic fixed_response {
+      dynamic "fixed_response" {
         for_each = default_action.value.type == "fixed-response" ? [1] : []
         content {
           content_type = default_action.value.content_type
