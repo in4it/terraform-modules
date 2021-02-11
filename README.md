@@ -78,3 +78,34 @@ module "my-alb-rule" {
   condition_values   = ["subdomain.my-ecs.com"]
 }
 ```
+
+## Kinesis
+```
+module "my-kinesis" {
+  source                             = "github.com:in4it/terraform-modules/modules/kinesis"
+  environment                        = "my-env"
+  kinesis_stream_name                = "my-kinesis-stream-name"
+  kinesis_stream_encryption          = true
+  shard_count                        = 1
+  retention_period                   = 24
+  kms_kinesis_key_description        = "my kinesis key description"
+  deletion_window_in_days            = 30
+  kinesis_enable_key_rotation        = true
+  s3_enable_key_rotation             = true
+  enable_kinesis_firehose            = true
+  kinesis_firehose_name              = "my-firehose-name"
+  kinesis_firehose_destination       = "s3"
+  kms_s3_key_description             = "my s3 key description"
+  bucket_name                        = "my-s3-bucket-name"
+  iam_firehose_role                  = "my-iam-firehose-role"
+  s3_bucket_sse                      = true
+  s3_bucket_policy_id                = "my-s3-bucket-policy-id"
+  vpcs_restriction_list              = "my-vpcs"
+  s3_vpc_restriction                 = true
+  s3_deletion_protection             = true
+  s3_vpc_restriction_role_whitelist  = true
+  s3_bucket_arn                      = "my-s3-bucket-arn"
+  s3_vpc_restriction_exception_roles = "my-exception-roles"
+  policy_role_name_encrypt_decrypt   = "my-role-policy-name"
+}
+```
