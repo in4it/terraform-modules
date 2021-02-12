@@ -12,11 +12,13 @@ locals {
     "kms:Decrypt"
   ]
 
+  name = var.environment == "" ? "${var.name}-iam-firehose" : "${var.name}-iam-firehose-${var.environment}"
+
 }
 
 resource "aws_iam_role" "iam-firehose-role" {
   count = var.enable_kinesis_firehose == true ? 1 : 0
-  name  = var.environment == "" ? var.iam_firehose_role : "${var.iam_firehose_role}-${var.environment}"
+  name  = local.name
 
   assume_role_policy = <<EOF
 {
@@ -37,7 +39,7 @@ EOF
 
 resource "aws_iam_role_policy" "iam-role-policy-firehose" {
   count  = var.enable_kinesis_firehose == true ? 1 : 0
-  name   = var.environment == "" ? var.iam_firehose_role : "${var.iam_firehose_role}-${var.environment}"
+  name   = local.name
   role   = aws_iam_role.iam-firehose-role[0].id
   policy = <<EOF
 {
@@ -65,7 +67,6 @@ data "aws_iam_policy_document" "service-keys-policy" {
     effect    = "Allow"
     actions   = distinct(concat(local.iam_kms_encryption_actions))
     resources = [var.s3_bucket_sse == true && var.enable_kinesis_firehose == true ? aws_kms_key.s3-kms[0].arn : ""]
-
   }
   statement {
     effect    = "Allow"

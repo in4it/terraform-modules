@@ -3,9 +3,13 @@ variable "environment" {
   default     = ""
 }
 
-variable "kinesis_stream_name" {
-  description = "Kinesis stream name"
-  default     = "kinesis-stream"
+variable "name" {
+  description = "Default prefix name"
+}
+
+variable "description" {
+  description = "default description"
+  default     = "default"
 }
 
 variable "kinesis_stream_encryption" {
@@ -16,17 +20,11 @@ variable "kinesis_stream_encryption" {
 variable "shard_count" {
   description = "Kinesis stream shards number"
   default     = 1
-
 }
 
 variable "retention_period" {
   description = "Kinesis stream retention period"
   default     = 24
-}
-
-variable "kms_kinesis_key_description" {
-  description = "Kinesis description for kms key"
-  default     = "Default kms kinesis key"
 }
 
 variable "deletion_window_in_days" {
@@ -44,10 +42,9 @@ variable "s3_enable_key_rotation" {
   default     = true
 }
 
-
-variable "kinesis_firehose_name" {
-  description = "Kinesis firehose name"
-  default     = "kinesis-firehose"
+variable "s3_compression_format" {
+  description = "S3 compression format type"
+  default     = "UNCOMPRESSED"
 }
 
 variable "enable_kinesis_firehose" {
@@ -61,39 +58,14 @@ variable "kinesis_firehose_destination" {
   default     = "s3"
 }
 
-variable "kms_s3_key_description" {
-  description = "S3 description for kms key"
-  default     = "Default kms S3 key"
-}
-
-variable "bucket_name" {
-  description = "S3 bucket namme"
-  default     = "s3-bucket-for-firehose-delivery-stream"
-}
-
-variable "iam_firehose_role" {
-  description = "IAM role for firehose delivery stream"
-  default     = "iam-firehose-role"
-}
-
 variable "s3_bucket_sse" {
   description = "S3 server-side encryption"
   default     = false
 }
 
-variable "s3_bucket_policy_id" {
-  description = "S3 bucket policy id"
-  default     = "s3-id"
-}
-
 variable "vpcs_restriction_list" {
   description = "vpc list for s3 policy restricion"
-  default     = ""
-}
-
-variable "s3_vpc_restriction" {
-  description = "s3 vpc policy restriction"
-  default     = false
+  default     = []
 }
 
 variable "s3_deletion_protection" {
@@ -101,22 +73,17 @@ variable "s3_deletion_protection" {
   default     = false
 }
 
-variable "s3_vpc_restriction_role_whitelist" {
-  description = "s3 role whitelist restriction"
-  default     = false
-}
-
-variable "s3_bucket_arn" {
-  description = "s3 bucket arn"
-  default     = ""
-}
-
 variable "s3_vpc_restriction_exception_roles" {
   description = "s3 vpc restriction exception roles"
-  default     = ""
+  default     = []
 }
 
 variable "policy_role_name_encrypt_decrypt" {
   description = "policy role name for s3 encrypt and kinesis decrypt objects"
   default     = "service-keys-role-policy"
+}
+
+variable "policy_name_id" {
+  description = "policy role name for s3 encrypt and kinesis decrypt objects"
+  default     = "default-id"
 }

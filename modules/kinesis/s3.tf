@@ -8,11 +8,13 @@ locals {
     }
   ] : []
 
+  bucket_name = var.environment == "" ? "${var.name}-s3" : "${var.name}-s3-${var.environment}"
+
 }
 
 resource "aws_s3_bucket" "s3-bucket" {
   count  = var.enable_kinesis_firehose == true ? 1 : 0
-  bucket = var.environment == "" ? var.bucket_name : "${var.bucket_name}-${var.environment}"
+  bucket = local.bucket_name
   acl    = "private"
 
   versioning {
@@ -31,7 +33,7 @@ resource "aws_s3_bucket" "s3-bucket" {
     }
   }
 
-  policy = var.s3_vpc_restriction == true || var.s3_deletion_protection == true || var.s3_vpc_restriction_role_whitelist == true ? data.aws_iam_policy_document.bucket-policy.json : ""
+  policy = data.aws_iam_policy_document.bucket-policy.json
 }
 
 
@@ -47,9 +49,9 @@ resource "aws_s3_bucket_public_access_block" "s3-public-access-block" {
 }
 
 data "aws_iam_policy_document" "bucket-policy" {
-  policy_id = var.environment == "" ? "${var.s3_bucket_policy_id}-public-policy" : "${var.s3_bucket_policy_id}-${var.environment}-public-policy"
+  policy_id = var.environment == "" ? "${var.policy_name_id}-${var.kinesis_firehose_destination}-public-policy" : "${var.policy_name_id}-${var.kinesis_firehose_destination}-${var.environment}-public-policy"
   dynamic "statement" {
-    for_each = var.s3_vpc_restriction ? ["Access-to-specific-VPC-only"] : []
+    for_each = length(var.vpcs_restriction_list) > 0 ? ["Access-to-specific-VPC-only"] : []
     content {
       sid = "Access-to-specific-VPC-only"
       principals {
@@ -59,10 +61,8 @@ data "aws_iam_policy_document" "bucket-policy" {
       actions = ["s3:*"]
       effect  = "Deny"
       resources = [
-        var.s3_bucket_arn,
-        "${var.s3_bucket_arn}/*"
-        #aws_s3_bucket.s3-bucket[0].arn,
-        #"${aws_s3_bucket.s3-bucket[0].arn}/*"
+        "arn:aws:s3:::${local.bucket_name}",
+        "arn:aws:s3:::${local.bucket_name}/*"
       ]
       condition {
         test     = "StringNotEquals"
@@ -70,13 +70,14 @@ data "aws_iam_policy_document" "bucket-policy" {
 
         values = var.vpcs_restriction_list
       }
-      condition {
-        test     = "ArnNotLike"
-        variable = "aws:PrincipalArn"
-
-        values = [
-          var.s3_vpc_restriction_exception_roles == "" ? "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/glue-*" : var.s3_vpc_restriction_exception_roles
-        ]
+      dynamic "condition" {
+        for_each = length(var.s3_vpc_restriction_exception_roles) > 0 ? ["exception-roles"] : []
+        content {
+            test     = "ArnNotLike"
+            variable = "aws:PrincipalArn"
+       
+            values = var.s3_vpc_restriction_exception_roles
+        }
       }
       condition {
         test     = "ArnNotEquals"
@@ -91,7 +92,7 @@ data "aws_iam_policy_document" "bucket-policy" {
   dynamic "statement" {
     for_each = var.s3_deletion_protection ? ["deny-delete-policy"] : []
     content {
-      sid = "deny-delete-policy"
+      sid = "${var.policy_name_id}-deny-delete-policy"
       principals {
         type        = "AWS"
         identifiers = ["*"]
@@ -99,13 +100,11 @@ data "aws_iam_policy_document" "bucket-policy" {
       effect  = "Deny"
       actions = ["s3:DeleteBucket"]
       resources = [
-        var.s3_bucket_arn
+        "arn:aws:s3:::${local.bucket_name}"
       ]
     }
   }
-  dynamic "statement" {
-    for_each = var.s3_vpc_restriction_role_whitelist ? ["allow-whitelist-role"] : []
-    content {
+  statement {
       sid    = "1"
       effect = "Allow"
       principals {
@@ -121,9 +120,8 @@ data "aws_iam_policy_document" "bucket-policy" {
         "s3:PutObject"
       ]
       resources = [
-        var.s3_bucket_arn,
-        "${var.s3_bucket_arn}/*"
+        "arn:aws:s3:::${local.bucket_name}",
+        "arn:aws:s3:::${local.bucket_name}/*"
       ]
-    }
   }
 }
