@@ -92,22 +92,19 @@ module "my-kinesis" {
 ```
 module "my-kinesis" {
   name = "my-name"
-  description = "My description"
+  kms_description = "My description"
   environment = "my-env"
   kinesis_stream_encryption = true
-  shard_count = 1
-  retention_period = 24
-  deletion_window_in_days = 30
-  kinesis_enable_key_rotation = true
-  s3_enable_key_rotation = true
+  kinesis_shard_count = 1
+  kinesis_retention_period = 24
+  kms_deletion_window_in_days = 30
+  kms_enable_key_rotation = true
   enable_kinesis_firehose = true
-  s3_compression_format = "GZIP"
+  firehose_s3_compression_format = "GZIP"
   kinesis_firehose_destination = "s3"
   s3_bucket_sse = true
   vpcs_restriction_list = [my-vpcs]
   s3_deletion_protection =  true
-  policy_role_name_encrypt_decrypt = "my-role-policy-name"
   s3_vpc_restriction_exception_roles = [my-exception-roles]
-  policy_name_id = "my-id"
 }
 ```
