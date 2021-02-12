@@ -78,3 +78,36 @@ module "my-alb-rule" {
   condition_values   = ["subdomain.my-ecs.com"]
 }
 ```
+
+## Kinesis
+
+### Example with mandatory parameters
+```
+module "my-kinesis" {
+  name = "my-name"
+}
+```
+
+### Example with advance parameters
+```
+module "my-kinesis" {
+  name = "my-name"
+  description = "My description"
+  environment = "my-env"
+  kinesis_stream_encryption = true
+  shard_count = 1
+  retention_period = 24
+  deletion_window_in_days = 30
+  kinesis_enable_key_rotation = true
+  s3_enable_key_rotation = true
+  enable_kinesis_firehose = true
+  s3_compression_format = "GZIP"
+  kinesis_firehose_destination = "s3"
+  s3_bucket_sse = true
+  vpcs_restriction_list = [my-vpcs]
+  s3_deletion_protection =  true
+  policy_role_name_encrypt_decrypt = "my-role-policy-name"
+  s3_vpc_restriction_exception_roles = [my-exception-roles]
+  policy_name_id = "my-id"
+}
+```
