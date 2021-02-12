@@ -63,15 +63,16 @@ EOF
 }
 
 data "aws_iam_policy_document" "service-keys-policy" {
+  count  = var.enable_kinesis_firehose == true ? 1 : 0
   statement {
     effect    = "Allow"
     actions   = distinct(concat(local.iam_kms_encryption_actions))
-    resources = [var.s3_bucket_sse == true && var.enable_kinesis_firehose == true ? aws_kms_key.s3-kms[0].arn : ""]
+    resources = [var.s3_bucket_sse == true ? aws_kms_key.s3-kms[0].arn : ""]
   }
   statement {
     effect    = "Allow"
     actions   = distinct(concat(local.iam_kms_decryption_actions))
-    resources = [var.kinesis_stream_encryption == true && var.enable_kinesis_firehose == true ? aws_kms_key.kinesis-kms[0].arn : ""]
+    resources = [var.kinesis_stream_encryption == true ? aws_kms_key.kinesis-kms[0].arn : ""]
   }
 }
 
@@ -79,5 +80,5 @@ resource "aws_iam_role_policy" "service-keys-role-policy" {
   count  = var.enable_kinesis_firehose == true ? 1 : 0
   name   = var.policy_role_name_encrypt_decrypt
   role   = aws_iam_role.iam-firehose-role[0].id
-  policy = data.aws_iam_policy_document.service-keys-policy.json
+  policy = data.aws_iam_policy_document.service-keys-policy[0].json
 }

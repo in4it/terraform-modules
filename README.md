@@ -79,14 +79,16 @@ module "my-alb-rule" {
 }
 ```
 
-## Default Kinesis
+## Kinesis
+
+### Example with mandatory parameters
 ```
 module "my-kinesis" {
   name = "my-name"
 }
 ```
 
-## Kinesis
+### Example with advance parameters
 ```
 module "my-kinesis" {
   name = "my-name"

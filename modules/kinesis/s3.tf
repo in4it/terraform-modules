@@ -33,7 +33,7 @@ resource "aws_s3_bucket" "s3-bucket" {
     }
   }
 
-  policy = data.aws_iam_policy_document.bucket-policy.json
+  policy = data.aws_iam_policy_document.bucket-policy[0].json
 }
 
 
@@ -49,6 +49,7 @@ resource "aws_s3_bucket_public_access_block" "s3-public-access-block" {
 }
 
 data "aws_iam_policy_document" "bucket-policy" {
+  count  = var.enable_kinesis_firehose == true ? 1 : 0
   policy_id = var.environment == "" ? "${var.policy_name_id}-${var.kinesis_firehose_destination}-public-policy" : "${var.policy_name_id}-${var.kinesis_firehose_destination}-${var.environment}-public-policy"
   dynamic "statement" {
     for_each = length(var.vpcs_restriction_list) > 0 ? ["Access-to-specific-VPC-only"] : []
