@@ -7,7 +7,7 @@ variable "name" {
   description = "Default prefix name"
 }
 
-variable "description" {
+variable "kms_description" {
   description = "default description"
   default     = "default"
 }
@@ -17,32 +17,27 @@ variable "kinesis_stream_encryption" {
   default     = false
 }
 
-variable "shard_count" {
+variable "kinesis_shard_count" {
   description = "Kinesis stream shards number"
   default     = 1
 }
 
-variable "retention_period" {
+variable "kinesis_retention_period" {
   description = "Kinesis stream retention period"
   default     = 24
 }
 
-variable "deletion_window_in_days" {
+variable "kms_deletion_window_in_days" {
   description = "Deletion window in_days"
   default     = 30
 }
 
-variable "kinesis_enable_key_rotation" {
-  description = "Kinesis enable key rotation"
+variable "kms_enable_key_rotation" {
+  description = "kms enable key rotation"
   default     = true
 }
 
-variable "s3_enable_key_rotation" {
-  description = "S3 enable key rotation"
-  default     = true
-}
-
-variable "s3_compression_format" {
+variable "firehose_s3_compression_format" {
   description = "S3 compression format type"
   default     = "UNCOMPRESSED"
 }
