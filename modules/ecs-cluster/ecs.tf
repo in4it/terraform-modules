@@ -28,9 +28,7 @@ resource "aws_ecs_cluster" "cluster" {
 
 data "template_file" "ecs_init" {
   template = file("${path.module}/templates/ecs_init.tpl")
-  vars = {
-    cluster_name = var.cluster_name
-  }
+  cluster_name = var.cluster_name
 }
 
 #
