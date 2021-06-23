@@ -1,5 +1,5 @@
 variable "tags" {
-  default = object()
+  default = object
 }
 
 variable "bucket_name" {
