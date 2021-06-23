@@ -1,4 +1,6 @@
-variable "tags" {}
+variable "tags" {
+  default = object()
+}
 
 variable "bucket_name" {
   description = "The S3 bucket name"
