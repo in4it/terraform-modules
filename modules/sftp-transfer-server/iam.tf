@@ -1,3 +1,6 @@
+data "aws_region" "current" {}
+data "aws_caller_identity" "current" {}
+
 data "aws_iam_policy_document" "transfer_server_assume_role" {
   statement {
     effect  = "Allow"
@@ -41,7 +44,7 @@ data "aws_iam_policy_document" "transfer_server_to_cloudwatch_assume_policy" {
       "logs:PutLogEvents",
     ]
 
-    resources = ["/aws/transfer/*"]
+    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/transfer/*"]
   }
 }
 
