@@ -108,3 +108,15 @@ module "my-kinesis" {
   s3_vpc_restriction_exception_roles = [my-exception-roles]
 }
 ```
+
+## AWS SFTP Transfer
+
+```
+module "transfer" {
+  transfer_server_name       = "transfer-server"
+  transfer_server_user_names = ["sftp-user-name-01", "sftp-user-name-02"]
+  transfer_server_ssh_keys   = [file("../../data/ssh/example-key-sftp-01-${var.env}.pub"),file("../../data/ssh/example-key-sftp-02-${var.env}.pub")]
+  bucket_name                = aws_s3_bucket.transfer-bucket.id
+  bucket_arn                 = aws_s3_bucket.transfer-bucket.arn
+}
+```
