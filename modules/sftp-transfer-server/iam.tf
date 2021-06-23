@@ -41,7 +41,7 @@ data "aws_iam_policy_document" "transfer_server_to_cloudwatch_assume_policy" {
       "logs:PutLogEvents",
     ]
 
-    resources = ["*"]
+    resources = ["/aws/transfer/*"]
   }
 }
 
