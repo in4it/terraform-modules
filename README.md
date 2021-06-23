@@ -109,7 +109,7 @@ module "my-kinesis" {
 }
 ```
 
-## AWS Transfer
+## AWS SFTP Transfer
 
 ```
 module "transfer" {
