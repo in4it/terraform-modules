@@ -113,9 +113,6 @@ module "my-kinesis" {
 
 ```
 module "transfer" {
-  aws_region = "eu-west-1"
-  aws_account_id = "012345678901"
-
   transfer_server_name       = "transfer-server"
   transfer_server_user_names = ["sftp-user-name-01", "sftp-user-name-02"]
   transfer_server_ssh_keys   = [file("../../data/ssh/example-key-sftp-01-${var.env}.pub"),file("../../data/ssh/example-key-sftp-02-${var.env}.pub")]
