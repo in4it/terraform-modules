@@ -1,5 +1,5 @@
 locals {
-  port = var.engine_family == "mysql" ? 3306 : 5432
+  port = substr(var.engine_family, 0, 5) == "mysql" ? 3306 : 5432
 }
 resource "aws_security_group" "rds" {
   name        = "${var.name}-rds"
