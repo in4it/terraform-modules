@@ -1,15 +1,4 @@
 #
-# ecr 
-#
-
-resource "aws_ecr_repository" "ecs-service" {
-  name = var.service_name
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-}
-
-#
 # get latest active revision
 #
 data "aws_ecs_task_definition" "ecs-service" {

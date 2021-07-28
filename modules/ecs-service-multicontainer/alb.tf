@@ -1,10 +1,10 @@
 locals {
   single_target_group = toset([
-    var.application_name
+    var.service_name
   ])
   blue_green_target_group = toset([
-    "${var.application_name}-blue",
-    "${var.application_name}-green"
+    "${var.service_name}-blue",
+    "${var.service_name}-green"
   ])
 }
 
@@ -15,7 +15,7 @@ locals {
 resource "aws_lb_target_group" "ecs-service" {
   for_each             = var.enable_blue_green ? local.blue_green_target_group : local.single_target_group
   name                 = each.value
-  port                 = var.application_port
+  port                 = var.exposed_port
   protocol             = "HTTP"
   vpc_id               = var.vpc_id
   deregistration_delay = var.deregistration_delay
