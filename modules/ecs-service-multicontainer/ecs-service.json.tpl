@@ -24,6 +24,6 @@
                 "awslogs-stream-prefix": "${container.application_name}"
             }
       }
-    }${key+1 == lenght(containers)? "" : ","}
+    }${key+1 == length(containers)? "" : ","}
   %{ endfor ~}
 ]
