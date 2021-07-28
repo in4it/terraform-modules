@@ -12,9 +12,9 @@
           "hostport": ${host_port}
         }
       ],
-      "secrets": ${container.secrets},
-      "environment": ${container.environments},
-      "mountpoints": ${container.mountpoints},
+      "secrets": ${jsonencode([for secret in container.secrets : secret])},
+      "environment":${jsonencode([for environment in container.environments : environment])},
+      "mountpoints": ${jsonencode([for mountpoint in container.mountpoints : mountpoint])},
       "logconfiguration": {
             "logdriver": "awslogs",
             "options": {
