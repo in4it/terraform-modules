@@ -125,14 +125,14 @@ variable "volumes" {
   default     = []
   type = list(object({
     name = string
-    efs_volume_configuration = optional(object({
+    efs_volume_configuration = object({
       file_system_id     = string
       transit_encryption = string
       authorization_config = object({
         access_point_id = string
         iam             = string
       })
-    }))
+    })
   }))
 }
 
