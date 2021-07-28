@@ -15,6 +15,7 @@
       "secrets": ${jsonencode([for secret in container.secrets : secret])},
       "environment":${jsonencode([for environment in container.environments : environment])},
       "mountpoints": ${jsonencode([for mountpoint in container.mountpoints : mountpoint])},
+      "links": ${jsonencode([for link in container.links : link])},
       "logconfiguration": {
             "logdriver": "awslogs",
             "options": {

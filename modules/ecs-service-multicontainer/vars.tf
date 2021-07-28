@@ -103,6 +103,7 @@ variable "containers" {
     ecr_url             = string
     cpu_reservation     = number
     memory_reservation  = number
+    links               = list(string)
     mountpoints = list(object({
       containerPath = string
       sourceVolume  = string
