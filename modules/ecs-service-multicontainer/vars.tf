@@ -115,17 +115,31 @@ variable "containers" {
       name  = string
       value = string
     }))
-    volumes = list(object({
-      name = string
-      efs_volume_configuration = object({
-        file_system_id     = string
-        transit_encryption = string
-        authorization_config = object({
-          access_point_id = string
-          iam             = string
-        })
-      })
-    }))
   }))
 }
 
+variable "volumes" {
+  description = "volumes to create in task definition"
+  default     = []
+  type = list(object({
+    name = string
+    efs_volume_configuration = object({
+      file_system_id     = string
+      transit_encryption = string
+      authorization_config = object({
+        access_point_id = string
+        iam             = string
+      })
+    })
+  }))
+}
+
+variable "exposed_port" {
+  type = number
+}
+variable "service_name" {
+  type = string
+}
+variable "exposed_container_name" {
+  type = string
+}

@@ -1,7 +1,7 @@
 resource "aws_security_group" "ecs-service" {
-  name        = var.application_name
+  name        = var.service_name
   vpc_id      = var.vpc_id
-  description = var.application_name
+  description = var.service_name
 
   dynamic "ingress" {
     for_each = var.ingress_rules
