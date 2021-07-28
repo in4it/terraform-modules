@@ -1,5 +1,5 @@
 [
-  %{ for container in containers ~}
+  %{ for key, container in containers ~}
   {
       "name": "${container.application_name}",
       "image": "${container.ecr_url}:${container.application_version}",
@@ -24,6 +24,6 @@
                 "awslogs-stream-prefix": "${container.application_name}"
             }
       }
-    },
+    }${key+1 == lenght(containers)? "" : ","}
   %{ endfor ~}
 ]
