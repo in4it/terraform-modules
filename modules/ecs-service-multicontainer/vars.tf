@@ -104,6 +104,10 @@ variable "containers" {
     cpu_reservation     = number
     memory_reservation  = number
     links               = list(string)
+    dependsOn = list(object({
+      containerName = string
+      condition     = string
+    }))
     mountpoints = list(object({
       containerPath = string
       sourceVolume  = string

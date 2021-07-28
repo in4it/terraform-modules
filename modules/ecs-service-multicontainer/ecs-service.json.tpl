@@ -16,6 +16,7 @@
       "environment":${jsonencode([for environment in container.environments : environment])},
       "mountpoints": ${jsonencode([for mountpoint in container.mountpoints : mountpoint])},
       "links": ${jsonencode([for link in container.links : link])},
+      "dependsOn": ${jsonencode([for dependsOn in container.dependsOn : dependsOn])},
       "logconfiguration": {
             "logdriver": "awslogs",
             "options": {
