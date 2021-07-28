@@ -8,15 +8,6 @@ variable "launch_type" {
   default = "EC2"
 }
 
-variable "application_name" {
-}
-
-variable "application_port" {
-}
-
-variable "application_version" {
-}
-
 variable "cluster_arn" {
 }
 
@@ -74,24 +65,6 @@ variable "fargate_service_subnetids" {
   default = []
 }
 
-variable "secrets" {
-  description = "secrets to set"
-  default     = []
-  type = list(object({
-    name      = string
-    valueFrom = string
-  }))
-}
-
-variable "environments" {
-  description = "environments to set"
-  default     = []
-  type = list(object({
-    name  = string
-    value = string
-  }))
-}
-
 variable "ingress_rules" {
   default = []
   type = list(object({
@@ -110,31 +83,6 @@ variable "deployment_controller" {
   default = ""
 }
 
-variable "volumes" {
-  description = "volumes to create in task definition"
-  default     = []
-  type = list(object({
-    name = string
-    efs_volume_configuration = object({
-      file_system_id     = string
-      transit_encryption = string
-      authorization_config = object({
-        access_point_id = string
-        iam             = string
-      })
-    })
-  }))
-}
-
-variable "mountpoints" {
-  description = "mountpoints to in container definition"
-  default     = []
-  type = list(object({
-    containerPath = string
-    sourceVolume  = string
-  }))
-}
-
 variable "platform_version" {
   default = "LATEST"
 }
@@ -143,3 +91,41 @@ variable "task_security_groups" {
   description = "extra security groups to add. Expects security group ID"
   default     = []
 }
+
+variable "containers" {
+  description = "Containers in container definition"
+  default     = []
+  type = list(object({
+    application_name    = string
+    host_port           = number
+    application_port    = number
+    application_version = string
+    ecr_url             = string
+    cpu_reservation     = number
+    memory_reservation  = number
+    mountpoints = list(object({
+      containerPath = string
+      sourceVolume  = string
+    }))
+    secrets = list(object({
+      name      = string
+      valueFrom = string
+    }))
+    environments = list(object({
+      name  = string
+      value = string
+    }))
+    volumes = list(object({
+      name = string
+      efs_volume_configuration = object({
+        file_system_id     = string
+        transit_encryption = string
+        authorization_config = object({
+          access_point_id = string
+          iam             = string
+        })
+      })
+    }))
+  }))
+}
+

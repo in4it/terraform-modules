@@ -28,9 +28,10 @@ locals {
     application_version = var.application_version
     ecr_url             = aws_ecr_repository.ecs-service.repository_url
     aws_region          = var.aws_region
-    cpu_reservation     = var.cpu_reservation
-    memory_reservation  = var.memory_reservation
+    cpu_reservation     = var.container_cpu_reservation
+    memory_reservation  = var.container_memory_reservation
     log_group           = var.log_group
+    extra_containers    = var.extra_containers
 
     secrets      = jsonencode([for secret in var.secrets : secret])
     environments = jsonencode([for environment in var.environments : environment])
