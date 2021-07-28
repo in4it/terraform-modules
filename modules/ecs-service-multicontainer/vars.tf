@@ -124,15 +124,8 @@ variable "volumes" {
   description = "volumes to create in task definition"
   default     = []
   type = list(object({
-    name = string
-    efs_volume_configuration = object({
-      file_system_id     = string
-      transit_encryption = string
-      authorization_config = object({
-        access_point_id = string
-        iam             = string
-      })
-    })
+    name                     = string
+    efs_volume_configuration = any
   }))
 }
 
