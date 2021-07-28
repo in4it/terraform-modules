@@ -31,6 +31,7 @@ locals {
     cpu_reservation     = var.cpu_reservation
     memory_reservation  = var.memory_reservation
     log_group           = var.log_group
+    extra_containers    = var.extra_containers
 
     secrets      = jsonencode([for secret in var.secrets : secret])
     environments = jsonencode([for environment in var.environments : environment])
@@ -51,16 +52,16 @@ resource "aws_ecs_task_definition" "ecs-service-taskdef" {
   network_mode             = var.launch_type == "FARGATE" ? "awsvpc" : "bridge"
   cpu                      = var.launch_type == "FARGATE" ? var.cpu_reservation : null
   memory                   = var.launch_type == "FARGATE" ? var.memory_reservation : null
-  dynamic volume {
+  dynamic "volume" {
     for_each = var.volumes
     content {
       name = volume.value.name
-      dynamic efs_volume_configuration {
+      dynamic "efs_volume_configuration" {
         for_each = length(volume.value.efs_volume_configuration) > 0 ? [volume.value.efs_volume_configuration] : []
         content {
           file_system_id     = efs_volume_configuration.value.file_system_id
           transit_encryption = efs_volume_configuration.value.transit_encryption
-          dynamic authorization_config {
+          dynamic "authorization_config" {
             for_each = length(efs_volume_configuration.value.authorization_config) > 0 ? [efs_volume_configuration.value.authorization_config] : []
             content {
               access_point_id = authorization_config.value.access_point_id
@@ -105,7 +106,7 @@ resource "aws_ecs_service" "ecs-service" {
     }
   }
 
-  dynamic deployment_controller {
+  dynamic "deployment_controller" {
     for_each = var.deployment_controller == "" ? [] : [1]
     content {
       type = var.deployment_controller

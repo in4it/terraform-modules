@@ -143,3 +143,19 @@ variable "task_security_groups" {
   description = "extra security groups to add. Expects security group ID"
   default     = []
 }
+
+variable "extra_containers" {
+  description = "Additional containers in container definition"
+  default     = []
+  type = list(object({
+    application_name    = string
+    host_port           = number
+    application_version = string
+    ecr_url             = string
+    cpu_reservation     = number
+    memory_reservation  = number
+    mountpoints         = string
+    secrets             = string
+    environments        = string
+  }))
+}
