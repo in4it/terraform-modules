@@ -8,8 +8,10 @@
       "essential": true,
       "portmappings" : [
         {
-          "containerport": ${container.application_port},
-          "hostport": ${container.host_port}
+          %{if container.host_port != null}
+            "hostport": ${container.host_port},
+          %{endif}
+          "containerport": ${container.application_port}
         }
       ],
       "secrets": ${jsonencode([for secret in container.secrets : secret])},
