@@ -12,9 +12,11 @@ variable "application_name" {
 }
 
 variable "application_port" {
+  default = 80
 }
 
 variable "application_version" {
+  default = ""
 }
 
 variable "cluster_arn" {
@@ -155,4 +157,43 @@ variable "platform_version" {
 variable "task_security_groups" {
   description = "extra security groups to add. Expects security group ID"
   default     = []
+}
+
+variable "containers" {
+  description = "Containers in container definition"
+  default     = []
+  type = list(object({
+    application_name    = string
+    host_port           = number
+    application_port    = number
+    application_version = string
+    ecr_url             = string
+    cpu_reservation     = number
+    memory_reservation  = number
+    links               = list(string)
+    dependsOn = list(object({
+      containerName = string
+      condition     = string
+    }))
+    mountpoints = list(object({
+      containerPath = string
+      sourceVolume  = string
+      readOnly      = bool
+    }))
+    secrets = list(object({
+      name      = string
+      valueFrom = string
+    }))
+    environments = list(object({
+      name  = string
+      value = string
+    }))
+  }))
+}
+
+variable "exposed_container_name" {
+  default = ""
+}
+variable "exposed_container_port" {
+  default = ""
 }
