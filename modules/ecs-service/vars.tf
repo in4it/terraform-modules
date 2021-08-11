@@ -12,7 +12,7 @@ variable "application_name" {
 }
 
 variable "application_port" {
-  default = ""
+  default = 80
 }
 
 variable "application_version" {
