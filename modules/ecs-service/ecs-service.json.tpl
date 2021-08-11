@@ -1,27 +1,32 @@
 [
+  %{ for key, container in containers ~}
   {
-    "name": "${application_name}",
-    "image": "${ecr_url}:${application_version}",
-    "cpu": ${cpu_reservation},
-    "memoryreservation": ${memory_reservation},
-    "essential": true,
-    "mountpoints": [],
-    "portmappings" : [
-      {
-        "containerport": ${application_port},
-        "hostport": ${host_port}
+      "name": "${container.application_name}",
+      "image": "${container.ecr_url}:${container.application_version}",
+      "cpu": ${container.cpu_reservation},
+      "memoryreservation": ${container.memory_reservation},
+      "essential": true,
+      "portmappings" : [
+        {
+          %{if container.host_port != null}
+            "hostport": ${container.host_port},
+          %{endif}
+          "containerport": ${container.application_port}
+        }
+      ],
+      "secrets": ${jsonencode([for secret in container.secrets : secret])},
+      "environment":${jsonencode([for environment in container.environments : environment])},
+      "mountpoints": ${jsonencode([for mountpoint in container.mountpoints : mountpoint])},
+      "links": ${jsonencode([for link in container.links : link])},
+      "dependsOn": ${jsonencode([for dependsOn in container.dependsOn : dependsOn])},
+      "logconfiguration": {
+            "logdriver": "awslogs",
+            "options": {
+                "awslogs-group": "${log_group}",
+                "awslogs-region": "${aws_region}",
+                "awslogs-stream-prefix": "${container.application_name}"
+            }
       }
-    ],
-    "secrets": ${secrets},
-    "environment": ${environments},
-    "mountpoints": ${mountpoints},
-    "logconfiguration": {
-          "logdriver": "awslogs",
-          "options": {
-              "awslogs-group": "${log_group}",
-              "awslogs-region": "${aws_region}",
-              "awslogs-stream-prefix": "${application_name}"
-          }
-    }
-  }
+    }${key+1 == length(containers)? "" : ","}
+  %{ endfor ~}
 ]
