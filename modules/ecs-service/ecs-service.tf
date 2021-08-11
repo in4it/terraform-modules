@@ -31,7 +31,7 @@ locals {
       host_port           = var.launch_type == "FARGATE" ? var.application_port : 0
       application_port    = var.application_port
       application_version = var.application_version
-      ecr_url             = aws_ecr_repository.ecs-service.repository_url
+      ecr_url             = aws_ecr_repository.ecs-service.0.repository_url
       cpu_reservation     = var.cpu_reservation
       memory_reservation  = var.memory_reservation
       links               = []
