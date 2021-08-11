@@ -12,9 +12,11 @@ variable "application_name" {
 }
 
 variable "application_port" {
+  default = ""
 }
 
 variable "application_version" {
+  default = ""
 }
 
 variable "cluster_arn" {
