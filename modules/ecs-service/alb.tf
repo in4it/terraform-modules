@@ -22,11 +22,11 @@ resource "aws_lb_target_group" "ecs-service" {
   target_type          = var.launch_type == "FARGATE" ? "ip" : "instance"
 
   health_check {
-    healthy_threshold   = 3
-    unhealthy_threshold = 3
+    healthy_threshold   = var.healthcheck_healthy_threshold
+    unhealthy_threshold = var.healthcheck_unhealthy_threshold
     protocol            = "HTTP"
     path                = var.healthcheck_path
-    interval            = 60
+    interval            = var.healthcheck_interval
     matcher             = var.healthcheck_matcher
   }
 }

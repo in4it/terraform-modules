@@ -42,6 +42,19 @@ variable "deregistration_delay" {
 variable "healthcheck_matcher" {
   default = "200"
 }
+
+variable "healthcheck_interval" {
+  default = "60"
+}
+
+variable "healthcheck_healthy_threshold" {
+  default = "3"
+}
+
+variable "healthcheck_unhealthy_threshold" {
+  default = "3"
+}
+
 variable "healthcheck_path" {
   default = "/"
 }
