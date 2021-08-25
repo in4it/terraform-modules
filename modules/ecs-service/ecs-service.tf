@@ -30,6 +30,7 @@ locals {
       application_name    = var.application_name
       host_port           = var.launch_type == "FARGATE" ? var.application_port : 0
       application_port    = var.application_port
+      additional_ports    = var.additional_ports
       application_version = var.application_version
       ecr_url             = aws_ecr_repository.ecs-service.0.repository_url
       cpu_reservation     = var.cpu_reservation
