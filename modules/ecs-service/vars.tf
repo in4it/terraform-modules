@@ -203,3 +203,12 @@ variable "additional_ports" {
   type    = list(string)
   default = []
 }
+variable "service_registries" {
+  type = list(object({
+    registry_arn   = string
+    port           = string
+    container_port = string
+    container_name = string
+  }))
+  default = []
+}
