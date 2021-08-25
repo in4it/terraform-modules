@@ -121,10 +121,8 @@ resource "aws_ecs_service" "ecs-service" {
   dynamic "service_registries" {
     for_each = var.service_registries
     content {
-      registry_arn   = service_registries.value.registry_arn
-      port           = service_registries.value.port
-      container_port = service_registries.value.port
-      container_name = service_registries.value.container_name
+      registry_arn = service_registries.value.registry_arn
+      port         = service_registries.value.port
     }
   }
 
