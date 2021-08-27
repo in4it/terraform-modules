@@ -166,6 +166,7 @@ variable "containers" {
     application_name    = string
     host_port           = number
     application_port    = number
+    additional_ports    = list(string)
     application_version = string
     ecr_url             = string
     cpu_reservation     = number
@@ -196,4 +197,16 @@ variable "exposed_container_name" {
 }
 variable "exposed_container_port" {
   default = ""
+}
+
+variable "additional_ports" {
+  type    = list(string)
+  default = []
+}
+variable "service_registries" {
+  type = list(object({
+    registry_arn   = string
+    container_name = string
+  }))
+  default = []
 }

@@ -13,6 +13,12 @@
           %{endif}
           "containerport": ${container.application_port}
         }
+        %{ for key, additional_port in container.additional_ports ~}
+        ,{
+          "hostport": ${additional_port},
+          "containerport": ${additional_port}
+        }
+        %{ endfor ~}
       ],
       "secrets": ${jsonencode([for secret in container.secrets : secret])},
       "environment":${jsonencode([for environment in container.environments : environment])},

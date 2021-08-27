@@ -30,6 +30,7 @@ locals {
       application_name    = var.application_name
       host_port           = var.launch_type == "FARGATE" ? var.application_port : 0
       application_port    = var.application_port
+      additional_ports    = var.additional_ports
       application_version = var.application_version
       ecr_url             = aws_ecr_repository.ecs-service.0.repository_url
       cpu_reservation     = var.cpu_reservation
@@ -114,6 +115,14 @@ resource "aws_ecs_service" "ecs-service" {
     for_each = var.deployment_controller == "" ? [] : [1]
     content {
       type = var.deployment_controller
+    }
+  }
+
+  dynamic "service_registries" {
+    for_each = var.service_registries
+    content {
+      registry_arn   = service_registries.value.registry_arn
+      container_name = service_registries.value.container_name
     }
   }
 
