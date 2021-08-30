@@ -51,7 +51,7 @@ module "openvpn-access" {
     }
     , {
       name      = "CLIENT_CERT_ORG"
-      valueFrom = "arn:aws:ssm:${var.aws_region}:${var.aws_account_id}:parameter/${var.project_name}}-${var.env}/vpn/CLIENT_CERT_ORG"
+      valueFrom = "arn:aws:ssm:${var.aws_region}:${var.aws_account_id}:parameter/${var.project_name}-${var.env}/vpn/CLIENT_CERT_ORG"
     },
     {
       name      = "OAUTH2_CLIENT_SECRET"
@@ -59,11 +59,11 @@ module "openvpn-access" {
     },
     {
       name      = "OAUTH2_REDIRECT_URL"
-      valueFrom = "arn:aws:ssm:${var.aws_region}:${var.aws_account_id}:parameter/${var.project_name}}-${var.env}/vpn/OAUTH2_REDIRECT_URL"
+      valueFrom = "arn:aws:ssm:${var.aws_region}:${var.aws_account_id}:parameter/${var.project_name}-${var.env}/vpn/OAUTH2_REDIRECT_URL"
     },
     {
       name      = "OAUTH2_SCOPES"
-      valueFrom = "arn:aws:ssm:${var.aws_region}:${var.aws_account_id}:parameter/${var.project_name}}-${var.env}/vpn/OAUTH2_SCOPES"
+      valueFrom = "arn:aws:ssm:${var.aws_region}:${var.aws_account_id}:parameter/${var.project_name}-${var.env}/vpn/OAUTH2_SCOPES"
     },
     {
       name      = "OAUTH2_URL"
