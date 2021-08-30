@@ -46,6 +46,9 @@ variable "ouath2_client_id_parameter_arn" {
   type        = string
   description = "ARN of the SSM Parameter or Secret Manager's Secret containing the OAUTH2 client id"
 }
+variable "oauth2_url" {
+  type = string
+}
 variable "csrf_key_parameter_arn" {
   type        = string
   description = "ARN of the SSM Parameter or Secret Manager's Secret containing the CSRF key"
@@ -104,9 +107,6 @@ variable "onelogin_client_secret" {
   description = "Safe to store in git, because it allows only logins"
 }
 variable "onelogin_client_domain" {
-  type = string
-}
-variable "onelogin_oauth_url" {
   type = string
 }
 
