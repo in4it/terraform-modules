@@ -71,7 +71,7 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_security_group" "vpn-instance" {
-  name   = "${var.project_name}-vpn-sg-${var.env}"
+  name   = "${var.project_name}-openvpn-sg-${var.env}"
   vpc_id = var.vpc_id
 
   ingress {
