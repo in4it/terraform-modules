@@ -31,16 +31,6 @@ module "ssm-parameters-vpn" {
       "name"  = "CLIENT_CERT_ORG"
       "value" = var.organization_name
       "type"  = "SecureString"
-    },
-    {
-      "name"  = "ONELOGIN-CLIENT-ID"
-      "value" = ""
-      "type"  = "SecureString"
-    },
-    {
-      "name"  = "ONELOGIN-CLIENT-SECRET"
-      "value" = ""
-      "type"  = "SecureString"
     }
   ]
 }
