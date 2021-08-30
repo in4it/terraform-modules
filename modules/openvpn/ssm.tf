@@ -19,7 +19,7 @@ module "ssm-parameters-vpn" {
     },
     {
       "name"  = "OAUTH2_URL"
-      "value" = var.onelogin_oauth_url
+      "value" = var.oauth_oauth_url
       "type"  = "SecureString"
     },
     {
