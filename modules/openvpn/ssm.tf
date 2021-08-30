@@ -29,7 +29,7 @@ module "ssm-parameters-vpn" {
     },
     {
       "name"  = "CLIENT_CERT_ORG"
-      "value" = {var.organization_name
+      "value" = var.organization_name
       "type"  = "SecureString"
     },
     {
