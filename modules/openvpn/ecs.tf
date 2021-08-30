@@ -13,8 +13,8 @@ data "aws_iam_policy_document" "ecs_execution_role" {
       "kms:DescribeKey"
     ]
     resources = [
-      module.ssm-parameters-vpn.kms-key-arn,
-      "arn:aws:kms:${var.aws_region}:${var.aws_account_id}:alias/ssm-paramstore-${var.project_name}-${var.env}vpn"
+      aws_kms_alias.ssm-parameters.name,
+      aws_kms_key.ssm-parameters.id,
     ]
   }
   statement {
