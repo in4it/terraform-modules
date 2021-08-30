@@ -66,8 +66,8 @@ data "aws_iam_policy_document" "ecs_execution_role" {
       "kms:DescribeKey"
     ]
     resources = [
-      aws_kms_alias.ssm-parameters.name,
-      aws_kms_key.ssm-parameters.id,
+      aws_kms_alias.ssm-parameters.arn,
+      aws_kms_key.ssm-parameters.arn,
     ]
   }
   statement {
