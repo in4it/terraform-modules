@@ -5,8 +5,8 @@ module "openvpn-access" {
   application_name          = "openvpn-access"
   application_port          = "8080"
   application_version       = "latest"
-  cluster_arn               = module.ecs-cluster.cluster_arn
-  execution_role_arn        = module.ecs-cluster.execution_role_arn
+  cluster_arn               = aws_ecs_cluster.cluster.id
+  execution_role_arn        = aws_iam_role.ecs-task-execution-role.arn
   task_role_arn             = aws_iam_role.ecs-openvpn-access-task-role.arn
   aws_region                = var.aws_region
   healthcheck_matcher       = "200,301"
