@@ -91,29 +91,3 @@ else
    echo "Config files found, starting OpenVPN..."
    docker run --log-driver=awslogs --log-opt awslogs-region=${aws_region} --log-opt awslogs-group=${log_group} -v /etc/openvpn:/etc/openvpn -d -p 1194:1194/udp --cap-add=NET_ADMIN --name openvpn ${account}.dkr.ecr.${aws_region}.amazonaws.com/${project_name}-openvpn-${env}:latest
 fi
-
-# Update route53 record
-publicip=$(curl -fs http://169.254.169.254/latest/meta-data/public-ipv4)
-file=/tmp/record.json
-cat << EOF > $file
-{
-  "Comment": "Update the A record set",
-  "Changes": [
-    {
-      "Action": "UPSERT",
-      "ResourceRecordSet": {
-        "Name": "${domain}",
-        "Type": "A",
-        "TTL": 300,
-        "ResourceRecords": [
-          {
-            "Value": "$publicip"
-          }
-        ]
-      }
-    }
-  ]
-}
-EOF
-
-aws route53 change-resource-record-sets --hosted-zone-id ${hostedzoneid} --change-batch file://$file

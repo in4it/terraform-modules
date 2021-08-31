@@ -1,46 +1,36 @@
-resource "aws_autoscaling_group" "vpn-asg" {
-  depends_on = [aws_s3_bucket_object.oneloginconf, aws_s3_bucket_object.openvpn-client]
+resource "aws_instance" "openvpn" {
+  depends_on = [
+    aws_s3_bucket_object.oneloginconf,
+    aws_s3_bucket_object.openvpn-client,
+    aws_s3_bucket_object.openvpn-vars,
+    aws_ecr_repository.openvpn,
+  ]
 
-  name                      = "${var.project_name}-vpn-asg-${var.env}"
-  max_size                  = 1
-  min_size                  = 1
-  health_check_grace_period = 300
-  health_check_type         = "EC2"
-  desired_capacity          = 1
-  force_delete              = true
-  vpc_zone_identifier       = var.public_subnets
+  ami                    = data.aws_ami.ubuntu.id
+  instance_type          = var.instance_type
+  subnet_id              = var.public_subnets
+  vpc_security_group_ids = [aws_security_group.vpn-instance.id]
+  iam_instance_profile   = aws_iam_instance_profile.vpn_iam_instance_profile.name
 
+  user_data_base64 = data.template_file.userdata.rendered
 
-  launch_template {
-    id      = aws_launch_template.vpn-launch-template.id
-    version = "$Latest"
+  root_block_device {
+    encrypted = true
   }
 
-  tag {
-    key                 = "Name"
-    value               = "${var.project_name}-vpn-${var.env}"
-    propagate_at_launch = true
-  }
-
-  tag {
-    key                 = "Env"
-    value               = var.env
-    propagate_at_launch = true
+  tags {
+    Name = "${var.project_name}-vpn-${var.env}"
+    Env  = var.env
   }
 }
 
-resource "aws_launch_template" "vpn-launch-template" {
-  name_prefix   = "${var.project_name}-vpn-lt-${var.env}"
-  image_id      = data.aws_ami.ubuntu.id
-  instance_type = var.instance_type
+resource "aws_eip" "vpn_ip" {
+  instance = aws_instance.openvpn.id
+  vpc      = true
 
-  vpc_security_group_ids = [aws_security_group.vpn-instance.id]
-
-  iam_instance_profile {
-    arn = aws_iam_instance_profile.vpn_iam_instance_profile.arn
+  lifecycle {
+    prevent_destroy = true
   }
-
-  user_data = base64encode(data.template_file.userdata.rendered)
 }
 
 data "template_file" "userdata" {
@@ -51,7 +41,6 @@ data "template_file" "userdata" {
     env          = var.env
     account      = var.aws_account_id
     domain       = "${var.vpn_subdomain}.${var.domain}"
-    hostedzoneid = var.hosted_zone_id
     project_name = var.project_name
   }
 }
