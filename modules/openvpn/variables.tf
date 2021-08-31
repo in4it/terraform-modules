@@ -11,8 +11,17 @@ variable "aws_account_id" {
   type = string
 }
 
+#Domains
 variable "domain" {
   type = string
+}
+variable "vpn_subdomain" {
+  default = "vpn"
+  type    = string
+}
+variable "app_subdomain" {
+  default = "vpn-app"
+  type    = string
 }
 
 #CA

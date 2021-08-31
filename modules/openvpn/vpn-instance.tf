@@ -1,5 +1,5 @@
 resource "aws_autoscaling_group" "vpn-asg" {
-  depends_on = [aws_s3_bucket_object.oneloginconf]
+  depends_on = [aws_s3_bucket_object.oneloginconf, aws_s3_bucket_object.openvpn-client]
 
   name                      = "${var.project_name}-vpn-asg-${var.env}"
   max_size                  = 1
@@ -50,7 +50,7 @@ data "template_file" "userdata" {
     aws_region   = var.aws_region
     env          = var.env
     account      = var.aws_account_id
-    domain       = "vpn.${var.domain}"
+    domain       = "${var.vpn_subdomain}.${var.domain}"
     hostedzoneid = var.hosted_zone_id
     project_name = var.project_name
   }

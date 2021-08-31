@@ -10,7 +10,7 @@ module "alb-rule-openvpn-access" {
 
 resource "aws_route53_record" "vpn-app-alb-record" {
   allow_overwrite = true
-  name            = "vpn-app.${var.domain}"
+  name            = "${var.app_subdomain}.${var.domain}"
   type            = "A"
 
   alias {
