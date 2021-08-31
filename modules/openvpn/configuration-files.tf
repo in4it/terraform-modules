@@ -6,7 +6,7 @@ resource "aws_s3_bucket_object" "oneloginconf" {
 }
 
 data "template_file" "oneloginconf" {
-  template = file("./tpl/onelogin-conf.tpl")
+  template = file("${path.module}/tpl/onelogin-conf.tpl")
   vars = {
     subdomain     = var.onelogin_client_domain
     client_id     = var.onelogin_client_id
@@ -22,7 +22,7 @@ resource "aws_s3_bucket_object" "openvpn-vars" {
 }
 
 data "template_file" "openvpn-vars" {
-  template = file("./tpl/openvpn-vars.tpl")
+  template = file("${path.module}/tpl/openvpn-vars.tpl")
   vars = {
     domain    = var.domain
     req_email = var.cert_req_email

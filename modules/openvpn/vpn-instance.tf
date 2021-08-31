@@ -34,7 +34,7 @@ resource "aws_eip" "vpn_ip" {
 }
 
 data "template_file" "userdata" {
-  template = file("./tpl/vpn-userdata.tpl")
+  template = file("${path.module}/tpl/vpn-userdata.tpl")
   vars = {
     log_group    = aws_cloudwatch_log_group.cloudwatch-ec2-openvpn.name
     aws_region   = var.aws_region
