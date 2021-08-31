@@ -8,7 +8,7 @@ resource "aws_instance" "openvpn" {
 
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.instance_type
-  subnet_id              = var.public_subnets
+  subnet_id              = var.public_subnets[0]
   vpc_security_group_ids = [aws_security_group.vpn-instance.id]
   iam_instance_profile   = aws_iam_instance_profile.vpn_iam_instance_profile.name
 
@@ -18,7 +18,7 @@ resource "aws_instance" "openvpn" {
     encrypted = true
   }
 
-  tags {
+  tags = {
     Name = "${var.project_name}-vpn-${var.env}"
     Env  = var.env
   }

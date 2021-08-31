@@ -22,11 +22,11 @@ resource "aws_route53_record" "vpn-app-alb-record" {
 }
 
 
-resource "aws_route53_record" "vpn-app-alb-record" {
+resource "aws_route53_record" "vpn-alb-record" {
   allow_overwrite = true
   name            = "${var.vpn_subdomain}.${var.domain}"
   type            = "A"
-  value           = aws_eip.vpn_ip.public_ip
+  records         = [aws_eip.vpn_ip.public_ip]
 
   zone_id = var.hosted_zone_id
 }
