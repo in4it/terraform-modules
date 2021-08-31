@@ -124,6 +124,42 @@ module "transfer" {
 ## OpenVPN
 
 ```
+module "vpc" {
+  source = "terraform-aws-modules/vpc/aws"
+
+  name = "myclient-${var.env}"
+  cidr = var.vpc_cidr
+
+  azs              = var.availability_zones
+  private_subnets  = var.vpc_private_subnets
+  public_subnets   = var.vpc_public_subnets
+  database_subnets = var.vpc_database_subnets
+
+  enable_dns_hostnames = true
+  enable_dns_support   = true
+  enable_dhcp_options  = true
+
+  enable_nat_gateway     = true
+  one_nat_gateway_per_az = var.one_nat_gw_per_az
+  single_nat_gateway     = var.single_nat_gw
+}
+
+module "alb" {
+  source      = "git@github.com:in4it/terraform-modules.git//modules/alb"
+  vpc_id      = module.vpc.vpc_id
+  lb_name     = "myclient-${var.env}"
+  vpc_subnets = module.vpc.public_subnets
+  domain      = var.domain
+  internal    = false
+
+  tls = true
+
+  tls_policy = "ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
+  access_logs = {
+    enabled = "true"
+  }
+}
+
 module "vpn" {
   source         = "git@github.com:in4it/terraform-modules.git//modules/openvpn"
   aws_region     = var.aws_region
@@ -132,17 +168,17 @@ module "vpn" {
   domain         = var.domain
   project_name   = "my_client"
 
-  vpc_id          = data.terraform_remote_state.network.outputs.vpc_id
-  public_subnets  = data.terraform_remote_state.network.outputs.public_subnets
-  private_subnets = data.terraform_remote_state.network.outputs.private_subnets
+  vpc_id          = module.vpc.vpc_id
+  public_subnets  = module.vpc.public_subnets
+  private_subnets = module.vpc.private_subnets
 
   hosted_zone_id = data.terraform_remote_state.dns.outputs.primary-hosted-zone
 
-  alb_arn                = data.terraform_remote_state.shared.outputs.lb-arn
-  alb_dns_name           = data.terraform_remote_state.shared.outputs.alb-dns_name
-  alb_dns_zone_id        = data.terraform_remote_state.shared.outputs.alb-zone_id
-  alb_https_listener_arn = data.terraform_remote_state.shared.outputs.https-listener-arn
-  alb_security_group_id  = data.terraform_remote_state.shared.outputs.alb-security-group-id
+  alb_arn                = module.alb.lb-arn
+  alb_dns_name           = module.alb.dns_name
+  alb_dns_zone_id        = module.alb.zone_id
+  alb_https_listener_arn = module.alb.https-listener-arn
+  alb_security_group_id  = module.alb.security-group-id
 
   cert_req_city                 = "London"
   cert_req_country              = "EN"
