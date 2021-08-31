@@ -120,3 +120,44 @@ module "transfer" {
   bucket_arn                 = aws_s3_bucket.transfer-bucket.arn
 }
 ```
+
+## OpenVPN
+
+```
+module "vpn" {
+  source         = "git@github.com:in4it/terraform-modules.git//modules/openvpn"
+  aws_region     = var.aws_region
+  aws_account_id = var.aws_account_id
+  env            = var.env
+  domain         = var.domain
+  project_name   = "my_client"
+
+  vpc_id          = data.terraform_remote_state.network.outputs.vpc_id
+  public_subnets  = data.terraform_remote_state.network.outputs.public_subnets
+  private_subnets = data.terraform_remote_state.network.outputs.private_subnets
+
+  hosted_zone_id = data.terraform_remote_state.dns.outputs.primary-hosted-zone
+
+  alb_arn                = data.terraform_remote_state.shared.outputs.lb-arn
+  alb_dns_name           = data.terraform_remote_state.shared.outputs.alb-dns_name
+  alb_dns_zone_id        = data.terraform_remote_state.shared.outputs.alb-zone_id
+  alb_https_listener_arn = data.terraform_remote_state.shared.outputs.https-listener-arn
+  alb_security_group_id  = data.terraform_remote_state.shared.outputs.alb-security-group-id
+
+  cert_req_city                 = "London"
+  cert_req_country              = "EN"
+  cert_req_email                = "admin@my_client.com"
+  cert_req_province             = "London"
+  certificate_organization_name = "my_client"
+  organization_name             = "my_client"
+
+  csrf_key_parameter_arn             = "arn:aws:ssm:${var.aws_region}:${var.aws_account_id}:parameter/my_client-${var.env}/vpn/CSRF_KEY"
+  onelogin_client_domain             = "my_client"
+  onelogin_client_id                 = var.onelogin_client_id
+  onelogin_client_secret             = var.onelogin_client_secret
+  open_vpn_client_file_base64        = base64encode(data.template_file.openvpn-client.rendered)
+  ouath2_client_id_parameter_arn     = "arn:aws:ssm:${var.aws_region}:${var.aws_account_id}:parameter/my_client-${var.env}/vpn/OAUTH2_CLIENT_ID"
+  ouath2_client_secret_parameter_arn = "arn:aws:ssm:${var.aws_region}:${var.aws_account_id}:parameter/my_client-${var.env}/vpn/OAUTH2_CLIENT_SECRET"
+  oauth2_url                         = "https://my_client.onelogin.com/oidc/2"
+}
+```
