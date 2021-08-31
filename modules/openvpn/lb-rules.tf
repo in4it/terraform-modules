@@ -2,10 +2,10 @@ module "alb-rule-openvpn-access" {
   source       = "git@github.com:in4it/terraform-modules.git//modules/alb-rule"
   listener_arn = var.alb_https_listener_arn
 
-  priority         = 10
+  priority         = var.alb_route_priority
   target_group_arn = module.openvpn-access.target_group_arn
   condition_field  = "host-header"
-  condition_values = ["vpn-app.${var.domain}"]
+  condition_values = ["${var.app_subdomain}.${var.domain}"]
 }
 
 resource "aws_route53_record" "vpn-app-alb-record" {

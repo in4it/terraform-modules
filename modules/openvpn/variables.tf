@@ -94,6 +94,9 @@ variable "alb_dns_name" {
 variable "alb_dns_zone_id" {
   type = string
 }
+variable "alb_route_priority" {
+  default = 10
+}
 
 #DNS
 variable "hosted_zone_id" {
