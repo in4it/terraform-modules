@@ -27,6 +27,7 @@ resource "aws_route53_record" "vpn-alb-record" {
   name            = "${var.vpn_subdomain}.${var.domain}"
   type            = "A"
   records         = [aws_eip.vpn_ip.public_ip]
+  ttl             = 300
 
   zone_id = var.hosted_zone_id
 }
