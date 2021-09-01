@@ -12,7 +12,7 @@ resource "aws_instance" "openvpn" {
   vpc_security_group_ids = [aws_security_group.vpn-instance.id]
   iam_instance_profile   = aws_iam_instance_profile.vpn_iam_instance_profile.name
 
-  user_data_base64 = data.template_file.userdata.rendered
+  user_data_base64 = base64encode(data.template_file.userdata.rendered)
 
   root_block_device {
     encrypted = true
