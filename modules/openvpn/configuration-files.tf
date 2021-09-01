@@ -24,12 +24,12 @@ resource "aws_s3_bucket_object" "openvpn-vars" {
 data "template_file" "openvpn-vars" {
   template = file("${path.module}/tpl/openvpn-vars.tpl")
   vars = {
-    domain    = var.domain
-    req_email = var.cert_req_email
-    req_email = var.cert_req_city
-    req_email = var.cert_req_province
-    req_email = var.cert_req_country
-    req_org   = var.certificate_organization_name
+    domain       = var.domain
+    req_email    = var.cert_req_email
+    req_city     = var.cert_req_city
+    req_province = var.cert_req_province
+    req_country  = var.cert_req_country
+    req_org      = var.certificate_organization_name
   }
 }
 
