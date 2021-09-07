@@ -79,6 +79,7 @@ variable "execution_role_arn" {
 }
 
 variable "alb_arn" {
+  default = ""
 }
 
 variable "fargate_service_security_groups" {
