@@ -99,7 +99,7 @@ resource "aws_ecs_service" "ecs-service" {
 
 
   dynamic "load_balancer" {
-    for_each = var.enable_alb ? 1 : 0
+    for_each = var.enable_alb ? [1] : []
     content {
       target_group_arn = element([for ecs-service in aws_lb_target_group.ecs-service : ecs-service.arn], 0)
       container_name   = length(var.containers) == 0 ? var.application_name : var.exposed_container_name
