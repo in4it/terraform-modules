@@ -4,7 +4,8 @@ resource "aws_lb_listener_rule" "alb_rule" {
 
   action {
     type             = var.action_type
-    target_group_arn = var.target_group_arn
+    target_group_arn = var.target_group_arn m
+
 
     dynamic fixed_response {
       for_each = var.action_type == "fixed-response" ? [1] : []

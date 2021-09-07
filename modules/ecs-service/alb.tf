@@ -1,7 +1,7 @@
 locals {
-  single_target_group = toset([
+  single_target_group = var.enable_alb ? toset([
     var.application_name
-  ])
+  ]) : 0
   blue_green_target_group = toset([
     "${var.application_name}-blue",
     "${var.application_name}-green"

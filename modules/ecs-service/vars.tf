@@ -210,3 +210,7 @@ variable "service_registries" {
   }))
   default = []
 }
+variable "enable_alb" {
+  type    = bool
+  default = true
+}

@@ -97,10 +97,14 @@ resource "aws_ecs_service" "ecs-service" {
   launch_type                        = var.launch_type
   platform_version                   = var.launch_type == "FARGATE" ? var.platform_version : null
 
-  load_balancer {
-    target_group_arn = element([for ecs-service in aws_lb_target_group.ecs-service : ecs-service.arn], 0)
-    container_name   = length(var.containers) == 0 ? var.application_name : var.exposed_container_name
-    container_port   = length(var.containers) == 0 ? var.application_port : var.exposed_container_port
+
+  dynamic "load_balancer" {
+    for_each = var.enable_alb ? 1 : 0
+    content {
+      target_group_arn = element([for ecs-service in aws_lb_target_group.ecs-service : ecs-service.arn], 0)
+      container_name   = length(var.containers) == 0 ? var.application_name : var.exposed_container_name
+      container_port   = length(var.containers) == 0 ? var.application_port : var.exposed_container_port
+    }
   }
 
   dynamic "network_configuration" {
