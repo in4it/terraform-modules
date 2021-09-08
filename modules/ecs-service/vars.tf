@@ -215,3 +215,12 @@ variable "enable_alb" {
   type    = bool
   default = true
 }
+variable "create_ecr" {
+  type        = bool
+  default     = true
+  description = "Bool to enable or disable the creation of the ECR repository. Only for single container use"
+}
+variable "external_ecr" {
+  type        = string
+  description = "External ECR URL. Only for single container use"
+}
