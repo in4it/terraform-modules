@@ -172,7 +172,6 @@ variable "containers" {
     cpu_reservation     = number
     memory_reservation  = number
     links               = list(string)
-    environment_files   = list(string)
     dependsOn = list(object({
       containerName = string
       condition     = string
@@ -189,6 +188,10 @@ variable "containers" {
     environments = list(object({
       name  = string
       value = string
+    }))
+    environment_files = list(object({
+      value = string
+      type  = string
     }))
   }))
 }
@@ -212,6 +215,9 @@ variable "service_registries" {
   default = []
 }
 variable "environment_files" {
-  type    = list(string)
+  type = list(object({
+    value = string
+    type  = string
+  }))
   default = []
 }

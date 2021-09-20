@@ -22,6 +22,14 @@
       ],
       "secrets": ${jsonencode([for secret in container.secrets : secret])},
       "environment":${jsonencode([for environment in container.environments : environment])},
+      "environmentFiles":[
+        %{ for envFileKey, envFile in container.environmentFiles ~}
+        {
+            "value":"${envFile.value}",
+            "type": "${envFile.type}"
+        }${envFileKey+1 == length(container.environmentFiles)? "" : ","}
+        %{ endfor ~}
+      ],
       "mountpoints": ${jsonencode([for mountpoint in container.mountpoints : mountpoint])},
       "links": ${jsonencode([for link in container.links : link])},
       "dependsOn": ${jsonencode([for dependsOn in container.dependsOn : dependsOn])},
