@@ -189,7 +189,7 @@ variable "containers" {
       name  = string
       value = string
     }))
-    environment_files = list(string)
+    //    environment_files = list(string)
   }))
 }
 
