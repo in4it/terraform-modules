@@ -40,7 +40,7 @@ locals {
       mountpoints         = var.mountpoints
       secrets             = var.secrets
       environments        = []
-      environment_files   = var.environment_files
+      environmentFiles    = var.environment_files
     }]
   }
 }
