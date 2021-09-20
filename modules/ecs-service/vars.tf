@@ -172,6 +172,7 @@ variable "containers" {
     cpu_reservation     = number
     memory_reservation  = number
     links               = list(string)
+    environment_files   = list(string)
     dependsOn = list(object({
       containerName = string
       condition     = string
@@ -189,7 +190,6 @@ variable "containers" {
       name  = string
       value = string
     }))
-    environment_files = list(string)
   }))
 }
 
