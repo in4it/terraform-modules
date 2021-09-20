@@ -212,6 +212,5 @@ variable "service_registries" {
   default = []
 }
 variable "environment_files" {
-  type    = list(string)
-  default = []
+  type = list(string)
 }
