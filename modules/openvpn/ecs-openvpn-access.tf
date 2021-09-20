@@ -8,7 +8,7 @@ module "openvpn-access" {
   cluster_arn               = aws_ecs_cluster.cluster.id
   execution_role_arn        = aws_iam_role.ecs-task-execution-role.arn
   task_role_arn             = aws_iam_role.ecs-openvpn-access-task-role.arn
-  aws_region                = var.aws_region
+  aws_region                = data.aws_region.current.name
   healthcheck_matcher       = "200,301"
   healthcheck_path          = "/"
   cpu_reservation           = "256"
@@ -37,7 +37,7 @@ module "openvpn-access" {
     },
     {
       name  = "AWS_REGION"
-      value = var.aws_region
+      value = data.aws_region.current.name
     },
   ]
   secrets = [
@@ -51,7 +51,7 @@ module "openvpn-access" {
     }
     , {
       name      = "CLIENT_CERT_ORG"
-      valueFrom = "arn:aws:ssm:${var.aws_region}:${var.aws_account_id}:parameter/${var.project_name}-${var.env}/vpn/CLIENT_CERT_ORG"
+      valueFrom = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${var.project_name}-${var.env}/vpn/CLIENT_CERT_ORG"
     },
     {
       name      = "OAUTH2_CLIENT_SECRET"
@@ -59,15 +59,15 @@ module "openvpn-access" {
     },
     {
       name      = "OAUTH2_REDIRECT_URL"
-      valueFrom = "arn:aws:ssm:${var.aws_region}:${var.aws_account_id}:parameter/${var.project_name}-${var.env}/vpn/OAUTH2_REDIRECT_URL"
+      valueFrom = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${var.project_name}-${var.env}/vpn/OAUTH2_REDIRECT_URL"
     },
     {
       name      = "OAUTH2_SCOPES"
-      valueFrom = "arn:aws:ssm:${var.aws_region}:${var.aws_account_id}:parameter/${var.project_name}-${var.env}/vpn/OAUTH2_SCOPES"
+      valueFrom = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${var.project_name}-${var.env}/vpn/OAUTH2_SCOPES"
     },
     {
       name      = "OAUTH2_URL"
-      valueFrom = "arn:aws:ssm:${var.aws_region}:${var.aws_account_id}:parameter/${var.project_name}-${var.env}/vpn/OAUTH2_URL"
+      valueFrom = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${var.project_name}-${var.env}/vpn/OAUTH2_URL"
     }
   ]
 

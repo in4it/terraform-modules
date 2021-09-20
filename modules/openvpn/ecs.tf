@@ -76,7 +76,7 @@ data "aws_iam_policy_document" "ecs_execution_role" {
       "ssm:GetParameters"
     ]
     resources = [
-      "arn:aws:ssm:${var.aws_region}:${var.aws_account_id}:parameter/${var.project_name}-${var.env}/vpn/*"
+      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${var.project_name}-${var.env}/vpn/*"
     ]
   }
 }
