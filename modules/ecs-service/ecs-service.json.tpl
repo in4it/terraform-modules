@@ -22,14 +22,6 @@
       ],
       "secrets": ${jsonencode([for secret in container.secrets : secret])},
       "environment":${jsonencode([for environment in container.environments : environment])},
-      "environmentFiles":[
-        %{ for envFileKey, s3Arn in container.environmentFiles ~}
-        {
-            "value":"${s3Arn}",
-            "type": "s3"
-        }${envFileKey+1 == length(container.environmentFiles)? "" : ","}
-        %{ endfor ~}
-      ],
       "mountpoints": ${jsonencode([for mountpoint in container.mountpoints : mountpoint])},
       "links": ${jsonencode([for link in container.links : link])},
       "dependsOn": ${jsonencode([for dependsOn in container.dependsOn : dependsOn])},
