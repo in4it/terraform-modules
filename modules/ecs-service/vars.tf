@@ -189,7 +189,7 @@ variable "containers" {
       name  = string
       value = string
     }))
-    //    environment_files = list(string)
+    environment_files = list(string)
   }))
 }
 
@@ -209,9 +209,5 @@ variable "service_registries" {
     registry_arn   = string
     container_name = string
   }))
-  default = []
-}
-variable "environment_files" {
-  type    = list(string)
   default = []
 }
