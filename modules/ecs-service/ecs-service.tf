@@ -39,7 +39,7 @@ locals {
       dependsOn           = []
       mountpoints         = var.mountpoints
       secrets             = var.secrets
-      environments        = []
+      environments        = var.environments
       environment_files   = var.environment_files
     }]
   }
