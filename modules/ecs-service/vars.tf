@@ -189,6 +189,10 @@ variable "containers" {
       name  = string
       value = string
     }))
+    environment_files = list(object({
+      value = string
+      type  = string
+    }))
   }))
 }
 
@@ -207,6 +211,13 @@ variable "service_registries" {
   type = list(object({
     registry_arn   = string
     container_name = string
+  }))
+  default = []
+}
+variable "environment_files" {
+  type = list(object({
+    value = string
+    type  = string
   }))
   default = []
 }
