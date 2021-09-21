@@ -23,11 +23,11 @@
       "secrets": ${jsonencode([for secret in container.secrets : secret])},
       "environment":${jsonencode([for environment in container.environments : environment])},
       "environmentFiles":[
-        %{ for envFileKey, envFile in container.environmentFiles ~}
+        %{ for envFileKey, envFile in container.environment_files ~}
         {
             "value":"${envFile.value}",
             "type": "${envFile.type}"
-        }${envFileKey+1 == length(container.environmentFiles)? "" : ","}
+        }${envFileKey+1 == length(container.environment_files)? "" : ","}
         %{ endfor ~}
       ],
       "mountpoints": ${jsonencode([for mountpoint in container.mountpoints : mountpoint])},
