@@ -66,3 +66,11 @@ variable "iam_database_authentication_enabled" {
   description = "enable iam auth"
   default     = true
 }
+variable "performance_insight_enabled" {
+  description = "Enable Performance Insight"
+  default     = false
+}
+variable "deletion_protection" {
+  description = "Enable Deletion Protection"
+  default     = false
+}
