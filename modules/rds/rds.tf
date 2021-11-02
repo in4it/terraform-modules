@@ -1,6 +1,6 @@
 resource "random_string" "password" {
-  length  = 32
-  special = true
+  length           = 32
+  special          = true
   override_special = "!#$%&*()-_=+[]{}<>:?"
 }
 
@@ -26,13 +26,16 @@ resource "aws_db_instance" "rds" {
   storage_encrypted                   = var.at_rest_encryption ? true : false
   kms_key_id                          = var.at_rest_encryption ? aws_kms_alias.rds[0].target_key_arn : ""
 
+  deletion_protection          = var.deletion_protection
+  performance_insights_enabled = var.performance_insight_enabled
+
   tags = {
     Name = var.name
   }
 }
 
 resource "aws_db_subnet_group" "rds" {
-  count = var.subnet_group != "" ? 0 : 1
+  count       = var.subnet_group != "" ? 0 : 1
   name        = var.name
   description = "${var.name} subnet"
   subnet_ids  = var.subnet_ids
@@ -43,7 +46,7 @@ resource "aws_db_parameter_group" "rds" {
   family      = var.engine_family
   description = "rds parameter group for ${var.name}"
 
-  dynamic parameter {
+  dynamic "parameter" {
     for_each = var.parameters
     content {
       name  = parameter.value.name
