@@ -38,12 +38,12 @@ resource "aws_eip" "vpn_ip" {
 data "template_file" "userdata" {
   template = file("${path.module}/tpl/vpn-userdata.tpl")
   vars = {
-    log_group    = aws_cloudwatch_log_group.cloudwatch-ec2-openvpn.name
-    aws_region   = data.aws_region.current.name
-    env          = var.env
-    account      = data.aws_caller_identity.current.account_id
-    domain       = "${var.vpn_subdomain}.${var.domain}"
-    project_name = var.project_name
+    log_group          = aws_cloudwatch_log_group.cloudwatch-ec2-openvpn.name
+    aws_region         = data.aws_region.current.name
+    env                = var.env
+    account            = data.aws_caller_identity.current.account_id
+    domain             = "${var.vpn_subdomain}.${var.domain}"
+    project_name       = var.project_name
     openvpn_public_ecr = var.openvpn_public_ecr
   }
 }

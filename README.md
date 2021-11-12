@@ -162,8 +162,6 @@ module "alb" {
 
 module "vpn" {
   source         = "git@github.com:in4it/terraform-modules.git//modules/openvpn"
-  aws_region     = "eu-west-1"
-  aws_account_id = "0123456789"
   env            = "dev"
   domain         = "example.com"
   project_name   = "my_client"
