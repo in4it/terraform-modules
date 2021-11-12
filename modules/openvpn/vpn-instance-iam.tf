@@ -36,18 +36,6 @@ resource "aws_iam_role_policy" "vpn-custom-policy" {
 }
 data "aws_iam_policy_document" "vpn-custom-policy" {
   statement {
-    effect    = "Allow"
-    resources = [aws_ecr_repository.openvpn.arn]
-    actions = [
-      "ecr:GetDownloadUrlForLayer",
-      "ecr:BatchGetImage",
-      "ecr:BatchCheckLayerAvailability",
-      "ecr:DescribeRepositories",
-      "ecr:GetRepositoryPolicy",
-      "ecr:ListImages"
-    ]
-  }
-  statement {
     resources = ["*"]
     effect    = "Allow"
     actions = [

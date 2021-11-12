@@ -195,5 +195,7 @@ module "vpn" {
   ouath2_client_id_parameter_arn     = "arn:aws:ssm:eu-west-1:0123456789:parameter/my_client-dev/vpn/OAUTH2_CLIENT_ID"
   ouath2_client_secret_parameter_arn = "arn:aws:ssm:eu-west-1:0123456789:parameter/my_client-dev/vpn/OAUTH2_CLIENT_SECRET"
   oauth2_url                         = "https://my_client.onelogin.com/oidc/2"
+
+  openvpn_public_ecr = "PLACEHOLEDER_public_ecr_url"
 }
 ```

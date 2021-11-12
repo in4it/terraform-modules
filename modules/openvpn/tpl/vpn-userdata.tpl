@@ -60,7 +60,7 @@ Restart=always
 # Modify IP6_PREFIX to match network config
 Environment="NAME=openvpn"
 Environment="DATA_VOL=/etc/openvpn"
-Environment="IMG=${account}.dkr.ecr.${aws_region}.amazonaws.com/${project_name}-openvpn-${env}:latest"
+Environment="IMG=${openvpn_public_ecr}"
 Environment="PORT=1194:1194/udp"
 # To override environment variables, use local configuration directory:
 # /etc/systemd/system/docker-openvpn@foo.d/local.conf
@@ -80,14 +80,14 @@ $(aws ecr get-login --no-include-email --region ${aws_region} --endpoint https:/
 if [ ! -e /etc/openvpn/openvpn.conf ]; then
    echo "No config files found, generating...."
    aws s3 cp s3://${project_name}-configuration-${env}/openvpnconfig/vars /etc/openvpn/vars --endpoint https://s3.${aws_region}.amazonaws.com --region ${aws_region}
-   docker run -v /etc/openvpn:/etc/openvpn --log-driver=none ${account}.dkr.ecr.${aws_region}.amazonaws.com/${project_name}-openvpn-${env}:latest ovpn_genconfig -u udp://${domain}
-   docker run -v /etc/openvpn:/etc/openvpn --rm --log-driver=none -e EASYRSA_VARS_FILE=/etc/openvpn/vars ${account}.dkr.ecr.${aws_region}.amazonaws.com/${project_name}-openvpn-${env}:latest ovpn_initpki nopass
+   docker run -v /etc/openvpn:/etc/openvpn --log-driver=none ${openvpn_public_ecr} ovpn_genconfig -u udp://${domain}
+   docker run -v /etc/openvpn:/etc/openvpn --rm --log-driver=none -e EASYRSA_VARS_FILE=/etc/openvpn/vars ${openvpn_public_ecr} ovpn_initpki nopass
    echo "#Auth Plugin" >> /etc/openvpn/openvpn.conf
    echo "auth-user-pass-verify /bin/openvpn-onelogin-auth via-env" >> /etc/openvpn/openvpn.conf
    echo "script-security 3" >> /etc/openvpn/openvpn.conf
-   docker run --log-driver=awslogs --log-opt awslogs-region=${aws_region} --log-opt awslogs-group=${log_group} -v /etc/openvpn:/etc/openvpn --restart=always -d -p 1194:1194/udp --cap-add=NET_ADMIN --name openvpn ${account}.dkr.ecr.${aws_region}.amazonaws.com/${project_name}-openvpn-${env}:latest
+   docker run --log-driver=awslogs --log-opt awslogs-region=${aws_region} --log-opt awslogs-group=${log_group} -v /etc/openvpn:/etc/openvpn --restart=always -d -p 1194:1194/udp --cap-add=NET_ADMIN --name openvpn ${openvpn_public_ecr}
    aws s3 sync /etc/openvpn s3://${project_name}-configuration-${env}/openvpn --endpoint https://s3.${aws_region}.amazonaws.com --region ${aws_region}
 else
    echo "Config files found, starting OpenVPN..."
-   docker run --log-driver=awslogs --log-opt awslogs-region=${aws_region} --log-opt awslogs-group=${log_group} -v /etc/openvpn:/etc/openvpn -d -p 1194:1194/udp --cap-add=NET_ADMIN --name openvpn ${account}.dkr.ecr.${aws_region}.amazonaws.com/${project_name}-openvpn-${env}:latest
+   docker run --log-driver=awslogs --log-opt awslogs-region=${aws_region} --log-opt awslogs-group=${log_group} -v /etc/openvpn:/etc/openvpn -d -p 1194:1194/udp --cap-add=NET_ADMIN --name openvpn ${openvpn_public_ecr}
 fi

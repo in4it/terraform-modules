@@ -6,7 +6,6 @@ resource "aws_instance" "openvpn" {
     aws_s3_bucket_object.oneloginconf,
     aws_s3_bucket_object.openvpn-client,
     aws_s3_bucket_object.openvpn-vars,
-    aws_ecr_repository.openvpn,
   ]
 
   ami                    = data.aws_ami.ubuntu.id
@@ -45,6 +44,7 @@ data "template_file" "userdata" {
     account      = data.aws_caller_identity.current.account_id
     domain       = "${var.vpn_subdomain}.${var.domain}"
     project_name = var.project_name
+    openvpn_public_ecr = var.openvpn_public_ecr
   }
 }
 
