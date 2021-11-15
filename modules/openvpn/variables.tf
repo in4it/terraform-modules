@@ -122,6 +122,10 @@ variable "open_vpn_client_file_base64" {
   description = "Base64 content of the vpn-client file. An example of this file can be found inside the moduledir/tpl/openvpn-client.tpl"
 }
 
+#Public ECR
 variable "openvpn_public_ecr" {
+  type = string
+}
+variable "openvpn_access_public_ecr" {
   type = string
 }
