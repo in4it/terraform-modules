@@ -20,7 +20,6 @@ resource "aws_iam_role" "ecs-task-execution-role" {
     ]
 }
 EOF
-
 }
 
 resource "aws_iam_role_policy" "ecs-task-execution-role-policy" {

@@ -120,3 +120,81 @@ module "transfer" {
   bucket_arn                 = aws_s3_bucket.transfer-bucket.arn
 }
 ```
+
+## OpenVPN
+
+```
+module "vpc" {
+  source = "terraform-aws-modules/vpc/aws"
+
+  name = "myclient-dev"
+  cidr = "10.1.0.0/16"
+
+  azs              = ["eu-west-1a","eu-west-1b"]
+  private_subnets  = ["10.1.4.0/24", "10.1.5.0/24"]
+  public_subnets   = ["10.1.1.0/24", "10.1.2.0/24"]
+  database_subnets = ["10.1.7.0/24", "10.1.8.0/24"]
+
+  enable_dns_hostnames = true
+  enable_dns_support   = true
+  enable_dhcp_options  = true
+
+  enable_nat_gateway     = true
+  one_nat_gateway_per_az = false
+  single_nat_gateway     = true
+}
+
+module "alb" {
+  source      = "git@github.com:in4it/terraform-modules.git//modules/alb"
+  vpc_id      = module.vpc.vpc_id
+  lb_name     = "myclient-dev"
+  vpc_subnets = module.vpc.public_subnets
+  domain      = "example.com"
+  internal    = false
+
+  tls = true
+
+  tls_policy = "ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
+  access_logs = {
+    enabled = "true"
+  }
+}
+
+module "vpn" {
+  source         = "git@github.com:in4it/terraform-modules.git//modules/openvpn"
+  env            = "dev"
+  domain         = "example.com"
+  project_name   = "my_client"
+
+  vpc_id          = module.vpc.vpc_id
+  public_subnets  = module.vpc.public_subnets
+  private_subnets = module.vpc.private_subnets
+
+  hosted_zone_id = data.terraform_remote_state.dns.outputs.primary-hosted-zone
+
+  alb_arn                = module.alb.lb-arn
+  alb_dns_name           = module.alb.dns_name
+  alb_dns_zone_id        = module.alb.zone_id
+  alb_https_listener_arn = module.alb.https-listener-arn
+  alb_security_group_id  = module.alb.security-group-id
+
+  cert_req_city                 = "London"
+  cert_req_country              = "EN"
+  cert_req_email                = "admin@my_client.com"
+  cert_req_province             = "London"
+  certificate_organization_name = "my_client"
+  organization_name             = "my_client"
+
+  csrf_key_parameter_arn             = "arn:aws:ssm:eu-west-1:0123456789:parameter/my_client-dev/vpn/CSRF_KEY"
+  onelogin_client_domain             = "my_client"
+  onelogin_client_id                 = var.onelogin_client_id
+  onelogin_client_secret             = var.onelogin_client_secret
+  open_vpn_client_file_base64        = base64encode(data.template_file.openvpn-client.rendered)
+  ouath2_client_id_parameter_arn     = "arn:aws:ssm:eu-west-1:0123456789:parameter/my_client-dev/vpn/OAUTH2_CLIENT_ID"
+  ouath2_client_secret_parameter_arn = "arn:aws:ssm:eu-west-1:0123456789:parameter/my_client-dev/vpn/OAUTH2_CLIENT_SECRET"
+  oauth2_url                         = "https://my_client.onelogin.com/oidc/2"
+
+  openvpn_public_ecr        = "public.ecr.aws/y9x3p3i6/openvpn"
+  openvpn_access_public_ecr = "public.ecr.aws/y9x3p3i6/openvpn-access"
+}
+```

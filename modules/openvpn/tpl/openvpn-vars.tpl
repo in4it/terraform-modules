@@ -1,0 +1,9 @@
+set_var EASYRSA_REQ_CN          "${domain}"
+set_var EASYRSA_REQ_COUNTRY     "${req_country}"
+set_var EASYRSA_REQ_PROVINCE    "${req_province}"
+set_var EASYRSA_REQ_CITY        "${req_city}"
+set_var EASYRSA_REQ_ORG         "${req_org}"
+set_var EASYRSA_REQ_EMAIL       "${req_email}"
+set_var EASYRSA_REQ_OU          "INFRA"
+set_var EASYRSA_KEY_SIZE        2048
+set_var EASYRSA_BATCH           "yes"
