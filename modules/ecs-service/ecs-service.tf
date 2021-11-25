@@ -127,7 +127,11 @@ resource "aws_ecs_service" "ecs-service" {
     }
   }
 
+
   depends_on = [null_resource.alb_exists]
+  lifecycle {
+    ignore_changes = [task_definition, load_balancer]
+  }
 }
 
 
