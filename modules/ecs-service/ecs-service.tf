@@ -35,6 +35,7 @@ locals {
       ecr_url             = aws_ecr_repository.ecs-service.0.repository_url
       cpu_reservation     = var.cpu_reservation
       memory_reservation  = var.memory_reservation
+      command             = var.command
       links               = []
       dependsOn           = []
       mountpoints         = var.mountpoints
