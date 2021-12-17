@@ -8,6 +8,10 @@ variable "launch_type" {
   default = "EC2"
 }
 
+variable "ecr_prefix" {
+  default = ""
+}
+
 variable "application_name" {
 }
 

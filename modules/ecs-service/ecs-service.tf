@@ -5,7 +5,8 @@
 resource "aws_ecr_repository" "ecs-service" {
   count = length(var.containers) == 0 ? 1 : 0
 
-  name = var.application_name
+  name = var.ecr_prefix == "" ? var.application_name : "${var.ecr_prefix}/{var.application_name}"
+
   image_scanning_configuration {
     scan_on_push = true
   }
