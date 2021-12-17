@@ -74,3 +74,7 @@ variable "deletion_protection" {
   description = "Enable Deletion Protection"
   default     = false
 }
+variable "set_password" {
+  description = "if true, set a random password"
+  default     = true
+}
