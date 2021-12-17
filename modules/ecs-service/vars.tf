@@ -15,6 +15,10 @@ variable "application_port" {
   default = 80
 }
 
+variable "protocol" {
+  default = "HTTP"
+}
+
 variable "application_version" {
   default = ""
 }
@@ -65,6 +69,10 @@ variable "cpu_reservation" {
 }
 
 variable "memory_reservation" {
+}
+
+variable "command" {
+  default = []
 }
 
 variable "log_group" {
@@ -171,6 +179,7 @@ variable "containers" {
     ecr_url             = string
     cpu_reservation     = number
     memory_reservation  = number
+    command             = list(string)
     links               = list(string)
     dependsOn = list(object({
       containerName = string
