@@ -5,7 +5,8 @@
 resource "aws_ecr_repository" "ecs-service" {
   count = length(var.containers) == 0 ? 1 : 0
 
-  name = var.application_name
+  name = var.ecr_prefix == "" ? var.application_name : "${var.ecr_prefix}/{var.application_name}"
+
   image_scanning_configuration {
     scan_on_push = true
   }
@@ -35,6 +36,7 @@ locals {
       ecr_url             = aws_ecr_repository.ecs-service.0.repository_url
       cpu_reservation     = var.cpu_reservation
       memory_reservation  = var.memory_reservation
+      command             = var.command
       links               = []
       dependsOn           = []
       mountpoints         = var.mountpoints
@@ -97,6 +99,7 @@ resource "aws_ecs_service" "ecs-service" {
   deployment_maximum_percent         = var.deployment_maximum_percent
   launch_type                        = var.launch_type
   platform_version                   = var.launch_type == "FARGATE" ? var.platform_version : null
+  enable_execute_command             = var.enable_execute_command
 
   load_balancer {
     target_group_arn = element([for ecs-service in aws_lb_target_group.ecs-service : ecs-service.arn], 0)

@@ -12,7 +12,7 @@ resource "aws_db_instance" "rds" {
   identifier             = var.name
   name                   = var.database_name
   username               = var.username
-  password               = random_string.password.result
+  password               = var.set_password ? random_string.password.result : null
   db_subnet_group_name   = var.subnet_group != "" ? var.subnet_group : aws_db_subnet_group.rds[0].name
   parameter_group_name   = aws_db_parameter_group.rds.name
   multi_az               = var.multi_az

@@ -46,3 +46,6 @@ variable "ssh_sg" {
   default = ""
 }
 
+variable "log_retention_days" {
+  default = 0
+}

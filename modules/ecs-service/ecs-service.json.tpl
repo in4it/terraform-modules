@@ -5,6 +5,9 @@
       "image": "${container.ecr_url}:${container.application_version}",
       "cpu": ${container.cpu_reservation},
       "memoryreservation": ${container.memory_reservation},
+      %{if container.command != null}
+        "command": ${jsonencode([for command in container.command : command])},
+      %{endif}
       "essential": true,
       "portmappings" : [
         {
