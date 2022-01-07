@@ -234,3 +234,7 @@ variable "environment_files" {
   }))
   default = []
 }
+variable "enable_execute_command" {
+  type    = bool
+  default = false
+}
