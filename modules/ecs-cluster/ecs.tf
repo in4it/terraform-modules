@@ -26,12 +26,6 @@ resource "aws_ecs_cluster" "cluster" {
   name = var.cluster_name
 }
 
-resource "aws_cloudwatch_log_group" "execute_command_logs" {
-  count = var.enable_execute_command ? 1 : 0
-
-  name = "ecs-${var.cluster_name}-execute-commands-log"
-}
-
 data "template_file" "ecs_init" {
   template = file("${path.module}/templates/ecs_init.tpl")
   vars = {
