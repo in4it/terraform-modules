@@ -23,7 +23,7 @@ resource "aws_ssm_parameter" "ONELOGIN-CLIENT-SECRET" {
 resource "aws_ssm_parameter" "OAUTH2_REDIRECT_URL" {
   name  = "/${var.project_name}-${var.env}/vpn/OAUTH2_REDIRECT_URL"
   type  = "String"
-  value = "https://${var.app_subdomain}.${var.domain}/callback"
+  value = "https://${var.app_domain}/callback"
 }
 resource "aws_ssm_parameter" "OAUTH2_URL" {
   name   = "/${var.project_name}-${var.env}/vpn/OAUTH2_URL"
