@@ -129,3 +129,8 @@ variable "openvpn_public_ecr" {
 variable "openvpn_access_public_ecr" {
   type = string
 }
+
+variable "create_r53_records" {
+  default = false
+  type    = bool
+}

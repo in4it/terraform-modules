@@ -9,6 +9,8 @@ module "alb-rule-openvpn-access" {
 }
 
 resource "aws_route53_record" "vpn-app-alb-record" {
+  count = var.create_r53_records ? 1 : 0
+
   allow_overwrite = true
   name            = "${var.app_subdomain}.${var.domain}"
   type            = "A"
@@ -23,6 +25,8 @@ resource "aws_route53_record" "vpn-app-alb-record" {
 
 
 resource "aws_route53_record" "vpn-alb-record" {
+  count = var.create_r53_records ? 1 : 0
+
   allow_overwrite = true
   name            = "${var.vpn_subdomain}.${var.domain}"
   type            = "A"
