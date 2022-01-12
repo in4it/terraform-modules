@@ -61,7 +61,7 @@ Restart=always
 Environment="NAME=openvpn"
 Environment="DATA_VOL=/etc/openvpn"
 Environment="IMG=${openvpn_public_ecr}"
-Environment="PORT=1194:1194/udp"
+Environment="PORT=443:1194/udp"
 # To override environment variables, use local configuration directory:
 # /etc/systemd/system/docker-openvpn@foo.d/local.conf
 # http://www.freedesktop.org/software/systemd/man/systemd.unit.html
@@ -85,9 +85,9 @@ if [ ! -e /etc/openvpn/openvpn.conf ]; then
    echo "#Auth Plugin" >> /etc/openvpn/openvpn.conf
    echo "auth-user-pass-verify /bin/openvpn-onelogin-auth via-env" >> /etc/openvpn/openvpn.conf
    echo "script-security 3" >> /etc/openvpn/openvpn.conf
-   docker run --log-driver=awslogs --log-opt awslogs-region=${aws_region} --log-opt awslogs-group=${log_group} -v /etc/openvpn:/etc/openvpn --restart=always -d -p 1194:1194/udp --cap-add=NET_ADMIN --name openvpn ${openvpn_public_ecr}
+   docker run --log-driver=awslogs --log-opt awslogs-region=${aws_region} --log-opt awslogs-group=${log_group} -v /etc/openvpn:/etc/openvpn --restart=always -d -p 443:1194/udp --cap-add=NET_ADMIN --name openvpn ${openvpn_public_ecr}
    aws s3 sync /etc/openvpn s3://${project_name}-configuration-${env}/openvpn --endpoint https://s3.${aws_region}.amazonaws.com --region ${aws_region}
 else
    echo "Config files found, starting OpenVPN..."
-   docker run --log-driver=awslogs --log-opt awslogs-region=${aws_region} --log-opt awslogs-group=${log_group} -v /etc/openvpn:/etc/openvpn -d -p 1194:1194/udp --cap-add=NET_ADMIN --name openvpn ${openvpn_public_ecr}
+   docker run --log-driver=awslogs --log-opt awslogs-region=${aws_region} --log-opt awslogs-group=${log_group} -v /etc/openvpn:/etc/openvpn -d -p 443:1194/udp --cap-add=NET_ADMIN --name openvpn ${openvpn_public_ecr}
 fi
