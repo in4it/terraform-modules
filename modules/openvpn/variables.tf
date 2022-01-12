@@ -83,10 +83,12 @@ variable "alb_https_listener_arn" {
   type = string
 }
 variable "alb_dns_name" {
-  type = string
+  default = ""
+  type    = string
 }
 variable "alb_dns_zone_id" {
-  type = string
+  default = ""
+  type    = string
 }
 variable "alb_route_priority" {
   default = 10
@@ -95,6 +97,7 @@ variable "alb_route_priority" {
 #DNS
 variable "hosted_zone_id" {
   type        = string
+  default     = ""
   description = "The module will create records for both the OpenVPN instance and for the ALB for OpenVPN access"
 }
 
