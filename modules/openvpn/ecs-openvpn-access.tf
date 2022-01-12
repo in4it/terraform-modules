@@ -28,13 +28,15 @@ module "openvpn-access" {
       ecr_url             = var.openvpn_access_public_ecr
       application_name    = "openvpn-access"
       application_port    = "8080"
+      host_port           = null
+      additional_ports    = []
       application_version = "latest"
       cpu_reservation     = "256"
       memory_reservation  = "512"
       links               = []
       dependsOn           = []
       mountpoints         = []
-
+      command             = []
       environments = [
         {
           name  = "STORAGE_TYPE"
