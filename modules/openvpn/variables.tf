@@ -6,16 +6,11 @@ variable "env" {
 }
 
 #Domains
-variable "domain" {
+variable "vpn_domain" {
   type = string
 }
-variable "vpn_subdomain" {
-  default = "vpn"
-  type    = string
-}
-variable "app_subdomain" {
-  default = "vpn-app"
-  type    = string
+variable "app_domain" {
+  type = string
 }
 
 #CA
