@@ -19,6 +19,7 @@ module "openvpn-access" {
   deployment_controller     = "ECS"
   enable_blue_green         = false
 
+  application_name       = "openvpn-access"
   exposed_container_name = "openvpn-access"
   exposed_container_port = 8080
 
