@@ -68,7 +68,13 @@ resource "aws_security_group" "vpn-instance" {
 
   ingress {
     from_port   = 443
-    protocol    = "0"
+    protocol    = "udp"
+    to_port     = 443
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port   = 443
+    protocol    = "tcp"
     to_port     = 443
     cidr_blocks = ["0.0.0.0/0"]
   }
