@@ -132,3 +132,11 @@ variable "create_r53_records" {
   default = false
   type    = bool
 }
+
+#VPN
+variable "vpn_port" {
+  default = 1194
+}
+variable "vpn_protocol" {
+  default = "tcp"
+}

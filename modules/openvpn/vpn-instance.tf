@@ -45,6 +45,8 @@ data "template_file" "userdata" {
     domain             = var.vpn_domain
     project_name       = var.project_name
     openvpn_public_ecr = var.openvpn_public_ecr
+    vpn_port           = var.vpn_port
+    vpn_protocol       = var.vpn_protocol
   }
 }
 
@@ -67,15 +69,9 @@ resource "aws_security_group" "vpn-instance" {
   vpc_id = var.vpc_id
 
   ingress {
-    from_port   = 443
-    protocol    = "udp"
-    to_port     = 443
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  ingress {
-    from_port   = 443
-    protocol    = "tcp"
-    to_port     = 443
+    from_port   = var.vpn_port
+    protocol    = var.vpn_protocol
+    to_port     = var.vpn_port
     cidr_blocks = ["0.0.0.0/0"]
   }
   egress {

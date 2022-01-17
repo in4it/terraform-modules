@@ -6,7 +6,7 @@ remote-cert-tls server
 route-nopull
 route ${first_ip} ${mask}
 
-remote ${domain} 443 udp
+remote ${domain} ${vpn_port} ${vpn_protocol}
 
 auth-user-pass
 
