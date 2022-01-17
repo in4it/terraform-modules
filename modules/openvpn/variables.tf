@@ -138,5 +138,5 @@ variable "vpn_port" {
   default = 1194
 }
 variable "vpn_protocol" {
-  default = "tcp"
+  default = "udp"
 }
