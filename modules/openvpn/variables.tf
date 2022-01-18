@@ -134,9 +134,9 @@ variable "create_r53_records" {
 }
 
 #VPN
-variable "vpn_port" {
-  default = 1194
-}
-variable "vpn_protocol" {
-  default = "udp"
+variable "listeners" {
+  type = list(object({
+    port     = string
+    protocol = string
+  }))
 }
