@@ -19,6 +19,7 @@ module "openvpn-access" {
   deployment_controller     = "ECS"
   enable_blue_green         = false
 
+  application_name       = "openvpn-access"
   exposed_container_name = "openvpn-access"
   exposed_container_port = 8080
 
@@ -27,13 +28,15 @@ module "openvpn-access" {
       ecr_url             = var.openvpn_access_public_ecr
       application_name    = "openvpn-access"
       application_port    = "8080"
+      host_port           = null
+      additional_ports    = []
       application_version = "latest"
       cpu_reservation     = "256"
       memory_reservation  = "512"
       links               = []
       dependsOn           = []
       mountpoints         = []
-
+      command             = []
       environments = [
         {
           name  = "STORAGE_TYPE"

@@ -16,62 +16,6 @@ aws s3 cp s3://${project_name}-configuration-${env}/openvpnconfig/onelogin.conf 
 chown nobody:nogroup /etc/openvpn/onelogin.conf
 chmod 600 /etc/openvpn/onelogin.conf
 
-#Add systemd special script for docker
-echo `#
-# Docker + OpenVPN systemd service
-#
-# Author: Kyle Manna <kyle@kylemanna.com>
-# Source: https://github.com/kylemanna/docker-openvpn
-#
-# This service aims to make the update and invocation of the docker-openvpn
-# container seamless.  It automatically downloads the latest docker-openvpn
-# image and instantiates a Docker container with that image.  At shutdown it
-# cleans-up the old container.
-#
-# In the event the service dies (crashes, or is killed) systemd will attempt
-# to restart the service every 10 seconds until the service is stopped with
-# `systemctl stop docker-openvpn@NAME`.
-#
-# A number of IPv6 hacks are incorporated to workaround Docker shortcomings and
-# are harmless for those not using IPv6.
-#
-# To use:
-# 1. Create a Docker volume container named `ovpn-data-NAME` where NAME is the
-#    user's choice to describe the use of the container.
-# 2. Initialize the data container according to the docker-openvpn README, but
-#    don't start the container. Stop the docker container if started.
-# 3. Download this service file to /etc/systemd/service/docker-openvpn@.service
-# 4. Enable and start the service template with:
-#    `systemctl enable --now docker-openvpn@NAME.service`
-# 5. Verify service start-up with:
-#    `systemctl status docker-openvpn@NAME.service`
-#    `journalctl --unit docker-openvpn@NAME.service`
-#
-# For more information, see the systemd manual pages.
-#
-[Unit]
-Description=OpenVPN Docker Container
-Documentation=https://github.com/kylemanna/docker-openvpn
-After=network.target docker.service
-Requires=docker.service
-[Service]
-RestartSec=10
-Restart=always
-# Modify IP6_PREFIX to match network config
-Environment="NAME=openvpn"
-Environment="DATA_VOL=/etc/openvpn"
-Environment="IMG=${openvpn_public_ecr}"
-Environment="PORT=1194:1194/udp"
-# To override environment variables, use local configuration directory:
-# /etc/systemd/system/docker-openvpn@foo.d/local.conf
-# http://www.freedesktop.org/software/systemd/man/systemd.unit.html
-# Clean-up bad state if still hanging around
-ExecStartPre=-/usr/bin/docker rm -f $$NAME
-# Main process
-ExecStart=/usr/bin/docker run --rm -v $${DATA_VOL}:$${DATA_VOL} -p $${PORT} --cap-add=NET_ADMIN --name $${NAME} $${IMG}
-[Install]
-WantedBy=multi-user.target` > /etc/systemd/system/docker-openvpn@.service
-
 # Run container
 systemctl start docker
 systemctl enable docker
@@ -85,9 +29,13 @@ if [ ! -e /etc/openvpn/openvpn.conf ]; then
    echo "#Auth Plugin" >> /etc/openvpn/openvpn.conf
    echo "auth-user-pass-verify /bin/openvpn-onelogin-auth via-env" >> /etc/openvpn/openvpn.conf
    echo "script-security 3" >> /etc/openvpn/openvpn.conf
-   docker run --log-driver=awslogs --log-opt awslogs-region=${aws_region} --log-opt awslogs-group=${log_group} -v /etc/openvpn:/etc/openvpn --restart=always -d -p 1194:1194/udp --cap-add=NET_ADMIN --name openvpn ${openvpn_public_ecr}
+   %{ for listener in listeners ~}
+       docker run --log-driver=awslogs --log-opt awslogs-region=${aws_region} --log-opt awslogs-group=${log_group} -v /etc/openvpn:/etc/openvpn --restart=always -d -p ${listener.port}:1194/${listener.protocol} --cap-add=NET_ADMIN --name openvpn-${listener.port}-${listener.protocol} ${openvpn_public_ecr}
+   %{ endfor ~}
    aws s3 sync /etc/openvpn s3://${project_name}-configuration-${env}/openvpn --endpoint https://s3.${aws_region}.amazonaws.com --region ${aws_region}
 else
    echo "Config files found, starting OpenVPN..."
-   docker run --log-driver=awslogs --log-opt awslogs-region=${aws_region} --log-opt awslogs-group=${log_group} -v /etc/openvpn:/etc/openvpn -d -p 1194:1194/udp --cap-add=NET_ADMIN --name openvpn ${openvpn_public_ecr}
+   %{ for listener in listeners ~}
+       docker run --log-driver=awslogs --log-opt awslogs-region=${aws_region} --log-opt awslogs-group=${log_group} -v /etc/openvpn:/etc/openvpn -d -p ${listener.port}:1194/${listener.protocol} --cap-add=NET_ADMIN --name openvpn-${listener.port}-${listener.protocol} ${openvpn_public_ecr}
+   %{ endfor ~}
 fi

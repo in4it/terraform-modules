@@ -6,16 +6,11 @@ variable "env" {
 }
 
 #Domains
-variable "domain" {
+variable "vpn_domain" {
   type = string
 }
-variable "vpn_subdomain" {
-  default = "vpn"
-  type    = string
-}
-variable "app_subdomain" {
-  default = "vpn-app"
-  type    = string
+variable "app_domain" {
+  type = string
 }
 
 #CA
@@ -83,10 +78,12 @@ variable "alb_https_listener_arn" {
   type = string
 }
 variable "alb_dns_name" {
-  type = string
+  default = ""
+  type    = string
 }
 variable "alb_dns_zone_id" {
-  type = string
+  default = ""
+  type    = string
 }
 variable "alb_route_priority" {
   default = 10
@@ -95,6 +92,7 @@ variable "alb_route_priority" {
 #DNS
 variable "hosted_zone_id" {
   type        = string
+  default     = ""
   description = "The module will create records for both the OpenVPN instance and for the ALB for OpenVPN access"
 }
 
@@ -128,4 +126,17 @@ variable "openvpn_public_ecr" {
 }
 variable "openvpn_access_public_ecr" {
   type = string
+}
+
+variable "create_r53_records" {
+  default = false
+  type    = bool
+}
+
+#VPN
+variable "listeners" {
+  type = list(object({
+    port     = string
+    protocol = string
+  }))
 }

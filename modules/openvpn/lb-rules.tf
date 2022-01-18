@@ -5,12 +5,14 @@ module "alb-rule-openvpn-access" {
   priority         = var.alb_route_priority
   target_group_arn = module.openvpn-access.target_group_arn
   condition_field  = "host-header"
-  condition_values = ["${var.app_subdomain}.${var.domain}"]
+  condition_values = [var.app_domain]
 }
 
 resource "aws_route53_record" "vpn-app-alb-record" {
+  count = var.create_r53_records ? 1 : 0
+
   allow_overwrite = true
-  name            = "${var.app_subdomain}.${var.domain}"
+  name            = var.app_domain
   type            = "A"
 
   alias {
@@ -23,8 +25,10 @@ resource "aws_route53_record" "vpn-app-alb-record" {
 
 
 resource "aws_route53_record" "vpn-alb-record" {
+  count = var.create_r53_records ? 1 : 0
+
   allow_overwrite = true
-  name            = "${var.vpn_subdomain}.${var.domain}"
+  name            = var.vpn_domain
   type            = "A"
   records         = [aws_eip.vpn_ip.public_ip]
   ttl             = 300
