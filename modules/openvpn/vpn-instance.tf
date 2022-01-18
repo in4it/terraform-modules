@@ -45,6 +45,7 @@ data "template_file" "userdata" {
     domain             = var.vpn_domain
     project_name       = var.project_name
     openvpn_public_ecr = var.openvpn_public_ecr
+    listeners          = var.listeners
   }
 }
 
