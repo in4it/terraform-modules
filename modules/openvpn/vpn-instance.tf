@@ -14,7 +14,7 @@ resource "aws_instance" "openvpn" {
   vpc_security_group_ids = [aws_security_group.vpn-instance.id]
   iam_instance_profile   = aws_iam_instance_profile.vpn_iam_instance_profile.name
 
-  user_data_base64 = base64encode(templatefile(file("./tpl/vpn-userdata.tpl"), {
+  user_data_base64 = base64encode(templatefile("${path.module}/tpl/vpn-userdata.tpl", {
     log_group          = aws_cloudwatch_log_group.cloudwatch-ec2-openvpn.name
     aws_region         = data.aws_region.current.name
     env                = var.env
