@@ -3,7 +3,8 @@ resource "aws_ecs_cluster" "cluster" {
 }
 
 resource "aws_cloudwatch_log_group" "cluster" {
-  name = "${var.project_name}-vpn-${var.env}"
+  name              = "${var.project_name}-vpn-${var.env}"
+  retention_in_days = var.log_retention_days
 }
 
 resource "aws_iam_role" "ecs-task-execution-role" {

@@ -140,3 +140,7 @@ variable "listeners" {
     protocol = string
   }))
 }
+
+variable "log_retention_days" {
+  default = 0
+}

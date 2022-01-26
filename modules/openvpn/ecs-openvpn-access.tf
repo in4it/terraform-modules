@@ -101,5 +101,6 @@ module "openvpn-access" {
 }
 
 resource "aws_cloudwatch_log_group" "cloudwatch-ecs-openvpn-access" {
-  name = "ecs-${var.project_name}-openvpn-access-${var.env}"
+  name              = "ecs-${var.project_name}-openvpn-access-${var.env}"
+  retention_in_days = var.log_retention_days
 }
