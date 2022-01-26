@@ -45,7 +45,8 @@ resource "aws_eip" "vpn_ip" {
 }
 
 resource "aws_cloudwatch_log_group" "cloudwatch-ec2-openvpn" {
-  name = "ec2-${var.project_name}-openvpn-${var.env}"
+  name              = "ec2-${var.project_name}-openvpn-${var.env}"
+  retention_in_days = var.log_retention_days
 }
 
 data "aws_ami" "ubuntu" {
