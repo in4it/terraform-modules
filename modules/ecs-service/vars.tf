@@ -192,7 +192,7 @@ variable "containers" {
     mountpoints = list(object({
       containerPath = string
       sourceVolume  = string
-      readOnly      = bool
+      readOnly      = string
     }))
     secrets = list(object({
       name      = string
