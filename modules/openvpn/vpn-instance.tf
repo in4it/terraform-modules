@@ -14,7 +14,16 @@ resource "aws_instance" "openvpn" {
   vpc_security_group_ids = [aws_security_group.vpn-instance.id]
   iam_instance_profile   = aws_iam_instance_profile.vpn_iam_instance_profile.name
 
-  user_data_base64 = base64encode(data.template_file.userdata.rendered)
+  user_data_base64 = base64encode(templatefile("${path.module}/tpl/vpn-userdata.tpl", {
+    log_group          = aws_cloudwatch_log_group.cloudwatch-ec2-openvpn.name
+    aws_region         = data.aws_region.current.name
+    env                = var.env
+    account            = data.aws_caller_identity.current.account_id
+    domain             = var.vpn_domain
+    project_name       = var.project_name
+    openvpn_public_ecr = var.openvpn_public_ecr
+    listeners          = var.listeners
+  }))
 
   root_block_device {
     encrypted = true
@@ -35,21 +44,9 @@ resource "aws_eip" "vpn_ip" {
   }
 }
 
-data "template_file" "userdata" {
-  template = file("${path.module}/tpl/vpn-userdata.tpl")
-  vars = {
-    log_group          = aws_cloudwatch_log_group.cloudwatch-ec2-openvpn.name
-    aws_region         = data.aws_region.current.name
-    env                = var.env
-    account            = data.aws_caller_identity.current.account_id
-    domain             = "${var.vpn_subdomain}.${var.domain}"
-    project_name       = var.project_name
-    openvpn_public_ecr = var.openvpn_public_ecr
-  }
-}
-
 resource "aws_cloudwatch_log_group" "cloudwatch-ec2-openvpn" {
-  name = "ec2-${var.project_name}-openvpn-${var.env}"
+  name              = "ec2-${var.project_name}-openvpn-${var.env}"
+  retention_in_days = var.log_retention_days
 }
 
 data "aws_ami" "ubuntu" {
@@ -66,11 +63,14 @@ resource "aws_security_group" "vpn-instance" {
   name   = "${var.project_name}-openvpn-sg-${var.env}"
   vpc_id = var.vpc_id
 
-  ingress {
-    from_port   = 1194
-    protocol    = "udp"
-    to_port     = 1194
-    cidr_blocks = ["0.0.0.0/0"]
+  dynamic "ingress" {
+    for_each = var.listeners
+    content {
+      from_port   = ingress.value.port
+      protocol    = ingress.value.protocol
+      to_port     = ingress.value.port
+      cidr_blocks = ["0.0.0.0/0"]
+    }
   }
   egress {
     from_port   = 0
