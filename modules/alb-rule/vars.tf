@@ -8,10 +8,12 @@ variable "target_group_arn" {
 }
 
 variable "condition_field" {
+  default = ""
 }
 
 variable "condition_values" {
-  type = list(string)
+  default = []
+  type    = list(string)
 }
 
 variable "conditions" {
