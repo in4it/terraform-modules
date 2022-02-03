@@ -29,7 +29,7 @@ if [ ! -e /etc/openvpn/openvpn.conf ]; then
    echo "#Auth Plugin" >> /etc/openvpn/openvpn.conf
    echo "auth-user-pass-verify /bin/openvpn-onelogin-auth via-env" >> /etc/openvpn/openvpn.conf
    echo "script-security 3" >> /etc/openvpn/openvpn.conf
-   echo "reneg-sec 0" >> /etc/openvpn/openvpn.conf
+   echo "reneg-sec 28800" >> /etc/openvpn/openvpn.conf
    %{ for listener in listeners ~}
        docker run --log-driver=awslogs --log-opt awslogs-region=${aws_region} --log-opt awslogs-group=${log_group} -v /etc/openvpn:/etc/openvpn --restart=always -d -p ${listener.port}:1194/${listener.protocol} --cap-add=NET_ADMIN --name openvpn-${listener.port}-${listener.protocol} ${openvpn_public_ecr}
    %{ endfor ~}
