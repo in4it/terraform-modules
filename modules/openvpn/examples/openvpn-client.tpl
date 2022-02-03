@@ -9,6 +9,7 @@ route ${first_ip} ${mask}
 remote ${domain} ${vpn_port} ${vpn_protocol}
 
 auth-user-pass
+reneg-sec 0
 
 <key>
 [KEY]
