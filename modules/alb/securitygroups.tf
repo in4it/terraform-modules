@@ -14,6 +14,17 @@ resource "aws_security_group" "lb" {
     }
   }
 
+  dynamic "ingress" {
+    for_each = var.allow_additional_sg
+    content {
+      from_port         = ingress.value.from_port
+      to_port           = ingress.value.to_port
+      security_groups   = ingress.value.security_groups
+      protocol          = ingress.value.protocol
+      description       = ingress.key
+    }
+  }
+
   egress {
     from_port   = 0
     to_port     = 0

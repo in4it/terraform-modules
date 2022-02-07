@@ -46,3 +46,13 @@ variable "tcp_ingress" {
     "443" = [ "0.0.0.0/0" ]
   }
 }
+
+variable "allow_additional_sg" {
+  type = map(object({
+    security_groups = list(string)
+    from_port       = string
+    to_port         = string
+    protocol        = string
+  }))
+  default = {}
+}
