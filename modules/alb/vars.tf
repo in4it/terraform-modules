@@ -38,3 +38,11 @@ variable "access_logs" {
   type        = map(string)
   default     = {}
 }
+
+variable "tcp_ingress" {
+  type = map(list(string))
+  default = {
+    "80" = [ "0.0.0.0/0" ]
+    "443" = [ "0.0.0.0/0" ]
+  }
+}

@@ -58,7 +58,7 @@ module "my-service" {
 module "my-alb" {
   source             = "github.com/in4it/terraform-modules/modules/alb"
   vpc_id             = "vpc-id"
-  alb_name           = "my-alb"
+  lb_name            = "my-alb"
   vpc_subnets        = "subnetId-1,subnetId-2"
   default_target_arn = "${module.my-service.target_group_arn}"
   domain             = "*.my-ecs.com"
