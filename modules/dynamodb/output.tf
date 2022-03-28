@@ -1,3 +1,5 @@
+// based original code https://github.com/terraform-aws-modules/terraform-aws-dynamodb-table/tree/v1.2.2 and https://github.com/snowplow-devops/terraform-aws-dynamodb-autoscaling/tree/release/0.1.2
+
 output "dynamodb_table_arn" {
   description = "ARN DynamoDB table"
   value       = try(aws_dynamodb_table.table[0].arn, aws_dynamodb_table.table_autoscaled[0].arn, "")

@@ -1,3 +1,4 @@
+// Based original code https://github.com/terraform-aws-modules/terraform-aws-dynamodb-table/tree/v1.2.2
 resource "aws_appautoscaling_target" "read_target" {
   count = var.create_table && var.autoscaling_enabled ? 1 : 0
   max_capacity       = var.as_read_max_capacity

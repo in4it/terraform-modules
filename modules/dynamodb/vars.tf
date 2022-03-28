@@ -1,3 +1,5 @@
+// based original code https://github.com/terraform-aws-modules/terraform-aws-dynamodb-table/tree/v1.2.2 and https://github.com/snowplow-devops/terraform-aws-dynamodb-autoscaling/tree/release/0.1.2
+
 variable "create_table" {
   description = "Controls if DynamoDB table and associated resources are created"
   type        = bool

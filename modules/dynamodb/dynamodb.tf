@@ -1,3 +1,5 @@
+// Based original code https://github.com/terraform-aws-modules/terraform-aws-dynamodb-table/tree/v1.2.2
+
 resource "aws_dynamodb_table" "table" {
   count = var.create_table && !var.autoscaling_enabled ? 1 : 0
 
