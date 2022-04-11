@@ -2,6 +2,9 @@ locals {
   single_target_group = toset([
     var.application_name
   ])
+  internal_lb_target_group = toset([
+    "${var.application_name}-internal"
+  ])
   blue_green_target_group = toset([
     "${var.application_name}-blue",
     "${var.application_name}-green"
@@ -13,7 +16,7 @@ locals {
 #
 
 resource "aws_lb_target_group" "ecs-service" {
-  for_each             = var.enable_blue_green ? local.blue_green_target_group : local.single_target_group
+  for_each             = var.enable_blue_green ? local.blue_green_target_group : var.enable_internal_lb ? setunion(local.single_target_group, local.internal_lb_target_group) : local.single_target_group
   name                 = each.value
   port                 = var.application_port
   protocol             = var.protocol

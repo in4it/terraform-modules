@@ -133,6 +133,10 @@ variable "enable_blue_green" {
   default = false
 }
 
+variable "enable_internal_lb" {
+  default = false
+}
+
 variable "deployment_controller" {
   default = ""
 }
