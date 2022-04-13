@@ -43,6 +43,7 @@ locals {
       secrets             = var.secrets
       environments        = var.environments
       environment_files   = var.environment_files
+      docker_labels       = {}
     }]
   }
 }
