@@ -58,7 +58,7 @@ module "my-service" {
 module "my-alb" {
   source             = "github.com/in4it/terraform-modules/modules/alb"
   vpc_id             = "vpc-id"
-  alb_name           = "my-alb"
+  lb_name            = "my-alb"
   vpc_subnets        = "subnetId-1,subnetId-2"
   default_target_arn = "${module.my-service.target_group_arn}"
   domain             = "*.my-ecs.com"
@@ -106,6 +106,71 @@ module "my-kinesis" {
   vpcs_restriction_list = [my-vpcs]
   s3_deletion_protection =  true
   s3_vpc_restriction_exception_roles = [my-exception-roles]
+}
+
+```
+## Dynamodb
+```
+module "dynamodb_table" {
+  source                 = "my-dynamodb"
+  table_name             = "example-table"
+  hash_key               = "id"
+  autoscaling_enabled    = "false"
+  stream_enabled         = "false"
+  range_key              = "S"
+  billing_mode           = "PROVISIONED"
+  read_capacity          = "1"
+  write_capacity         = "1"
+  point_in_time_recovery = "false"
+  ttl_enabled            = "false"
+  ttl_attribute_name     = "ttl"
+  global_secondary_indexes {
+    name      = "index_name"
+    hash_key  = "S"
+    range_key = "S"
+  }
+  local_secondary_indexes {
+    name      = "index_name"
+    hash_key  = "S"
+    range_key = "S"
+  }
+  replica_regions {
+    region_name = "us-east-1"
+  }
+
+  attributes = [
+    {
+      name = "id"
+      type = "N"
+    }
+  ]
+  server_side_encryption             = "false"
+  server_side_encryption_kms_key_arn = "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+
+  timeouts {
+    create = "10m"
+    update = "10m"
+    delete = "10m"
+  }
+
+  # Only enable with autoscaling_enabled = "true"
+
+  autoscaling_indexes {
+    index_name                          = "index_name"
+    read_capacity_auto_scaling_trigger  = "1"
+    write_capacity_auto_scaling_trigger = "1"
+  }
+
+  as_read_min_capacity        = "1"
+  as_write_min_capacity       = "1"
+  as_read_max_capacity        = "50"
+  as_write_max_capacity       = "50"
+  as_read_target_value        = "80"
+  as_read_scale_in_cooldown   = "300"
+  as_read_scale_out_cooldown  = "30"
+  as_write_target_value       = "80"
+  as_write_scale_in_cooldown  = "300"
+  as_write_scale_out_cooldown = "30"
 }
 ```
 

@@ -3,18 +3,26 @@ resource "aws_security_group" "lb" {
   vpc_id      = var.vpc_id
   description = var.lb_name
 
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+
+  dynamic "ingress" {
+    for_each = var.tcp_ingress
+    content {
+      from_port   = ingress.key
+      to_port     = ingress.key
+      cidr_blocks = ingress.value
+      protocol    = "tcp"
+    }
   }
 
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+  dynamic "ingress" {
+    for_each = var.allow_additional_sg
+    content {
+      from_port         = ingress.value.from_port
+      to_port           = ingress.value.to_port
+      security_groups   = ingress.value.security_groups
+      protocol          = ingress.value.protocol
+      description       = ingress.key
+    }
   }
 
   egress {
