@@ -186,6 +186,7 @@ variable "containers" {
     memory_reservation  = number
     command             = list(string)
     links               = list(string)
+    docker_labels       = map(string)
     dependsOn = list(object({
       containerName = string
       condition     = string
