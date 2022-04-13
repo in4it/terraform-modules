@@ -5,9 +5,7 @@
       "image": "${container.ecr_url}:${container.application_version}",
       "cpu": ${container.cpu_reservation},
       "memoryreservation": ${container.memory_reservation},
-      %{if container.docker_labels != null}
-        "dockerLabels": ${jsonencode(container.docker_labels)},
-      %{endif}
+      "dockerLabels": ${jsonencode(container.docker_labels)},
       %{if container.command != null}
         "command": ${jsonencode([for command in container.command : command])},
       %{endif}
