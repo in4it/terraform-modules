@@ -43,11 +43,11 @@ locals {
       environment_files   = var.environment_files
       docker_labels       = {}
       logconfiguration = {
-        logdriver : "awslogs",
-        options : {
-          awslogs-group : var.log_group
-          awslogs-region : var.aws_region
-          awslogs-stream-prefix : var.application_name
+        logdriver = "awslogs",
+        options = {
+          awslogs-group         = var.log_group
+          awslogs-region        = var.aws_region
+          awslogs-stream-prefix = var.application_name
         }
       }
     }]
