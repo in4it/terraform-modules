@@ -208,7 +208,7 @@ variable "containers" {
       value = string
       type  = string
     }))
-    logConfiguration = object({
+    logconfiguration = object({
       logdriver = string
       options = object({
         awslogs-group         = string
