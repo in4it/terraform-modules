@@ -209,7 +209,7 @@ variable "containers" {
     }))
     logconfiguration = object({
       logdriver = string
-      options   = map()
+      options   = map(string)
     })
   }))
 }
