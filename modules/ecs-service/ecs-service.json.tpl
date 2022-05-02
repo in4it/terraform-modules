@@ -40,7 +40,7 @@
       "links": ${jsonencode([for link in container.links : link])},
       "dependsOn": ${jsonencode([for dependsOn in container.dependsOn : dependsOn])},
       "logconfiguration": {
-        "logdriver": container.logconfiguration.logdriver,
+        "logdriver": ${container.logconfiguration.logdriver},
         "options": ${jsonencode(container.logconfiguration.options)}
       }
     }${key+1 == length(containers)? "" : ","}
