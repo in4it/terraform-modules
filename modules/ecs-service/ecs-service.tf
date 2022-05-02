@@ -25,8 +25,6 @@ data "aws_ecs_task_definition" "ecs-service" {
 
 locals {
   template-vars = {
-    aws_region = var.aws_region
-    log_group  = var.log_group
     containers = length(var.containers) > 0 ? var.containers : [{
       application_name    = var.application_name
       host_port           = var.launch_type == "FARGATE" ? var.application_port : 0
@@ -44,6 +42,14 @@ locals {
       environments        = var.environments
       environment_files   = var.environment_files
       docker_labels       = {}
+      logConfiguration = {
+        logdriver : "awslogs",
+        options : {
+          awslogs-group : var.log_group
+          awslogs-region : var.aws_region
+          awslogs-stream-prefix : var.application_name
+        }
+      }
     }]
   }
 }
