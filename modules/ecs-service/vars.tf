@@ -207,9 +207,10 @@ variable "containers" {
       value = string
       type  = string
     }))
-    logconfiguration = object({
-      logdriver = string
-      options   = map(string)
+    logConfiguration = object({
+      logDriver     = string
+      options       = map(any)
+      secretOptions = list(map(string))
     })
   }))
 }
