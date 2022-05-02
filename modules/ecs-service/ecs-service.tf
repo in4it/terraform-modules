@@ -51,6 +51,7 @@ locals {
         },
         secretOptions = []
       }
+      firelensConfiguration = null
     }]
   }
 }

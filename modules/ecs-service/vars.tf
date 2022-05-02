@@ -216,6 +216,10 @@ variable "containers" {
       }))
       logDriver = string
     })
+    firelensConfiguration = object({
+      options = map(string)
+      type    = string
+    })
   }))
 }
 
