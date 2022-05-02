@@ -58,6 +58,10 @@ locals {
 # task definition
 #
 
+output "rendered" {
+  value = templatefile("${path.module}/ecs-service.json.tpl", local.template-vars)
+}
+
 resource "aws_ecs_task_definition" "ecs-service-taskdef" {
   family                   = var.application_name
   container_definitions    = templatefile("${path.module}/ecs-service.json.tpl", local.template-vars)
