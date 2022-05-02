@@ -209,11 +209,7 @@ variable "containers" {
     }))
     logconfiguration = object({
       logdriver = string
-      options = object({
-        awslogs-group         = string
-        awslogs-region        = string
-        awslogs-stream-prefix = string
-      })
+      options   = map()
     })
   }))
 }
