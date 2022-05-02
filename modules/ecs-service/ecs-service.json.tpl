@@ -39,10 +39,10 @@
       "mountpoints": ${jsonencode([for mountpoint in container.mountpoints : mountpoint])},
       "links": ${jsonencode([for link in container.links : link])},
       "dependsOn": ${jsonencode([for dependsOn in container.dependsOn : dependsOn])},
-      "logConfiguration": ${jsonencode(container.logConfiguration)},
       %{if container.firelensConfiguration != null}
-        "firelensConfiguration": ${jsonencode(container.firelensConfiguration)}
+        "firelensConfiguration": ${jsonencode(container.firelensConfiguration)},
       %{endif}
+      "logConfiguration": ${jsonencode(container.logConfiguration)}
     }${key+1 == length(containers)? "" : ","}
   %{ endfor ~}
 ]
