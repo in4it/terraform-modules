@@ -39,7 +39,10 @@
       "mountpoints": ${jsonencode([for mountpoint in container.mountpoints : mountpoint])},
       "links": ${jsonencode([for link in container.links : link])},
       "dependsOn": ${jsonencode([for dependsOn in container.dependsOn : dependsOn])},
-      "logconfiguration": ${jsonencode(container.logconfiguration)}
+      "logconfiguration": {
+        "logdriver": container.logconfiguration.logdriver,
+        "options": ${jsonencode(container.logconfiguration.options)}
+      }
     }${key+1 == length(containers)? "" : ","}
   %{ endfor ~}
 ]
