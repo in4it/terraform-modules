@@ -10,22 +10,22 @@
         "command": ${jsonencode([for command in container.command : command])},
       %{endif}
       "essential": true,
-      "portmappings" : [
-        %{if container.application_port != null}
-        {
-          %{if container.host_port != null}
-            "hostport": ${container.host_port},
-          %{endif}
-          "containerport": ${container.application_port},
-        }
-        %{endif}
-        %{ for key, additional_port in container.additional_ports ~}
-        ,{
-          "hostport": ${additional_port},
-          "containerport": ${additional_port}
-        }
-        %{ endfor ~}
-      ],
+      %{if container.application_port != null}
+          "portmappings" : [
+            {
+              %{if container.host_port != null}
+                "hostport": ${container.host_port},
+              %{endif}
+              "containerport": ${container.application_port},
+            }
+            %{ for key, additional_port in container.additional_ports ~}
+            ,{
+              "hostport": ${additional_port},
+              "containerport": ${additional_port}
+            }
+            %{ endfor ~}
+          ],
+      %{endif}
       "secrets": ${jsonencode([for secret in container.secrets : secret])},
       "environment":${jsonencode([for environment in container.environments : environment])},
       "environmentFiles":[
