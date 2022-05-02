@@ -37,7 +37,7 @@
       "mountpoints": ${jsonencode([for mountpoint in container.mountpoints : mountpoint])},
       "links": ${jsonencode([for link in container.links : link])},
       "dependsOn": ${jsonencode([for dependsOn in container.dependsOn : dependsOn])},
-      "logconfiguration": ${jsonencode(container.logConfiguration)}
+      "logconfiguration": ${jsonencode(container.logconfiguration)}
     }${key+1 == length(containers)? "" : ","}
   %{ endfor ~}
 ]

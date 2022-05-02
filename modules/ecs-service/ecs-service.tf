@@ -42,7 +42,7 @@ locals {
       environments        = var.environments
       environment_files   = var.environment_files
       docker_labels       = {}
-      logConfiguration = {
+      logconfiguration = {
         logdriver : "awslogs",
         options : {
           awslogs-group : var.log_group
