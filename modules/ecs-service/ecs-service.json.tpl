@@ -15,7 +15,9 @@
           %{if container.host_port != null}
             "hostport": ${container.host_port},
           %{endif}
-          "containerport": ${container.application_port}
+          %{if container.application_port != null}
+            "containerport": ${container.application_port},
+          %{endif}
         }
         %{ for key, additional_port in container.additional_ports ~}
         ,{
