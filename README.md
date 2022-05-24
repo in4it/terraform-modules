@@ -115,25 +115,38 @@ module "dynamodb_table" {
   source                 = "my-dynamodb"
   table_name             = "example-table"
   hash_key               = "id"
+  range_key              = "idr"
   autoscaling_enabled    = "false"
   stream_enabled         = "false"
-  range_key              = "S"
   billing_mode           = "PROVISIONED"
-  read_capacity          = "1"
-  write_capacity         = "1"
   point_in_time_recovery = "false"
   ttl_enabled            = "false"
   ttl_attribute_name     = "ttl"
-  global_secondary_indexes {
+  server_side_encryption = "false"
+  server_side_encryption_kms_key_arn = "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+ 
+  global_secondary_indexes = [
+    {
     name      = "index_name"
     hash_key  = "S"
     range_key = "S"
-  }
-  local_secondary_indexes {
+    projection_type = "ALL"
+    read_capacity   = "1"
+    write_capacity  = "1"
+    }
+  ]
+  
+  local_secondary_indexes = [
+    {
     name      = "index_name"
     hash_key  = "S"
     range_key = "S"
+    projection_type = "ALL"
+    read_capacity   = "1"
+    write_capacity  = "1"
   }
+]
+
   replica_regions {
     region_name = "us-east-1"
   }
@@ -142,10 +155,13 @@ module "dynamodb_table" {
     {
       name = "id"
       type = "N"
+    },
+    {
+      name = "idr"
+      type = "N"
     }
   ]
-  server_side_encryption             = "false"
-  server_side_encryption_kms_key_arn = "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+  
 
   timeouts {
     create = "10m"
@@ -155,10 +171,13 @@ module "dynamodb_table" {
 
   # Only enable with autoscaling_enabled = "true"
 
-  autoscaling_indexes {
-    index_name                          = "index_name"
-    read_capacity_auto_scaling_trigger  = "1"
-    write_capacity_auto_scaling_trigger = "1"
+  autoscaling_indexes = {
+    index_name  = {
+      read_min_capacity  = 1
+      read_max_capacity  = 20
+      write_min_capacity = 1
+      write_max_capacity = 20
+    }
   }
 
   as_read_min_capacity        = "1"

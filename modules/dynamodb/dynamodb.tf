@@ -1,4 +1,4 @@
-// Based original code https://github.com/terraform-aws-modules/terraform-aws-dynamodb-table/tree/v1.2.2
+// based original code https://github.com/terraform-aws-modules/terraform-aws-dynamodb-table/tree/v1.2.2 and https://github.com/snowplow-devops/terraform-aws-dynamodb-autoscaling/tree/release/0.1.2
 
 resource "aws_dynamodb_table" "table" {
   count = var.create_table && !var.autoscaling_enabled ? 1 : 0
