@@ -117,6 +117,8 @@ module "dynamodb_table" {
   hash_key               = "id"
   range_key              = "idr"
   autoscaling_enabled    = "false"
+  read_capacity          = 1
+  write_capacity         = 1
   stream_enabled         = "false"
   billing_mode           = "PROVISIONED"
   point_in_time_recovery = "false"
@@ -177,6 +179,11 @@ module "dynamodb_table" {
       read_max_capacity  = 20
       write_min_capacity = 1
       write_max_capacity = 20
+      read_index_scale_in_cooldown = 200
+      read_index_scale_out_cooldown = 20 
+      write_index_target = 70
+      write_index_scale_in_cooldown = 200
+      write_index_scale_out_cooldown = 20
     }
   }
 

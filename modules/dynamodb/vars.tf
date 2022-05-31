@@ -194,3 +194,39 @@ variable "as_write_scale_out_cooldown" {
   type        = number
   default     = 30
 }
+
+variable "read_index_target_value" {
+  description = "The target utilization percentage for the index table"
+  type        = number
+  default     = 70
+}
+
+variable "read_index_scale_in_cooldown" {
+  description = "The number of seconds before scaling IN can occur after a scaling action on the index"
+  type        = number
+  default     = 300
+}
+
+variable "read_index_scale_out_cooldown" {
+  description = "The number of seconds before scaling OUT can occur after a scaling action on the index"
+  type        = number
+  default     = 20
+}
+
+variable "write_index_target_value" {
+  description = "The target utilization percentage for the index table"
+  type        = number
+  default     = 75
+}
+
+variable "write_index_scale_in_cooldown" {
+  description = "The number of seconds before scaling IN can occur after a scaling action on the index"
+  type        = number
+  default     = 300
+}
+
+variable "write_index_scale_out_cooldown" {
+  description = "The number of seconds before scaling OUT can occur after a scaling action on the index"
+  type        = number
+  default     = 30
+}
