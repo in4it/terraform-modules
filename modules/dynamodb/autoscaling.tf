@@ -62,9 +62,9 @@ resource "aws_appautoscaling_policy" "index_read_policy" {
       predefined_metric_type = "DynamoDBReadCapacityUtilization"
     }
 
-    target_value       = var.as_read_target_value
-    scale_in_cooldown  = var.as_read_scale_in_cooldown
-    scale_out_cooldown = var.as_read_scale_out_cooldown
+    target_value       = try(each.value["read_index_target"], var.as_read_target_value)
+    scale_in_cooldown  = try(each.value["read_index_scale_in_cooldown"], var.as_read_scale_in_cooldown)
+    scale_out_cooldown = try(each.value["read_index_scale_out_cooldown"], var.as_read_scale_out_cooldown)
   }
 }
 
@@ -113,8 +113,8 @@ resource "aws_appautoscaling_policy" "index_write_policy" {
       predefined_metric_type = "DynamoDBWriteCapacityUtilization"
     }
 
-    target_value       = var.as_write_target_value
-    scale_in_cooldown  = var.as_write_scale_in_cooldown
-    scale_out_cooldown = var.as_write_scale_out_cooldown
+    target_value       = try(each.value["write_index_target"], var.as_write_target_value)
+    scale_in_cooldown  = try(each.value["write_index_scale_in_cooldown"], var.as_write_scale_in_cooldown)
+    scale_out_cooldown = try(each.value["write_index_scale_out_cooldown"], var.as_write_scale_out_cooldown)
   }
 }
