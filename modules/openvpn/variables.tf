@@ -144,3 +144,6 @@ variable "listeners" {
 variable "log_retention_days" {
   default = 0
 }
+variable "reneg_sec" {
+  default = 28800
+}
