@@ -122,10 +122,12 @@ variable "open_vpn_client_file_base64" {
 
 #Public ECR
 variable "openvpn_public_ecr" {
-  type = string
+  type    = string
+  default = "public.ecr.aws/y9x3p3i6/docker-openvpn"
 }
 variable "openvpn_access_public_ecr" {
-  type = string
+  type    = string
+  default = "public.ecr.aws/y9x3p3i6/openvpn-access"
 }
 
 variable "create_r53_records" {
@@ -139,6 +141,10 @@ variable "listeners" {
     port     = string
     protocol = string
   }))
+  default = [{
+    port     = "1194"
+    protocol = "udp"
+  }]
 }
 
 variable "log_retention_days" {
