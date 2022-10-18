@@ -10,7 +10,7 @@ resource "aws_db_instance" "rds" {
   engine_version         = var.engine_version
   instance_class         = var.instance_type
   identifier             = var.name
-  name                   = var.database_name
+  db_name                = var.database_name
   username               = var.username
   password               = var.set_password ? random_string.password.result : null
   db_subnet_group_name   = var.subnet_group != "" ? var.subnet_group : aws_db_subnet_group.rds[0].name
