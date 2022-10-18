@@ -86,6 +86,7 @@ module "openvpn-access" {
         }
       ]
       environment_files = []
+      docker_labels     = {}
     }
   ]
 

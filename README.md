@@ -115,25 +115,40 @@ module "dynamodb_table" {
   source                 = "my-dynamodb"
   table_name             = "example-table"
   hash_key               = "id"
+  range_key              = "idr"
   autoscaling_enabled    = "false"
+  read_capacity          = 1
+  write_capacity         = 1
   stream_enabled         = "false"
-  range_key              = "S"
   billing_mode           = "PROVISIONED"
-  read_capacity          = "1"
-  write_capacity         = "1"
   point_in_time_recovery = "false"
   ttl_enabled            = "false"
   ttl_attribute_name     = "ttl"
-  global_secondary_indexes {
+  server_side_encryption = "false"
+  server_side_encryption_kms_key_arn = "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+ 
+  global_secondary_indexes = [
+    {
     name      = "index_name"
     hash_key  = "S"
     range_key = "S"
-  }
-  local_secondary_indexes {
+    projection_type = "ALL"
+    read_capacity   = "1"
+    write_capacity  = "1"
+    }
+  ]
+  
+  local_secondary_indexes = [
+    {
     name      = "index_name"
     hash_key  = "S"
     range_key = "S"
+    projection_type = "ALL"
+    read_capacity   = "1"
+    write_capacity  = "1"
   }
+]
+
   replica_regions {
     region_name = "us-east-1"
   }
@@ -142,10 +157,13 @@ module "dynamodb_table" {
     {
       name = "id"
       type = "N"
+    },
+    {
+      name = "idr"
+      type = "N"
     }
   ]
-  server_side_encryption             = "false"
-  server_side_encryption_kms_key_arn = "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+  
 
   timeouts {
     create = "10m"
@@ -155,10 +173,18 @@ module "dynamodb_table" {
 
   # Only enable with autoscaling_enabled = "true"
 
-  autoscaling_indexes {
-    index_name                          = "index_name"
-    read_capacity_auto_scaling_trigger  = "1"
-    write_capacity_auto_scaling_trigger = "1"
+  autoscaling_indexes = {
+    index_name  = {
+      read_min_capacity  = 1
+      read_max_capacity  = 20
+      write_min_capacity = 1
+      write_max_capacity = 20
+      read_index_scale_in_cooldown = 200
+      read_index_scale_out_cooldown = 20 
+      write_index_target = 70
+      write_index_scale_in_cooldown = 200
+      write_index_scale_out_cooldown = 20
+    }
   }
 
   as_read_min_capacity        = "1"
@@ -237,10 +263,10 @@ module "vpn" {
 
   hosted_zone_id = data.terraform_remote_state.dns.outputs.primary-hosted-zone
 
-  alb_arn                = module.alb.lb-arn
+  alb_arn                = module.alb.lb_arn
   alb_dns_name           = module.alb.dns_name
   alb_dns_zone_id        = module.alb.zone_id
-  alb_https_listener_arn = module.alb.https-listener-arn
+  alb_https_listener_arn = module.alb.https_listener_arn
   alb_security_group_id  = module.alb.security-group-id
 
   cert_req_city                 = "London"
@@ -258,8 +284,5 @@ module "vpn" {
   ouath2_client_id_parameter_arn     = "arn:aws:ssm:eu-west-1:0123456789:parameter/my_client-dev/vpn/OAUTH2_CLIENT_ID"
   ouath2_client_secret_parameter_arn = "arn:aws:ssm:eu-west-1:0123456789:parameter/my_client-dev/vpn/OAUTH2_CLIENT_SECRET"
   oauth2_url                         = "https://my_client.onelogin.com/oidc/2"
-
-  openvpn_public_ecr        = "public.ecr.aws/y9x3p3i6/openvpn"
-  openvpn_access_public_ecr = "public.ecr.aws/y9x3p3i6/openvpn-access"
 }
 ```

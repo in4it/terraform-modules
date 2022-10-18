@@ -23,6 +23,7 @@ resource "aws_instance" "openvpn" {
     project_name       = var.project_name
     openvpn_public_ecr = var.openvpn_public_ecr
     listeners          = var.listeners
+    reneg_sec          = var.reneg_sec
   }))
 
   root_block_device {
