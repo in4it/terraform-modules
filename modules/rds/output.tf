@@ -16,3 +16,6 @@ output "username" {
 output "password" {
   value = aws_db_instance.rds.password
 }
+output "security-group" {
+  value = aws_security_group.rds.id
+} 
