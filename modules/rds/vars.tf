@@ -78,3 +78,7 @@ variable "set_password" {
   description = "if true, set a random password"
   default     = true
 }
+variable "allow_self" {
+  description = "if true, allows traffic from self"
+  default     = false
+}
