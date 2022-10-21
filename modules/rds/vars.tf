@@ -82,3 +82,8 @@ variable "allow_self" {
   description = "if true, allows traffic from self"
   default     = false
 }
+
+variable "password_override_special" {
+  description = "override special characters used for rds password"
+  default     = "!#$%&*()-_=+[]{}<>:?"
+}

@@ -263,6 +263,7 @@ module "vpn" {
 
   hosted_zone_id = data.terraform_remote_state.dns.outputs.primary-hosted-zone
 
+  create_r53_records     = true
   alb_arn                = module.alb.lb_arn
   alb_dns_name           = module.alb.dns_name
   alb_dns_zone_id        = module.alb.zone_id
