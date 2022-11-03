@@ -26,13 +26,6 @@ resource "aws_ecs_cluster" "cluster" {
   name = var.cluster_name
 }
 
-data "template_file" "ecs_init" {
-  template = file("${path.module}/templates/ecs_init.tpl")
-  vars = {
-    cluster_name = var.cluster_name
-  }
-}
-
 #
 # launchconfig
 #
@@ -43,7 +36,9 @@ resource "aws_launch_configuration" "cluster" {
   key_name             = var.ssh_key_name
   iam_instance_profile = aws_iam_instance_profile.cluster-ec2-role.id
   security_groups      = [aws_security_group.cluster.id]
-  user_data            = data.template_file.ecs_init.rendered
+  user_data            = templatefile("${path.module}/templates/ecs_init.tpl", {
+    cluster_name = var.cluster_name
+  })
   lifecycle {
     create_before_destroy = true
   }
