@@ -72,7 +72,7 @@ variable "performance_insight_enabled" {
 }
 variable "deletion_protection" {
   description = "Enable Deletion Protection"
-  default     = false
+  default     = true
 }
 variable "set_password" {
   description = "if true, set a random password"
