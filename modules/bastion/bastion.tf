@@ -29,12 +29,8 @@ resource "aws_instance" "bastion" {
   tags = {
     Name = var.name
   }
-
-  dynamic "lifecycle" {
-    for_each = var.ignore_ami_changes ? ["true"] : []
-    content {
-      ignore_changes = ["ami"]
-    }
+  lifecycle {
+    ignore_changes = ["ami"]
   }
 }
 
