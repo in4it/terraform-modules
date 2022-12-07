@@ -21,7 +21,7 @@ variable "root_block_device_encryption" {
   description = "encrypt root block device"
   default     = true
 }
-variable "ignore_instance_changes" {
-  type    = list(any)
-  default = []
+variable "ignore_ami_changes" {
+  type    = bool
+  default = false
 }

@@ -30,8 +30,11 @@ resource "aws_instance" "bastion" {
     Name = var.name
   }
 
-  lifecycle {
-    ignore_changes = var.ignore_instance_changes
+  dynamic "lifecycle" {
+    for_each = var.ignore_ami_changes ? ["true"] : []
+    content {
+      ignore_changes = ["ami"]
+    }
   }
 }
 
