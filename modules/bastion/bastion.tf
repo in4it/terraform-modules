@@ -21,13 +21,17 @@ resource "aws_instance" "bastion" {
   vpc_security_group_ids = [aws_security_group.bastion.id]
   key_name               = var.keypair_name
   iam_instance_profile   = aws_iam_instance_profile.bastion.name
-    
+
   root_block_device {
     encrypted = var.root_block_device_encryption
   }
-  
+
   tags = {
     Name = var.name
   }
-} 
+
+  lifecycle {
+    ignore_changes = var.ignore_instance_changes
+  }
+}
 
