@@ -9,15 +9,34 @@ module "aws_config" {
 
   config_delivery_frequency = "Six_Hours"
 
-  check_approved_amis_by_tag               = false
-  check_cloud_trail_encryption             = true
-  check_cloudtrail_enabled                 = true
-  check_ec2_imdsv2                         = true
-  check_eip_attached                       = true
-  check_guard_duty                         = true
-  check_mfa_enabled_for_iam_console_access = true
-  check_rds_public_access                  = true
+  check_iam_root_access_key                = true
+  check_iam_password_policy                = true
   check_root_account_mfa_enabled           = true
+  check_access_keys_rotated                = true
+  access_key_max_age                       = 90
+  check_mfa_enabled_for_iam_console_access = true
+
+  check_multi_region_cloud_trail        = true
+  check_cloud_trail_encryption          = true
+  check_cloudtrail_enabled              = true
+  check_cloud_trail_log_file_validation = true
+  cloud_trail_cloud_watch_logs_enabled  = true
+
+  check_s3_bucket_level_public_access_prohibited = true
+  check_s3_bucket_ssl_requests_only              = true
+  check_s3_bucket_server_side_encryption_enabled = true
+
+  check_ec2_encrypted_volumes = true
+
+  check_rds_public_access     = true
+  check_rds_storage_encrypted = true
+
+  enable_efs_encrypted_check = true
+
+  check_iam_policy_no_statements_with_admin_access = true
+  check_iam_policy_no_statements_with_full_access  = true
+  check_nacl_no_unrestricted_ssh_rdp               = true
+  check_vpc_default_security_group_closed          = true
 }
 
 resource "aws_s3_bucket" "awsconfig-s3" {
