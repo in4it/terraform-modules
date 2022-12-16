@@ -73,7 +73,7 @@ resource "aws_cloudwatch_log_metric_filter" "aws_cis_rules" {
 
   metric_transformation {
     name      = each.key
-    namespace = "LogMetrics"
+    namespace = var.alarm_namespace
     value     = "1"
   }
 }
