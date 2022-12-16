@@ -36,7 +36,6 @@ resource "aws_s3_bucket_versioning" "global-trail-bucket-access-logs" {
 }
 
 resource "aws_s3_bucket_acl" "global-trail-bucket-access-logs" {
-
   bucket = aws_s3_bucket.global-trail-bucket-access-logs.id
   acl    = "private"
 }
