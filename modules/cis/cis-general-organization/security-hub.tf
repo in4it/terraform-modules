@@ -1,5 +1,5 @@
 resource "aws_securityhub_organization_admin_account" "security_hub" {
-  admin_account_id = var.account_id
+  admin_account_id = var.aws_account_id
 }
 
 resource "aws_securityhub_organization_configuration" "security_hub" {
