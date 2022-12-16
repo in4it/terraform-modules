@@ -1,4 +1,3 @@
-
 resource "aws_iam_account_password_policy" "cis" {
   require_uppercase_characters   = var.iam_require_uppercase_characters
   require_lowercase_characters   = var.iam_require_lowercase_characters
