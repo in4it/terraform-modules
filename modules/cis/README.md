@@ -56,8 +56,54 @@ AWS CIS Controls v1.5.0 module for terraform
 - 5.4 Ensure the default security group of every VPC restricts all traffic
 
 
-### Controls covered by general module:
+### Controls covered by general modules:
 - 1.8 Ensure IAM password policy requires a minimum length of 14 or greater
 - 1.9 Ensure IAM password policy prevents password reuse
 - 
 - 4.16 Ensure AWS Security Hub is enabled
+
+
+
+
+```terraform
+module "cloutrail-aws-cis-compliant" {
+  source = "git@github.com:in4it/terraform-modules.git//modules/cis/cis-cloudtrail"
+  count  = var.env == "billing" ? 1 : 0
+
+  aws_account_id  = var.aws_account_id
+  company_name    = "acmecorp"
+  organization_id = var.organization_id
+  env             = var.env
+}
+module "cloutrail-alarms-aws-cis-compliant" {
+  source = "git@github.com:in4it/terraform-modules.git//modules/cis/cis-log-alarms"
+  count  = var.env == "billing" ? 1 : 0
+
+
+  company_name            = "acmecorp"
+  env                     = var.env
+  existing_log_group_name = module.cloutrail-aws-cis-compliant.0.cloudtrail_log_group_name
+  alarm_namespace         = "LogMetrics"
+  sns_arn                 = aws_sns_topic.acmecorp-cis-alarms-topic.arn
+}
+
+resource "aws_sns_topic" "acmecorp-cis-alarms-topic" {
+  name = "acmecorp-cis-alarms-${var.env}"
+}
+
+module "aws-cis-compliant-general-resources" {
+  source = "git@github.com:in4it/terraform-modules.git//modules/cis/cis-general"
+
+  company_name = "acmecorp"
+  env          = var.env
+}
+
+module "aws-cis-compliant-general-org-resources" {
+  source = "git@github.com:in4it/terraform-modules.git//modules/cis/cis-general-organization"
+  count  = var.env == "billing" ? 1 : 0
+
+  aws_account_id = var.aws_account_id
+  company_name   = "acmecorp"
+  env            = var.env
+}
+```
