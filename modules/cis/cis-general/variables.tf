@@ -15,6 +15,10 @@ variable "tags" {
   default = {}
 }
 
+variable "create_security_hub_member" {
+  type = bool
+}
+
 # Password Policy
 variable "iam_allow_users_to_change_password" {
   description = "Can users change their own password"
