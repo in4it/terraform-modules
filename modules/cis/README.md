@@ -56,6 +56,8 @@ AWS CIS Controls v1.5.0 module for terraform
 - 5.4 Ensure the default security group of every VPC restricts all traffic
 
 
-### Todo
-- 4.16 Ensure AWS Security Hub is enabled
+### Controls covered by general module:
+- 1.8 Ensure IAM password policy requires a minimum length of 14 or greater
+- 1.9 Ensure IAM password policy prevents password reuse
 - 
+- 4.16 Ensure AWS Security Hub is enabled
