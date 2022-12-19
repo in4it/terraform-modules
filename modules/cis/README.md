@@ -68,7 +68,7 @@ AWS CIS Controls v1.5.0 module for terraform
 ```terraform
 module "cloutrail-aws-cis-compliant" {
   source = "git@github.com:in4it/terraform-modules.git//modules/cis/cis-cloudtrail"
-  count  = var.env == "billing" ? 1 : 0
+  count  = var.env == "central" ? 1 : 0
 
   aws_account_id  = var.aws_account_id
   company_name    = "acmecorp"
@@ -77,33 +77,45 @@ module "cloutrail-aws-cis-compliant" {
 }
 module "cloutrail-alarms-aws-cis-compliant" {
   source = "git@github.com:in4it/terraform-modules.git//modules/cis/cis-log-alarms"
-  count  = var.env == "billing" ? 1 : 0
+  count  = var.env == "central" ? 1 : 0
 
 
   company_name            = "acmecorp"
   env                     = var.env
   existing_log_group_name = module.cloutrail-aws-cis-compliant.0.cloudtrail_log_group_name
   alarm_namespace         = "LogMetrics"
-  sns_arn                 = aws_sns_topic.acmecorp-cis-alarms-topic.arn
+  sns_arn                 = aws_sns_topic.acmecorp-cis-alarms-topic.0.arn
 }
 
 resource "aws_sns_topic" "acmecorp-cis-alarms-topic" {
+  count = var.env == "central" ? 1 : 0
+
   name = "acmecorp-cis-alarms-${var.env}"
 }
 
 module "aws-cis-compliant-general-resources" {
   source = "git@github.com:in4it/terraform-modules.git//modules/cis/cis-general"
 
-  company_name = "acmecorp"
-  env          = var.env
+  company_name               = "acmecorp"
+  env                        = var.env
+  aws_account_id             = var.aws_account_id
+  account_email              = var.account_email
+  create_security_hub_member = var.env != "central" ? true : false
 }
 
 module "aws-cis-compliant-general-org-resources" {
-  source = "git@github.com:in4it/terraform-modules.git//modules/cis/cis-general-organization"
-  count  = var.env == "billing" ? 1 : 0
+  source     = "git@github.com:in4it/terraform-modules.git//modules/cis/cis-general-organization"
+  count      = var.env == "central" ? 1 : 0
+  depends_on = [module.aws-cis-compliant-general-resources]
 
   aws_account_id = var.aws_account_id
   company_name   = "acmecorp"
   env            = var.env
+  security_hub_members = {
+    "team+dev@acmecorp.com" : "123456789800"
+    "team+qa@acmecorp.com" : "123456789800"
+    "team+staging@acmecorp.com" : "123456789800"
+    "team+prod@acmecorp.com" : "123456789800"
+  }
 }
 ```
