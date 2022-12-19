@@ -11,3 +11,7 @@ variable "aws_account_id" {
 variable "tags" {
   default = {}
 }
+variable "security_hub_members" {
+  type = map(string)
+}
+

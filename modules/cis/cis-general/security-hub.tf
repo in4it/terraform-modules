@@ -1,8 +1,6 @@
 resource "aws_securityhub_account" "security_hub" {}
 
-resource "aws_securityhub_member" "security_hub" {
-  count      = var.create_security_hub_member ? 1 : 0
+resource "aws_securityhub_invite_accepter" "security_hub" {
   depends_on = [aws_securityhub_account.security_hub]
-  account_id = var.aws_account_id
-  email      = var.account_email
+  master_id  = var.security_hub_master_id
 }
