@@ -12,6 +12,7 @@ variable "tags" {
   default = {}
 }
 variable "security_hub_members" {
-  type = map(string)
+  type    = map(string)
+  default = {}
 }
 

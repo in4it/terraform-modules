@@ -66,5 +66,6 @@ variable "iam_max_password_age" {
 }
 
 variable "security_hub_master_id" {
-  type = string
+  type    = string
+  default = ""
 }
