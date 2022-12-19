@@ -64,8 +64,3 @@ variable "iam_max_password_age" {
   description = "Passwords expire in N days"
   default     = 90
 }
-
-variable "security_hub_master_id" {
-  type    = string
-  default = ""
-}
