@@ -63,8 +63,8 @@ data "aws_iam_policy_document" "global-trail-bucket-access-logs-policy" {
     effect  = "Deny"
     actions = ["s3:*"]
     resources = [
-      "arn:aws:s3:::${aws_s3_bucket.global-trail-bucket-access-logs.id}/*",
-      "arn:aws:s3:::${aws_s3_bucket.global-trail-bucket-access-logs.id}"
+      "arn:aws:s3:::${aws_s3_bucket.global-trail-bucket-access-logs.0.id}/*",
+      "arn:aws:s3:::${aws_s3_bucket.global-trail-bucket-access-logs.0.id}"
     ]
     condition {
       test     = "Bool"

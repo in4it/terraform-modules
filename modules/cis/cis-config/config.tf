@@ -4,7 +4,7 @@ module "aws_config" {
   version = "5.3.0"
 
   config_name          = "${var.company_name}-config-${var.env}"
-  config_logs_bucket   = var.use_existing_bucket ? var.existing_bucket_id : aws_s3_bucket.awsconfig-s3.id
+  config_logs_bucket   = var.use_existing_bucket ? var.existing_bucket_id : aws_s3_bucket.awsconfig-s3.0.id
   config_sns_topic_arn = var.sns_arn
 
   config_delivery_frequency = "Six_Hours"
@@ -104,8 +104,8 @@ data "aws_iam_policy_document" "awsconfig-s3-policy" {
     effect  = "Deny"
     actions = ["s3:*"]
     resources = [
-      "arn:aws:s3:::${aws_s3_bucket.awsconfig-s3.id}/*",
-      "arn:aws:s3:::${aws_s3_bucket.awsconfig-s3.id}"
+      "arn:aws:s3:::${aws_s3_bucket.awsconfig-s3.0.id}/*",
+      "arn:aws:s3:::${aws_s3_bucket.awsconfig-s3.0.id}"
     ]
     condition {
       test     = "Bool"
