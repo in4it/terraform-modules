@@ -13,10 +13,6 @@ resource "aws_cloudtrail" "global-trail" {
   enable_log_file_validation = true
 
   kms_key_id = aws_kms_key.global-trail.arn
-
-  lifecycle {
-    prevent_destroy = true
-  }
 }
 
 resource "aws_kms_key" "global-trail" {

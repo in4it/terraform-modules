@@ -43,10 +43,6 @@ resource "aws_s3_bucket" "awsconfig-s3" {
   count  = var.use_existing_bucket ? 0 : 1
   bucket = "${var.company_name}-awsconfig-s3-${var.env}"
 
-  lifecycle {
-    prevent_destroy = true
-  }
-
   tags = {
     Name = "${var.company_name}-awsconfig"
   }

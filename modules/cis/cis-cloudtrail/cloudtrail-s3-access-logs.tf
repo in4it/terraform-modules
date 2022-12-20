@@ -1,10 +1,6 @@
 resource "aws_s3_bucket" "global-trail-bucket-access-logs" {
   count  = var.use_existing_bucket ? 0 : 1
   bucket = "${var.company_name}-global-trail-bucket-access-logs-access-log"
-
-  lifecycle {
-    prevent_destroy = true
-  }
 }
 
 resource "aws_s3_bucket_public_access_block" "global-trail-bucket-access-logs" {

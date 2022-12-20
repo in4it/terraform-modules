@@ -2,10 +2,6 @@
 resource "aws_s3_bucket" "global-trail-bucket" {
   count  = var.use_existing_bucket ? 0 : 1
   bucket = "${var.company_name}-global-trail-bucket"
-
-  lifecycle {
-    prevent_destroy = true
-  }
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "global-trail-bucket" {
