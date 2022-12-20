@@ -75,7 +75,7 @@ resource "aws_s3_bucket_versioning" "awsconfig-s3" {
 
   bucket = aws_s3_bucket.awsconfig-s3.id
   versioning_configuration {
-    status = "Disabled"
+    status = "Enabled"
   }
 }
 
