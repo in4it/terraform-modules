@@ -49,10 +49,9 @@ module "aws-cis-compliant-general-org-resources" {
 module "aws-cis-compliant-config-resources" {
   source = "./cis-config"
 
-  aws_account_id = var.aws_account_id
-  company_name   = var.company_name
-  env            = var.env
-  sns_arn        = var.sns_arn
+  company_name = var.company_name
+  env          = var.env
+  sns_arn      = var.sns_arn
 
 
 }
@@ -60,7 +59,6 @@ module "aws-cis-compliant-config-aggregator-resources" {
   source = "./cis-config-aggregator"
   count  = var.env == "billing" ? 1 : 0
 
-  aws_account_id = var.aws_account_id
-  company_name   = var.company_name
-  env            = var.env
+  company_name = var.company_name
+  env          = var.env
 }

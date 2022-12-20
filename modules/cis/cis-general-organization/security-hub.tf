@@ -8,4 +8,8 @@ resource "aws_securityhub_member" "security_hub" {
   for_each   = var.security_hub_members
   account_id = each.value
   email      = each.key
+
+  lifecycle {
+    ignore_changes = [email, invite]
+  }
 }
