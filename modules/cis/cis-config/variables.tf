@@ -11,3 +11,12 @@ variable "sns_arn" {
 variable "tags" {
   default = {}
 }
+
+variable "use_existing_bucket" {
+  type    = bool
+  default = false
+}
+variable "existing_bucket_id" {
+  type    = string
+  default = ""
+}

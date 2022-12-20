@@ -4,7 +4,7 @@ module "aws_config" {
   version = "5.3.0"
 
   config_name          = "${var.company_name}-config-${var.env}"
-  config_logs_bucket   = aws_s3_bucket.awsconfig-s3.id
+  config_logs_bucket   = var.use_existing_bucket ? var.existing_bucket_id : aws_s3_bucket.awsconfig-s3.id
   config_sns_topic_arn = var.sns_arn
 
   config_delivery_frequency = "Six_Hours"
@@ -40,6 +40,7 @@ module "aws_config" {
 }
 
 resource "aws_s3_bucket" "awsconfig-s3" {
+  count  = var.use_existing_bucket ? 0 : 1
   bucket = "${var.company_name}-awsconfig-s3-${var.env}"
 
   lifecycle {
@@ -52,8 +53,8 @@ resource "aws_s3_bucket" "awsconfig-s3" {
 }
 
 resource "aws_s3_bucket_public_access_block" "awsconfig-s3" {
-
-  bucket = aws_s3_bucket.awsconfig-s3.id
+  count  = var.use_existing_bucket ? 0 : 1
+  bucket = aws_s3_bucket.awsconfig-s3.0.id
 
   block_public_acls       = true
   block_public_policy     = true
@@ -62,8 +63,8 @@ resource "aws_s3_bucket_public_access_block" "awsconfig-s3" {
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "awsconfig-s3" {
-
-  bucket = aws_s3_bucket.awsconfig-s3.id
+  count  = var.use_existing_bucket ? 0 : 1
+  bucket = aws_s3_bucket.awsconfig-s3.0.id
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm = "AES256"
@@ -72,25 +73,27 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "awsconfig-s3" {
 }
 
 resource "aws_s3_bucket_versioning" "awsconfig-s3" {
-
-  bucket = aws_s3_bucket.awsconfig-s3.id
+  count  = var.use_existing_bucket ? 0 : 1
+  bucket = aws_s3_bucket.awsconfig-s3.0.id
   versioning_configuration {
     status = "Enabled"
   }
 }
 
 resource "aws_s3_bucket_acl" "awsconfig-s3" {
-
-  bucket = aws_s3_bucket.awsconfig-s3.id
+  count  = var.use_existing_bucket ? 0 : 1
+  bucket = aws_s3_bucket.awsconfig-s3.0.id
   acl    = "private"
 }
 
 resource "aws_s3_bucket_policy" "awsconfig-s3" {
-  bucket = aws_s3_bucket.awsconfig-s3.id
+  count  = var.use_existing_bucket ? 0 : 1
+  bucket = aws_s3_bucket.awsconfig-s3.0.id
   policy = data.aws_iam_policy_document.awsconfig-s3-policy.json
 }
 
 data "aws_iam_policy_document" "awsconfig-s3-policy" {
+  count = var.use_existing_bucket ? 0 : 1
 
   statement {
     sid = "AllowSSLRequestsOnly"
