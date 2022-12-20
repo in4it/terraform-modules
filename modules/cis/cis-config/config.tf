@@ -1,7 +1,7 @@
 
 module "aws_config" {
   source  = "trussworks/config/aws"
-  version = "4.5.0"
+  version = "5.3.0"
 
   config_name          = "${var.company_name}-config-${var.env}"
   config_logs_bucket   = aws_s3_bucket.awsconfig-s3.id
