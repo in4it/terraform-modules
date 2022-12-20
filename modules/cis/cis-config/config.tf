@@ -89,7 +89,7 @@ resource "aws_s3_bucket_acl" "awsconfig-s3" {
 resource "aws_s3_bucket_policy" "awsconfig-s3" {
   count  = var.use_existing_bucket ? 0 : 1
   bucket = aws_s3_bucket.awsconfig-s3.0.id
-  policy = data.aws_iam_policy_document.awsconfig-s3-policy.json
+  policy = data.aws_iam_policy_document.awsconfig-s3-policy.0.json
 }
 
 data "aws_iam_policy_document" "awsconfig-s3-policy" {

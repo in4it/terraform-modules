@@ -48,7 +48,7 @@ resource "aws_s3_bucket_policy" "global-trail-bucket-access-logs" {
   count  = var.use_existing_bucket ? 0 : 1
   bucket = aws_s3_bucket.global-trail-bucket-access-logs.0.id
 
-  policy = data.aws_iam_policy_document.global-trail-bucket-access-logs-policy.json
+  policy = data.aws_iam_policy_document.global-trail-bucket-access-logs-policy.0.json
 }
 
 data "aws_iam_policy_document" "global-trail-bucket-access-logs-policy" {
