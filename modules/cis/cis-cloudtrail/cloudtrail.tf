@@ -1,7 +1,7 @@
 
 resource "aws_cloudtrail" "global-trail" {
   name           = "${var.company_name}-global-trail"
-  s3_bucket_name = aws_s3_bucket.global-trail-bucket.id
+  s3_bucket_name = var.use_existing_bucket ? var.existing_bucket_id : aws_s3_bucket.global-trail-bucket.0.id
 
   include_global_service_events = true
   is_organization_trail         = true

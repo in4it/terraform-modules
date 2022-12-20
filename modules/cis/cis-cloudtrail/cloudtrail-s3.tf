@@ -1,5 +1,6 @@
 
 resource "aws_s3_bucket" "global-trail-bucket" {
+  count  = var.use_existing_bucket ? 0 : 1
   bucket = "${var.company_name}-global-trail-bucket"
 
   lifecycle {
@@ -8,8 +9,8 @@ resource "aws_s3_bucket" "global-trail-bucket" {
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "global-trail-bucket" {
-
-  bucket = aws_s3_bucket.global-trail-bucket.id
+  count  = var.use_existing_bucket ? 0 : 1
+  bucket = aws_s3_bucket.global-trail-bucket.0.id
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm     = "aws:kms"
@@ -19,7 +20,8 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "global-trail-buck
 }
 
 resource "aws_s3_bucket_public_access_block" "global-trail-bucket" {
-  bucket = aws_s3_bucket.global-trail-bucket.id
+  count  = var.use_existing_bucket ? 0 : 1
+  bucket = aws_s3_bucket.global-trail-bucket.0.id
 
   block_public_acls       = true
   block_public_policy     = true
@@ -28,14 +30,16 @@ resource "aws_s3_bucket_public_access_block" "global-trail-bucket" {
 }
 
 resource "aws_s3_bucket_policy" "global-trail-bucket" {
+  count  = var.use_existing_bucket ? 0 : 1
+  bucket = aws_s3_bucket.global-trail-bucket.0.id
 
-  bucket = aws_s3_bucket.global-trail-bucket.id
-  policy = data.aws_iam_policy_document.global-trail-bucket-policy.json
+  policy = data.aws_iam_policy_document.global-trail-bucket-policy.0.json
 }
 
 resource "aws_s3_bucket_versioning" "global-trail-bucket" {
+  count  = var.use_existing_bucket ? 0 : 1
+  bucket = aws_s3_bucket.global-trail-bucket.0.id
 
-  bucket = aws_s3_bucket.global-trail-bucket.id
   versioning_configuration {
     status = "Disabled"
   }
@@ -43,11 +47,14 @@ resource "aws_s3_bucket_versioning" "global-trail-bucket" {
 
 resource "aws_s3_bucket_acl" "global-trail-bucket" {
 
-  bucket = aws_s3_bucket.global-trail-bucket.id
-  acl    = "private"
+  count  = var.use_existing_bucket ? 0 : 1
+  bucket = aws_s3_bucket.global-trail-bucket.0.id
+
+  acl = "private"
 }
 
 data "aws_iam_policy_document" "global-trail-bucket-policy" {
+  count = var.use_existing_bucket ? 0 : 1
 
   statement {
     principals {
@@ -103,8 +110,8 @@ data "aws_iam_policy_document" "global-trail-bucket-policy" {
     effect  = "Deny"
     actions = ["s3:*"]
     resources = [
-      "arn:aws:s3:::${aws_s3_bucket.global-trail-bucket.id}/*",
-      "arn:aws:s3:::${aws_s3_bucket.global-trail-bucket.id}"
+      "arn:aws:s3:::${aws_s3_bucket.global-trail-bucket.0.id}/*",
+      "arn:aws:s3:::${aws_s3_bucket.global-trail-bucket.0.id}"
     ]
     condition {
       test     = "Bool"
@@ -114,7 +121,9 @@ data "aws_iam_policy_document" "global-trail-bucket-policy" {
   }
 }
 resource "aws_s3_bucket_logging" "global-trail-bucket" {
-  bucket        = aws_s3_bucket.global-trail-bucket.id
-  target_bucket = aws_s3_bucket.global-trail-bucket-access-logs.id
+  count  = var.use_existing_bucket ? 0 : 1
+  bucket = aws_s3_bucket.global-trail-bucket.0.id
+
+  target_bucket = aws_s3_bucket.global-trail-bucket-access-logs.0.id
   target_prefix = "log/"
 }

@@ -14,3 +14,11 @@ variable "aws_account_id" {
 variable "tags" {
   default = {}
 }
+variable "use_existing_bucket" {
+  type    = bool
+  default = false
+}
+variable "existing_bucket_id" {
+  type    = string
+  default = ""
+}

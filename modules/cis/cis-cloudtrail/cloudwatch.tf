@@ -39,6 +39,5 @@ data "aws_iam_policy_document" "global-trail-cw-logs-policy" {
     resources = [
       "${aws_cloudwatch_log_group.global-trail.arn}:*",
     ]
-
   }
 }
