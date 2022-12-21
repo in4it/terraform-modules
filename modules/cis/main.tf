@@ -34,7 +34,6 @@ module "aws-cis-compliant-general-resources" {
   iam_minimum_password_length        = var.iam_minimum_password_length
   iam_password_reuse_prevention      = var.iam_password_reuse_prevention
   iam_max_password_age               = var.iam_max_password_age
-
 }
 
 module "aws-cis-compliant-general-org-resources" {

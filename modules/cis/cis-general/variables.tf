@@ -1,22 +1,9 @@
-variable "company_name" {
-  type = string
-}
 variable "env" {
   description = "Environment"
   type        = string
 }
-variable "aws_account_id" {
-  type = string
-}
-variable "account_email" {
-  type = string
-}
 variable "tags" {
   default = {}
-}
-
-variable "create_security_hub_member" {
-  type = bool
 }
 
 # Password Policy
