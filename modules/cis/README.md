@@ -118,4 +118,23 @@ module "aws-cis-compliant-general-org-resources" {
     "team+prod@acmecorp.com" : "123456789800"
   }
 }
+
+resource "aws_sns_topic" "acmecorp-cis-config-topic" {
+  name = "acmecorp-cis-config-${var.env}"
+}
+
+module "aws-cis-compliant-config-resources" {
+  source = "./cis-config"
+
+  company_name = "acmecorp"
+  env          = var.env
+  sns_arn      = aws_sns_topic.acmecorp-cis-config-topic.arn
+}
+module "aws-cis-compliant-config-aggregator-resources" {
+  source = "./cis-config-aggregator"
+  count  = var.env == "central" ? 1 : 0
+
+  company_name = "acmecorp"
+  env          = var.env
+}
 ```

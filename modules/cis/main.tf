@@ -6,6 +6,9 @@ module "cloutrail-aws-cis-compliant" {
   company_name    = var.company_name
   organization_id = var.organization_id
   env             = var.env
+
+  existing_bucket_id  = var.existing_bucket_id
+  use_existing_bucket = var.use_existing_bucket
 }
 module "cloutrail-alarms-aws-cis-compliant" {
   source = "./cis-log-alarms"

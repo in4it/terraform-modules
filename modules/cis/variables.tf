@@ -17,9 +17,6 @@ variable "sns_arn" {
 variable "alarm_namespace" {
   type = string
 }
-variable "existing_log_group_name" {
-  type = string
-}
 variable "tags" {
   default = {}
 }
@@ -69,3 +66,11 @@ variable "iam_max_password_age" {
   description = "Passwords expire in N days"
   default     = 90
 }
+
+variable "existing_bucket_id" {
+  default = ""
+}
+variable "use_existing_bucket" {
+  default = false
+}
+
