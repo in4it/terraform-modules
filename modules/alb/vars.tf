@@ -56,3 +56,7 @@ variable "allow_additional_sg" {
   }))
   default = {}
 }
+
+variable "s3_logs_versioning" {
+  default = "Disabled"
+}

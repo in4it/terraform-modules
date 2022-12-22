@@ -28,7 +28,7 @@ resource "aws_s3_bucket_versioning" "lb_logs" {
   count  = length(var.access_logs)
   bucket = aws_s3_bucket.lb_logs[0].id
   versioning_configuration {
-    status = "Disabled"
+    status = var.s3_logs_versioning
   }
 }
 
