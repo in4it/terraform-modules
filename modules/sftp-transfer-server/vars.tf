@@ -18,7 +18,7 @@ variable "transfer_server_name" {
 
 variable "transfer_server_users" {
   description = "Transfer server user(s)"
-  type = list(object({
+  type = map(object({
     name    = string
     key     = string
     homedir = string
