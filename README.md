@@ -287,3 +287,19 @@ module "vpn" {
   oauth2_url                         = "https://my_client.onelogin.com/oidc/2"
 }
 ```
+
+## Security (AWS CIS v1.5.0)
+
+```
+module "cis-security" {
+  source = "./modules/cis"
+
+  company_name = "acmecorp"
+  env          = "dev"
+
+  alarm_namespace = "LogMetrics"
+  aws_account_id  = "123343534564"
+  organization_id = "id-123343534564"
+  sns_arn         = "arn:aws:sns:us-east-2:123343534564:MyTopic"
+}
+```
