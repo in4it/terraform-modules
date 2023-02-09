@@ -9,7 +9,6 @@ AWS CIS Controls v1.5.0 module for terraform
 - 3.4 Ensure CloudTrail trails are integrated with Amazon CloudWatch Logs
 - 3.6 Ensure S3 bucket access logging is enabled on the CloudTrail S3 bucket
 - 3.7 Ensure CloudTrail logs are encrypted at rest using AWS KMS CMKs
-- 
 - 4.1 – Ensure a log metric filter and alarm exist for unauthorized API calls
 - 4.2 – Ensure a log metric filter and alarm exist for AWS Management Console sign-in without MFA
 - 4.3 – Eliminate use of the root user for administrative and daily tasks
@@ -25,6 +24,7 @@ AWS CIS Controls v1.5.0 module for terraform
 - 4.13 – Ensure a log metric filter and alarm exist for route table changes
 - 4.14 – Ensure a log metric filter and alarm exist for VPC changes
 - 4.15 Ensure a log metric filter and alarm exists for AWS Organizations changes
+- 4.16 Ensure AWS Security Hub is enabled
 
 ### Controls covered by config modules (config and config-aggregator):
 - 1.4 Ensure no 'root' user account access key exists
@@ -59,10 +59,6 @@ AWS CIS Controls v1.5.0 module for terraform
 ### Controls covered by general modules:
 - 1.8 Ensure IAM password policy requires a minimum length of 14 or greater
 - 1.9 Ensure IAM password policy prevents password reuse
-- 
-- 4.16 Ensure AWS Security Hub is enabled
-
-
 
 
 ```terraform
@@ -98,9 +94,6 @@ module "aws-cis-compliant-general-resources" {
 
   company_name               = "acmecorp"
   env                        = var.env
-  aws_account_id             = var.aws_account_id
-  account_email              = var.account_email
-  create_security_hub_member = var.env != "central" ? true : false
 }
 
 module "aws-cis-compliant-general-org-resources" {
@@ -124,14 +117,36 @@ resource "aws_sns_topic" "acmecorp-cis-config-topic" {
 }
 
 module "aws-cis-compliant-config-resources" {
-  source = "./cis-config"
+  source = "git@github.com:in4it/terraform-modules.git//modules/cis/cis-config"
 
   company_name = "acmecorp"
   env          = var.env
   sns_arn      = aws_sns_topic.acmecorp-cis-config-topic.arn
+
+  configs_check_iam_root_access_key                           = true 
+  configs_check_iam_password_policy                           = true
+  configs_check_root_account_mfa_enabled                      = true
+  configs_check_access_keys_rotated                           = true
+  configs_check_mfa_enabled_for_iam_console_access            = true
+  configs_check_multi_region_cloud_trail                      = true
+  configs_check_cloud_trail_encryption                        = true
+  configs_check_cloudtrail_enabled                            = true
+  configs_check_cloud_trail_log_file_validation               = true
+  configs_cloud_trail_cloud_watch_logs_enabled                = true
+  configs_check_s3_bucket_level_public_access_prohibited      = true
+  configs_check_s3_bucket_ssl_requests_only                   = true
+  configs_check_s3_bucket_server_side_encryption_enabled      = true
+  configs_check_ec2_encrypted_volumes                         = true
+  configs_check_rds_public_access                             = true
+  configs_check_rds_storage_encrypted                         = true
+  configs_enable_efs_encrypted_check                          = true
+  configs_check_iam_policy_no_statements_with_admin_access    = true
+  configs_check_iam_policy_no_statements_with_full_access     = true
+  configs_check_nacl_no_unrestricted_ssh_rdp                  = true
+  configs_check_vpc_default_security_group_closed             = true
 }
 module "aws-cis-compliant-config-aggregator-resources" {
-  source = "./cis-config-aggregator"
+  source = "git@github.com:in4it/terraform-modules.git//modules/cis/cis-config-aggregator"
   count  = var.env == "central" ? 1 : 0
 
   company_name = "acmecorp"
