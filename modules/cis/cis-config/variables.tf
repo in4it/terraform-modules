@@ -66,7 +66,7 @@ variable "configs_check_cloud_trail_log_file_validation" {
   default = false
 }
 
-variable "configs_cloud_trail_cloud_watch_logs_enabled" {
+variable "configs_check_cloud_trail_cloud_watch_logs_enabled" {
   type    = bool
   default = false
 }
