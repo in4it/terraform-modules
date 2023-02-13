@@ -113,6 +113,10 @@ variable "onelogin_client_secret" {
 variable "onelogin_client_domain" {
   type = string
 }
+variable "onelogin_mfa" {
+  type = string
+  default = "true"
+}
 
 #VPN
 variable "open_vpn_client_file_base64" {
