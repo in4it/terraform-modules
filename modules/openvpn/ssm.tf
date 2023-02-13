@@ -41,4 +41,8 @@ resource "aws_ssm_parameter" "CLIENT_CERT_ORG" {
   type  = "String"
   value = var.organization_name
 }
-
+resource "aws_ssm_parameter" "ONELOGIN_MFA" {
+  name  = "/${var.project_name}-${var.env}/vpn/ONELOGIN_MFA"
+  type  = "String"
+  value = var.onelogin_mfa
+}
