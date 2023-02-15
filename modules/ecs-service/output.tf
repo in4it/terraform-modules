@@ -17,3 +17,6 @@ output "task_security_group_id" {
 output "service_name" {
   value = aws_ecs_service.ecs-service.name
 }
+output "ecr_url" {
+  value = aws_ecr_repository.ecs-service.repository_url
+}
