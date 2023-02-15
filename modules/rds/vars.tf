@@ -72,9 +72,18 @@ variable "performance_insight_enabled" {
 }
 variable "deletion_protection" {
   description = "Enable Deletion Protection"
-  default     = false
+  default     = true
 }
 variable "set_password" {
   description = "if true, set a random password"
   default     = true
+}
+variable "allow_self" {
+  description = "if true, allows traffic from self"
+  default     = false
+}
+
+variable "password_override_special" {
+  description = "override special characters used for rds password"
+  default     = "!#$%&*()-_=+[]{}<>:?"
 }

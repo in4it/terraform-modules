@@ -263,6 +263,7 @@ module "vpn" {
 
   hosted_zone_id = data.terraform_remote_state.dns.outputs.primary-hosted-zone
 
+  create_r53_records     = true
   alb_arn                = module.alb.lb_arn
   alb_dns_name           = module.alb.dns_name
   alb_dns_zone_id        = module.alb.zone_id
@@ -284,5 +285,21 @@ module "vpn" {
   ouath2_client_id_parameter_arn     = "arn:aws:ssm:eu-west-1:0123456789:parameter/my_client-dev/vpn/OAUTH2_CLIENT_ID"
   ouath2_client_secret_parameter_arn = "arn:aws:ssm:eu-west-1:0123456789:parameter/my_client-dev/vpn/OAUTH2_CLIENT_SECRET"
   oauth2_url                         = "https://my_client.onelogin.com/oidc/2"
+}
+```
+
+## Security (AWS CIS v1.5.0)
+
+```
+module "cis-security" {
+  source = "./modules/cis"
+
+  company_name = "acmecorp"
+  env          = "dev"
+
+  alarm_namespace = "LogMetrics"
+  aws_account_id  = "123343534564"
+  organization_id = "id-123343534564"
+  sns_arn         = "arn:aws:sns:us-east-2:123343534564:MyTopic"
 }
 ```

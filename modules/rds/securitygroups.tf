@@ -11,6 +11,7 @@ resource "aws_security_group" "rds" {
     to_port         = local.port
     protocol        = "tcp"
     security_groups = var.ingress_security_groups
+    self            = var.allow_self
   }
 
   egress {
