@@ -101,6 +101,10 @@ variable "fargate_service_subnetids" {
   default = []
 }
 
+variable "existing_ecr" {
+  default = ""
+}
+
 variable "secrets" {
   description = "secrets to set"
   default     = []
