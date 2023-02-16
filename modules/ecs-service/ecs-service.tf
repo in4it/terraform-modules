@@ -3,7 +3,7 @@
 #
 
 resource "aws_ecr_repository" "ecs-service" {
-  count = length(var.containers) == 0 ? 1 : 0
+  count = length(var.containers) == 0 && var.existing_ecr == "" ? 1 : 0
 
   name = var.ecr_prefix == "" ? var.application_name : "${var.ecr_prefix}/{var.application_name}"
 
@@ -33,7 +33,7 @@ locals {
       application_port    = var.application_port
       additional_ports    = var.additional_ports
       application_version = var.application_version
-      ecr_url             = aws_ecr_repository.ecs-service.0.repository_url
+      ecr_url             = var.existing_ecr == "" ? aws_ecr_repository.ecs-service.0.repository_url : var.existing_ecr
       cpu_reservation     = var.cpu_reservation
       memory_reservation  = var.memory_reservation
       command             = var.command
