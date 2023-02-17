@@ -33,7 +33,6 @@ module "aws_config" {
   check_vpc_default_security_group_closed          = var.configs_check_vpc_default_security_group_closed         
   access_key_max_age                               = 90
 
-  all_supported                                    = var.configs_all_supported
   include_global_resource_types                    = var.configs_include_global_resource_types
   resource_types                                   = var.configs_resource_types
 }
