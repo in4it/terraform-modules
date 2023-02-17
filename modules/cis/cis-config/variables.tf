@@ -131,3 +131,18 @@ variable "configs_check_vpc_default_security_group_closed"  {
   type    = bool
   default = false
 }
+
+variable "configs_all_supported" {
+  type    = bool
+  default = true
+}
+
+variable "include_global_resource_types" {
+  type = bool
+  default = true
+}
+
+variable "configs_resource_types" {
+  type  = list(string)
+  default = []
+}
