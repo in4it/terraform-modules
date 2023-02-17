@@ -137,7 +137,7 @@ variable "configs_all_supported" {
   default = true
 }
 
-variable "include_global_resource_types" {
+variable "configs_include_global_resource_types" {
   type = bool
   default = true
 }
