@@ -123,6 +123,7 @@ module "aws-cis-compliant-config-resources" {
   env          = var.env
   sns_arn      = aws_sns_topic.acmecorp-cis-config-topic.arn
 
+# These configs are FALSE by default, but you can enable them if you want custom configs. 
   configs_check_iam_root_access_key                           = true 
   configs_check_iam_password_policy                           = true
   configs_check_root_account_mfa_enabled                      = true
@@ -144,6 +145,73 @@ module "aws-cis-compliant-config-resources" {
   configs_check_iam_policy_no_statements_with_full_access     = true
   configs_check_nacl_no_unrestricted_ssh_rdp                  = true
   configs_check_vpc_default_security_group_closed             = true
+
+# These configs are FALSE by default and add all resources, if you want to use custom fill as example below, check the resource types that your environment needs on this link: https://docs.aws.amazon.com/config/latest/developerguide/resource-config-reference.html
+
+  configs_include_global_resource_types = true
+  configs_resource_types   = [  
+      "AWS::ApiGateway::Stage",
+      "AWS::ApiGateway::RestApi",
+      "AWS::ApiGatewayV2::Stage",
+      "AWS::ApiGatewayV2::Api",
+      "AWS::EC2::NetworkAcl",
+      "AWS::EC2::SecurityGroup",
+      "AWS::DynamoDB::Table",
+      "AWS::ACM::Certificate",
+      "AWS::CloudTrail::Trail",
+      "AWS::Config::ResourceCompliance",
+      "AWS::ECR::RegistryPolicy",
+      "AWS::ECR::Repository",
+      "AWS::ECS::Cluster",
+      "AWS::ECS::Service",
+      "AWS::ECS::TaskDefinition",
+      "AWS::EKS::Cluster",
+      "AWS::EKS::FargateProfile",
+      "AWS::EMR::SecurityConfiguration",
+      "AWS::ElasticLoadBalancing::LoadBalancer",
+      "AWS::ElasticLoadBalancingV2::Listener",
+      "AWS::ElasticLoadBalancingV2::LoadBalancer",
+      "AWS::Glue::Classifier",
+      "AWS::Glue::Job",
+      "AWS::IAM::Group",
+      "AWS::IAM::Policy",
+      "AWS::IAM::Role",
+      "AWS::IAM::User",
+      "AWS::KMS::Key",
+      "AWS::Kinesis::Stream",
+      "AWS::Kinesis::StreamConsumer",
+      "AWS::Lambda::Function",
+      "AWS::NetworkFirewall::Firewall",
+      "AWS::NetworkFirewall::FirewallPolicy",
+      "AWS::NetworkFirewall::RuleGroup",
+      "AWS::Elasticsearch::Domain",
+      "AWS::OpenSearch::Domain",
+      "AWS::RDS::DBCluster",
+      "AWS::RDS::DBClusterSnapshot",
+      "AWS::RDS::DBInstance",
+      "AWS::RDS::DBSecurityGroup",
+      "AWS::RDS::DBSnapshot",
+      "AWS::RDS::DBSubnetGroup",
+      "AWS::RDS::EventSubscription",
+      "AWS::S3::AccountPublicAccessBlock",
+      "AWS::S3::Bucket",
+      "AWS::SSM::AssociationCompliance",
+      "AWS::SSM::FileData",
+      "AWS::SSM::ManagedInstanceInventory",
+      "AWS::SSM::PatchCompliance",
+      "AWS::SQS::Queue",
+      "AWS::SecretsManager::Secret",
+      "AWS::WAFRegional::RateBasedRule",
+      "AWS::WAFRegional::Rule",
+      "AWS::WAFRegional::RuleGroup",
+      "AWS::WAFRegional::WebACL",
+      "AWS::WAFv2::IPSet",
+      "AWS::WAFv2::ManagedRuleSet",
+      "AWS::WAFv2::RegexPatternSet",
+      "AWS::WAFv2::RuleGroup",
+      "AWS::WAFv2::WebACL",
+    ]
+  }
 }
 module "aws-cis-compliant-config-aggregator-resources" {
   source = "git@github.com:in4it/terraform-modules.git//modules/cis/cis-config-aggregator"

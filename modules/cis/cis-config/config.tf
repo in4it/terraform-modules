@@ -15,7 +15,7 @@ module "aws_config" {
   check_root_account_mfa_enabled                   = var.configs_check_root_account_mfa_enabled                  
   check_access_keys_rotated                        = var.configs_check_access_keys_rotated                        
   check_mfa_enabled_for_iam_console_access         = var.configs_check_mfa_enabled_for_iam_console_access        
-  check_multi_region_cloud_trail                   = var.configs_check_multi_region_cloud_trail                  
+  check_multi_region_cloud_trail                   = var.configs_check_multi_region_cloud_trail                 
   check_cloud_trail_encryption                     = var.configs_check_cloud_trail_encryption                    
   check_cloudtrail_enabled                         = var.configs_check_cloudtrail_enabled                        
   check_cloud_trail_log_file_validation            = var.configs_check_cloud_trail_log_file_validation           
@@ -32,6 +32,9 @@ module "aws_config" {
   check_nacl_no_unrestricted_ssh_rdp               = var.configs_check_nacl_no_unrestricted_ssh_rdp              
   check_vpc_default_security_group_closed          = var.configs_check_vpc_default_security_group_closed         
   access_key_max_age                               = 90
+
+  include_global_resource_types                    = var.configs_include_global_resource_types
+  resource_types                                   = var.configs_resource_types
 }
 
 resource "aws_s3_bucket" "awsconfig-s3" {
