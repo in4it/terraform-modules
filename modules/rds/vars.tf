@@ -16,6 +16,10 @@ variable "storage" {
   description = "RDS storage in GB"
   default     = 100
 }
+variable "max_allocated_storage" {
+  description = "If greater than storage it will enable storage autoscaling"
+  default     = 0
+}
 variable "storage_type" {
   description = "RDS storage type"
   default     = "gp2"
