@@ -18,4 +18,10 @@ output "password" {
 }
 output "security-group" {
   value = aws_security_group.rds.id
-} 
+}
+output "db-identifier" {
+  value = aws_db_instance.rds.identifier
+}
+output "db-id" {
+  value = aws_db_instance.rds.id
+}
