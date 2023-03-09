@@ -84,10 +84,6 @@ module "openvpn-access" {
           name      = "OAUTH2_URL"
           valueFrom = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${var.project_name}-${var.env}/vpn/OAUTH2_URL"
         },
-        {
-          name      = "ONELOGIN_MFA"
-          valueFrom = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${var.project_name}-${var.env}/vpn/ONELOGIN_MFA"
-        },        
       ]
       environment_files = []
       docker_labels     = {}
