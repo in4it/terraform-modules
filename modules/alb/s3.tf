@@ -30,6 +30,9 @@ resource "aws_s3_bucket_versioning" "lb_logs" {
   versioning_configuration {
     status = "Disabled"
   }
+  lifecycle {
+    ignore_changes = [versioning_configuration]
+  }
 }
 
 resource "aws_s3_bucket_policy" "lb_logs" {
