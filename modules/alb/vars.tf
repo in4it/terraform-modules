@@ -42,8 +42,8 @@ variable "access_logs" {
 variable "tcp_ingress" {
   type = map(list(string))
   default = {
-    "80" = [ "0.0.0.0/0" ]
-    "443" = [ "0.0.0.0/0" ]
+    "80"  = ["0.0.0.0/0"]
+    "443" = ["0.0.0.0/0"]
   }
 }
 
@@ -55,4 +55,9 @@ variable "allow_additional_sg" {
     protocol        = string
   }))
   default = {}
+}
+
+variable "drop_invalid_header_fields" {
+  type    = bool
+  default = false
 }
