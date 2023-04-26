@@ -10,6 +10,8 @@ resource "aws_lb" "lb" {
   idle_timeout               = var.idle_timeout
   enable_deletion_protection = false
 
+  drop_invalid_header_fields = var.drop_invalid_header_fields
+
   dynamic "access_logs" {
     for_each = length(keys(var.access_logs)) == 0 ? [] : [var.access_logs]
     content {
