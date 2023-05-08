@@ -1,0 +1,1 @@
+This terraform module includes partial code from the `terraform-aws-oidc-github` library (https://github.com/unfunco/terraform-aws-oidc-github) which is licensed under the Apache License 2.0.
