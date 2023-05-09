@@ -11,4 +11,5 @@ module "vpn-rds" {
   vpc_id         = var.vpc_id
   instance_type  = var.db_instance_type
   subnet_group   = ""
+  subnet_ids     = var.db_subnet_ids
 }

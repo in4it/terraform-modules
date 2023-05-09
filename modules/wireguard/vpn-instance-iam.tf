@@ -24,10 +24,9 @@ resource "aws_iam_role" "vpn-iam-role" {
 EOF
 }
 
-resource "aws_iam_policy_attachment" "vpn-iam-policy-attachment" {
-  name       = "vpn-iam-policy-attachment-${var.env}"
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
-  roles      = [aws_iam_role.vpn-iam-role.id]
+resource "aws_iam_role_policy_attachment" "vpn-iam-policy-attachment" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  role       = aws_iam_role.vpn-iam-role.id
 }
 
 resource "aws_iam_role_policy" "vpn-custom-policy" {

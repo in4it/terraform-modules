@@ -2,7 +2,7 @@ variable "instance_type" {
     default = "t3.micro"
 }
 variable "db_instance_type" {
-    default = "t4g.micro"
+    default = "db.t4g.micro"
 }
 variable "vpc_id" {
 

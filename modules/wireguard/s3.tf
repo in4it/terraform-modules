@@ -45,8 +45,8 @@ resource "aws_s3_bucket_policy" "configuration-bucket" {
       "Action": "s3:*",
       "Effect": "Deny",
       "Resource": [
-        "arn:aws:s3:::vpn-configuration-${var.env}",
-        "arn:aws:s3:::vpn-configuration-${var.env}/*"
+        "arn:aws:s3:::${aws_s3_bucket.configuration-bucket.id}",
+        "arn:aws:s3:::${aws_s3_bucket.configuration-bucket.id}/*"
       ],
       "Condition": {
         "Bool": {
