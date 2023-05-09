@@ -303,3 +303,19 @@ module "cis-security" {
   sns_arn         = "arn:aws:sns:us-east-2:123343534564:MyTopic"
 }
 ```
+
+## Wireguard VPN
+Once applied, the [firezone](https://github.com/firezone/firezone) web UI is available at https://vpn.mydomain.com (external_url). State is stored in efs and RDS.
+```
+module "wireguard" {
+  source       = "github.com/in4it/terraform-modules/modules/wireguard"
+  env          = "prod"
+  external_url = "https://vpn.mydomain.com"
+  admin_email  = "your@email.inv"
+  vpc_id       = "vpc-123456"
+
+  instance_subnet_id = "subnet-123456" # public subnet
+  efs_subnet_ids     = ["subnet-123456", "subnet-789abc"] # private subnet
+  db_subnet_ids      = ["subnet-123456", "subnet-789abc"] # private subnet
+}
+```
