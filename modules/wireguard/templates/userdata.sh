@@ -12,25 +12,27 @@ echo \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 apt-get update
-apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 
 # efs helper
 cd /root
 git clone https://github.com/aws/efs-utils
 cd efs-utils
 ./build-deb.sh
-apt-get -y install ./build/amazon-efs-utils*deb
-
+mv ./build/amazon-efs-utils*deb /
+apt-get -y install /amazon-efs-utils*deb
+rm /amazon-efs-utils*deb
 mkdir /efs
 mount -t efs -o tls ${efs_fs_id} /efs
 
 mkdir /efs/firezone
-aws s3 cp s3://$S3_BUCKET/firezone/docker-compose.yml /efs/firezone
+aws s3 cp s3://${s3_bucket}/firezone/docker-compose.yml /efs/firezone/
 
-curl -o /bin/aws-env https://github.com/in4it/aws-env/releases/download/v0.7/aws-env-linux-amd64
+curl -L -o /bin/aws-env https://github.com/in4it/aws-env/releases/download/v0.7/aws-env-linux-amd64
+chmod +x /bin/aws-env
 
 cd /efs/firezone
-AWS_ENV_PATH=/${aws_env_path} AWS_REGION=${aws_region} ./aws-env --format=dotenv > .env
+AWS_ENV_PATH=${aws_env_path} AWS_REGION=${aws_region} /bin/aws-env --format=dotenv > .env
 
 echo "# The ability to change the IPv4 and IPv6 address pool will be removed
 # in a future Firezone release in order to reduce the possible combinations
@@ -42,3 +44,12 @@ WIREGUARD_IPV4_NETWORK=100.64.0.0/10
 WIREGUARD_IPV4_ADDRESS=100.64.0.1
 WIREGUARD_IPV6_NETWORK=fd00::/106
 WIREGUARD_IPV6_ADDRESS=fd00::1" >> .env
+
+if [ -e .setup-completed ] ; then 
+    docker compose run --rm firezone bin/migrate
+    docker compose run --rm firezone bin/create-or-reset-admin
+fi
+
+
+touch .setup-completed
+docker compose up -d

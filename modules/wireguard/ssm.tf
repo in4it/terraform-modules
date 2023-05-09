@@ -35,7 +35,7 @@ resource "aws_ssm_parameter" "vpn-endpoint" {
   name  = "/vpn-${var.env}/DATABASE_HOST"
   type  = "SecureString"
   key_id = aws_kms_key.vpn-ssm-key.id
-  value = module.vpn-rds.endpoint
+  value = module.vpn-rds.address
 }
 
 resource "aws_ssm_parameter" "vpn-password" {
@@ -43,6 +43,13 @@ resource "aws_ssm_parameter" "vpn-password" {
   type  = "SecureString"
   key_id = aws_kms_key.vpn-ssm-key.id
   value = module.vpn-rds.password
+}
+
+resource "aws_ssm_parameter" "vpn-encryption" {
+  name  = "/vpn-${var.env}/DATABASE_SSL_ENABLED"
+  type  = "SecureString"
+  key_id = aws_kms_key.vpn-ssm-key.id
+  value = "true"
 }
 
 resource "random_password" "encryption-key" {
@@ -130,7 +137,7 @@ resource "random_password" "default-admin-pass" {
 }
 
 resource "aws_ssm_parameter" "vpn-default-admin-pass" {
-  name  = "/vpn-${var.env}/DEFAULT_ADMIN_PASS"
+  name  = "/vpn-${var.env}/DEFAULT_ADMIN_PASSWORD"
   type  = "SecureString"
   key_id = aws_kms_key.vpn-ssm-key.id
   value = base64encode(random_password.default-admin-pass.result)

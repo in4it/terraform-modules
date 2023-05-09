@@ -48,4 +48,12 @@ data "aws_iam_policy_document" "vpn-custom-policy" {
     effect    = "Allow"
     resources = [aws_kms_key.vpn-ssm-key.arn]
   }
+  statement {
+    actions = [
+      "s3:GetObject",
+      "s3:ListObjects"
+    ]
+    effect    = "Allow"
+    resources = ["arn:aws:s3:::${aws_s3_bucket.configuration-bucket.id}/*", "arn:aws:s3:::${aws_s3_bucket.configuration-bucket.id}/*"]
+  }
 }

@@ -12,4 +12,6 @@ module "vpn-rds" {
   instance_type  = var.db_instance_type
   subnet_group   = ""
   subnet_ids     = var.db_subnet_ids
+
+  ingress_security_groups = [aws_security_group.vpn-instance.id]
 }

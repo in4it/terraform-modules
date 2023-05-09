@@ -16,6 +16,7 @@ resource "aws_instance" "vpn" {
     aws_region         = data.aws_region.current.name
     aws_env_path       = "/vpn-${var.env}/"
     efs_fs_id          = aws_efs_file_system.vpn.id
+    s3_bucket          = aws_s3_bucket.configuration-bucket.id
   }))
 
   root_block_device {
