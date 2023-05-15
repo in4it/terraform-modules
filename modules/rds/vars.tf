@@ -33,9 +33,6 @@ variable "engine" {
 variable "engine_version" {
   description = "RDS engine version"
 }
-variable "engine_family" {
-  description = "RDS engine family"
-}
 variable "vpc_id" {
   description = " vpc id"
 }
@@ -45,7 +42,7 @@ variable "subnet_ids" {
 }
 variable "subnet_group" {
   description = "subnet group to launch RDS in"
-  default     = []
+  default     = ""
 }
 variable "ingress_security_groups" {
   description = "Security groups to allow"
