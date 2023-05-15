@@ -319,3 +319,37 @@ module "wireguard" {
   db_subnet_ids      = ["subnet-123456", "subnet-789abc"] # private subnet
 }
 ```
+
+## RDS Module
+```terraform
+module "mysql" {
+  source              = "git@github.com:in4it/terraform-modules.git//modules/rds"
+  name                = "my_client-mysql-${var.env}"
+  vpc_id              = data.terraform_remote_state.network.outputs.vpc_id
+  subnet_ids          = data.terraform_remote_state.network.outputs.database_subnets
+  subnet_group        = data.terraform_remote_state.network.outputs.database_subnet_group
+  instance_type       = true
+  multi_az            = true
+  deletion_protection = true
+
+  ingress_security_groups = [
+    data.terraform_remote_state.vpn.outputs.vpn-sg,
+    data.terraform_remote_state.app.outputs.example-service-1,
+    data.terraform_remote_state.app.outputs.example-service-2,
+  ]
+
+  engine                = "mysql"
+  engine_version        = "5.7.x"
+  storage               = 100
+  max_allocated_storage = 1000
+  storage_type          = "gp3"
+  username              = "my_client"
+  database_name         = "my_client"
+
+  iam_database_authentication_enabled = false
+  at_rest_encryption                  = true
+
+  parameters = []
+}
+```
+
