@@ -7,7 +7,7 @@ resource "random_string" "password" {
 resource "aws_db_instance" "rds" {
   allocated_storage      = var.storage
   max_allocated_storage  = var.max_allocated_storage
-  engine                 = var.engine
+  engine                 = data.aws_rds_engine_version.rds_version.engine
   engine_version         = data.aws_rds_engine_version.rds_version.version
   instance_class         = var.instance_type
   identifier             = var.name
