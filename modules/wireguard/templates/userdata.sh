@@ -45,7 +45,7 @@ WIREGUARD_IPV4_ADDRESS=100.64.0.1
 WIREGUARD_IPV6_NETWORK=fd00::/106
 WIREGUARD_IPV6_ADDRESS=fd00::1" >> .env
 
-if [ -e .setup-completed ] ; then 
+if [ ! -e .setup-completed ] ; then 
     docker compose run --rm firezone bin/migrate
     docker compose run --rm firezone bin/create-or-reset-admin
 fi
