@@ -8,7 +8,7 @@ resource "aws_db_instance" "rds" {
   allocated_storage      = var.storage
   max_allocated_storage  = var.max_allocated_storage
   engine                 = var.engine
-  engine_version         = var.engine_version
+  engine_version         = data.aws_rds_engine_version.rds_version.version
   instance_class         = var.instance_type
   identifier             = var.name
   db_name                = var.database_name
@@ -35,6 +35,11 @@ resource "aws_db_instance" "rds" {
   }
 }
 
+data "aws_rds_engine_version" "rds_version" {
+  engine             = var.engine
+  preferred_versions = [var.engine_version]
+}
+
 resource "aws_db_subnet_group" "rds" {
   count       = var.subnet_group != "" ? 0 : 1
   name        = var.name
@@ -44,7 +49,7 @@ resource "aws_db_subnet_group" "rds" {
 
 resource "aws_db_parameter_group" "rds" {
   name        = var.name
-  family      = var.engine_family
+  family      = data.aws_rds_engine_version.rds_version.parameter_group_family
   description = "rds parameter group for ${var.name}"
 
   dynamic "parameter" {
