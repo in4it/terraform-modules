@@ -37,7 +37,7 @@ resource "aws_db_instance" "rds" {
 
 data "aws_rds_engine_version" "rds_version" {
   engine  = var.engine
-  version = [var.engine_version]
+  version = var.engine_version
 }
 
 resource "aws_db_subnet_group" "rds" {
