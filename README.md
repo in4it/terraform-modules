@@ -5,7 +5,7 @@ repository of useful terraform modules
 
 
 ## ECS Cluster (EC2)
-```
+```terraform
 module "my-ecs" {
   source         = "github.com/in4it/terraform-modules//modules/ecs-cluster"
   vpc_id         = "vpc-id"
@@ -22,7 +22,7 @@ module "my-ecs" {
 ```
 
 ## ECS Cluster (Fargate)
-```
+```terraform
 module "my-ecs" {
   source         = "github.com/in4it/terraform-modules//modules/fargate-cluster"
   cluster_name   = "my-ecs"
@@ -31,7 +31,7 @@ module "my-ecs" {
 ```
 
 ## ECS Service
-```
+```terraform
 module "my-service" {
   source              = "github.com/in4it/terraform-modules//modules/ecs-service"
   vpc_id              = "vpc-id"
@@ -54,7 +54,7 @@ module "my-service" {
 ```
 
 ## ALB
-```
+```terraform
 module "my-alb" {
   source             = "github.com/in4it/terraform-modules/modules/alb"
   vpc_id             = "vpc-id"
@@ -68,7 +68,7 @@ module "my-alb" {
 ```
 
 ## ALB Rule
-```
+```terraform
 module "my-alb-rule" {
   source             = "github.com/in4it/terraform-modules/modules/alb-rule"
   listener_arn       = "${module.my-alb.http_listener_arn}"
@@ -82,14 +82,14 @@ module "my-alb-rule" {
 ## Kinesis
 
 ### Example with mandatory parameters
-```
+```terraform
 module "my-kinesis" {
   name = "my-name"
 }
 ```
 
 ### Example with advance parameters
-```
+```terraform
 module "my-kinesis" {
   name = "my-name"
   kms_description = "My description"
@@ -110,7 +110,7 @@ module "my-kinesis" {
 
 ```
 ## Dynamodb
-```
+```terraform
 module "dynamodb_table" {
   source                 = "my-dynamodb"
   table_name             = "example-table"
@@ -202,7 +202,7 @@ module "dynamodb_table" {
 
 ## AWS SFTP Transfer
 
-```
+```terraform
 module "transfer" {
   transfer_server_name       = "transfer-server"
   transfer_server_user_names = ["sftp-user-name-01", "sftp-user-name-02"]
@@ -214,7 +214,7 @@ module "transfer" {
 
 ## OpenVPN
 
-```
+```terraform
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
@@ -290,7 +290,7 @@ module "vpn" {
 
 ## Security (AWS CIS v1.5.0)
 
-```
+```terraform
 module "cis-security" {
   source = "./modules/cis"
 
@@ -306,7 +306,7 @@ module "cis-security" {
 
 ## Wireguard VPN
 Once applied, the [firezone](https://github.com/firezone/firezone) web UI is available at https://vpn.mydomain.com (external_url). State is stored in efs and RDS.
-```
+```terraform
 module "wireguard" {
   source       = "github.com/in4it/terraform-modules/modules/wireguard"
   env          = "prod"
