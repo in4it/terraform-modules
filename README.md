@@ -339,7 +339,7 @@ module "mysql" {
   ]
 
   engine                = "mysql"
-  engine_version        = "5.7.x"
+  engine_version        = "5.7.38"
   storage               = 100
   max_allocated_storage = 1000
   storage_type          = "gp3"
