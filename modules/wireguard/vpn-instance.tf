@@ -4,6 +4,8 @@ data "aws_caller_identity" "current" {}
 resource "aws_instance" "vpn" {
   depends_on = [
     aws_s3_bucket_object.docker-compose,
+    module.vpn-rds,
+    aws_ssm_parameter.vpn-endpoint
   ]
 
   ami                    = data.aws_ami.ubuntu.id
