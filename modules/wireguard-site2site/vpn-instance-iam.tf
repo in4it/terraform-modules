@@ -37,6 +37,7 @@ data "aws_iam_policy_document" "vpn-custom-policy" {
   statement {
     actions = [
       "ssm:GetParametersByPath",
+      "ssm:PutParameter",
     ]
     effect    = "Allow"
     resources = ["arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${var.identifier}-vpn-${var.env}/"]
@@ -44,6 +45,7 @@ data "aws_iam_policy_document" "vpn-custom-policy" {
   statement {
     actions = [
       "kms:Decrypt",
+      "kms:Encrypt",
     ]
     effect    = "Allow"
     resources = [aws_kms_key.vpn-ssm-key.arn]
