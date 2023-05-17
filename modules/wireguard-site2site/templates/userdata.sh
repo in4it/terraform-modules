@@ -16,14 +16,14 @@ eval $(/bin/aws-env)
 export AWS_PUBLIC_IP=$(curl http://169.254.169.254/latest/meta-data/public-ipv4 -s)
 if [ -z "$KEY" ] ; then
   wg genkey | tee /etc/wireguard/site2site.key
-  aws ssm put-parameter --region ${aws_region} --name ${aws_env_path}KEY --value site2sitekey --key-id $KMS_ID --type SecureString
+  aws ssm put-parameter --region ${aws_region} --name ${aws_env_path}KEY --value $(cat /etc/wireguard/site2site.key) --key-id $KMS_ID --type SecureString
 else
   echo $KEY > /etc/wireguard/site2site.key
 fi
 
 if [ -z "$PUBLIC_KEY" ] ; then
   cat /etc/wireguard/site2site.key | wg pubkey | tee /etc/wireguard/site2site.pub
-  aws ssm put-parameter --region ${aws_region} --name ${aws_env_path}PUBLIC_KEY --value site2sitepubkey --key-id $KMS_ID --type SecureString
+  aws ssm put-parameter --region ${aws_region} --name ${aws_env_path}PUBLIC_KEY --value $(cat /etc/wireguard/site2site.pub) --key-id $KMS_ID --type SecureString
 else
   echo $PUBLIC_KEY > /etc/wireguard/site2site.pub
 fi
@@ -39,5 +39,9 @@ ListenPort = 51820
 PublicKey = ${vpn_destination_pubkey}
 AllowedIPs = $VPN_DESTINATION_ALLOWED_IPS,$VPN_INTERNAL_CIDR
 Endpoint = ${vpn_destination_public_ip}:51000" > /etc/wireguard/site2site.conf
+
+sysctl -w net.ipv4.ip_forward=1
+
+echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
 
 systemctl enable --now wg-quick@site2site
