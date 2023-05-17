@@ -21,8 +21,9 @@ variable "log_retention_days" {
 
 variable "listeners" {
   type = list(object({
-    port     = string
-    protocol = string
+    port        = string
+    protocol    = string
+    cidr_blocks = list(string)
   }))
   default = [{
     port        = "51820"
