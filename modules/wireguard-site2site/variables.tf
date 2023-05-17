@@ -33,9 +33,12 @@ variable "env" {
 variable "vpn_internal_cidr" {
 
 }
-variable "vpn_destination_cidr" {
+variable "vpn_destination_allowed_ips" {
 
 }
 variable "vpn_destination_pubkey" {
-  
+
+}
+variable "vpn_destination_public_ip" {
+
 }

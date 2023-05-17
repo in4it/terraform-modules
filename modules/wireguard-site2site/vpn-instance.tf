@@ -3,7 +3,7 @@ data "aws_caller_identity" "current" {}
 
 resource "aws_instance" "vpn" {
   depends_on = [
-    aws_s3_bucket_object.docker-compose,
+    aws_ssm_parameter.vpn-destination-pubkey,
   ]
 
   ami                    = data.aws_ami.ubuntu.id
@@ -16,6 +16,9 @@ resource "aws_instance" "vpn" {
     aws_region         = data.aws_region.current.name
     aws_env_path       = "/${var.identifier}-vpn-${var.env}/"
     kms_id             = aws_kms_key.vpn-ssm-key.id
+
+    vpn_destination_pubkey    = var.vpn_destination_pubkey
+    vpn_destination_public_ip = var.vpn_destination_public_ip
   }))
 
   root_block_device {
@@ -38,7 +41,7 @@ resource "aws_eip" "vpn_ip" {
 }
 
 resource "aws_cloudwatch_log_group" "cloudwatch-ec2-vpn" {
-  name              = "ec2-vpn-${var.env}"
+  name              = "${var.identifier}-ec2-vpn-${var.env}"
   retention_in_days = var.log_retention_days
 }
 
@@ -48,12 +51,12 @@ data "aws_ami" "ubuntu" {
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-*-*-amd64-server-*"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
   }
 }
 
 resource "aws_security_group" "vpn-instance" {
-  name   = "vpn-sg-${var.env}"
+  name   = "${var.identifier}-vpn-sg-${var.env}"
   vpc_id = var.vpc_id
 
   dynamic "ingress" {
