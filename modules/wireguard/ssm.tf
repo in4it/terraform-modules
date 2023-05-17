@@ -53,7 +53,7 @@ resource "aws_ssm_parameter" "vpn-encryption" {
 }
 
 resource "random_password" "encryption-key" {
-  length           = 64
+  length           = 32
   special          = true
   override_special = "!@#$%&*()-_=+[]{}<>:?"
 }

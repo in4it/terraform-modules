@@ -4,7 +4,6 @@ module "vpn-rds" {
   storage        = "20"
   storage_type   = "gp2"
   engine         = "postgres"
-  engine_family  = "postgres15"
   engine_version = "15.2"
   username       = "vpn"
   database_name  = "vpn"
