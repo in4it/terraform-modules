@@ -5,6 +5,10 @@ variable "instance_type" {
     default = "t3.micro"
 }
 
+variable "source_dest_check" {
+  default = false
+}
+
 variable "vpc_id" {
 
 }
@@ -21,8 +25,9 @@ variable "listeners" {
     protocol = string
   }))
   default = [{
-    port     = "51820"
-    protocol = "udp"
+    port        = "51820"
+    protocol    = "udp"
+    cidr_blocks = ["0.0.0.0/0"]
   }]
 }
 

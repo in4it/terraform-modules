@@ -32,16 +32,19 @@ variable "listeners" {
     protocol = string
   }))
   default = [{
-    port     = "51820"
-    protocol = "udp"
+    port        = "51820"
+    protocol    = "udp"
+    cidr_blocks = ["0.0.0.0/0"]
   },
   {
-    port     = "80"
-    protocol = "tcp"
+    port        = "80"
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   },
   {
-    port     = "443"
-    protocol = "tcp"
+    port        = "443"
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }]
 }
 

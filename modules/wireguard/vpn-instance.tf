@@ -51,7 +51,7 @@ data "aws_ami" "ubuntu" {
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-*-*-amd64-server-*"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
   }
 }
 
@@ -65,7 +65,7 @@ resource "aws_security_group" "vpn-instance" {
       from_port   = ingress.value.port
       protocol    = ingress.value.protocol
       to_port     = ingress.value.port
-      cidr_blocks = ["0.0.0.0/0"]
+      cidr_blocks = ingress.value.cidr_blocks
     }
   }
   egress {

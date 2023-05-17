@@ -11,6 +11,7 @@ resource "aws_instance" "vpn" {
   subnet_id              = var.instance_subnet_id
   vpc_security_group_ids = [aws_security_group.vpn-instance.id]
   iam_instance_profile   = aws_iam_instance_profile.vpn_iam_instance_profile.name
+  source_dest_check      = var.source_dest_check
 
   user_data_base64     = base64encode(templatefile("${path.module}/templates/userdata.sh", {
     aws_region         = data.aws_region.current.name
@@ -65,7 +66,7 @@ resource "aws_security_group" "vpn-instance" {
       from_port   = ingress.value.port
       protocol    = ingress.value.protocol
       to_port     = ingress.value.port
-      cidr_blocks = ["0.0.0.0/0"]
+      cidr_blocks = ingress.value.cidr_blocks
     }
   }
   egress {
