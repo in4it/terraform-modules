@@ -38,7 +38,7 @@ ListenPort = 51820
 [Peer]
 PublicKey = ${vpn_destination_pubkey}
 AllowedIPs = $VPN_DESTINATION_ALLOWED_IPS,$VPN_INTERNAL_CIDR
-Endpoint = ${vpn_destination_public_ip}:51000" > /etc/wireguard/site2site.conf
+Endpoint = ${vpn_destination_public_ip}:51820" > /etc/wireguard/site2site.conf
 
 sysctl -w net.ipv4.ip_forward=1
 
