@@ -130,6 +130,22 @@ resource "aws_ecs_service" "ecs-service" {
       container_name = service_registries.value.container_name
     }
   }
+  service_connect_configuration {
+    enabled   = var.service_connect_enabled
+    namespace = var.service_connect_namespace #aws_service_discovery_http_namespace.service_discovery.arn
+
+    dynamic "service" {
+      for_each = var.service_connect_services
+      content {
+        discovery_name = service.value.discovery_name
+        port_name      = service.value.port_name
+        client_alias {
+          dns_name = service.value.client_alias_dns_name
+          port     = service.value.client_alias_port
+        }
+      }
+    }
+  }
 
   depends_on = [null_resource.alb_exists]
 }
