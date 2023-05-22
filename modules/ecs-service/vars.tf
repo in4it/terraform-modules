@@ -259,9 +259,9 @@ variable "service_connect_namespace" {
 variable "service_connect_services" {
   type = list(object({
     discovery_name        = string
-    port_name             = number
+    port_name             = string
     client_alias_dns_name = string
-    client_alias_port     = string
+    client_alias_port     = number
   }))
   default = []
 }

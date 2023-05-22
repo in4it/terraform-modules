@@ -13,7 +13,6 @@
       "portmappings" : [
         {
           "name": "main_${container.host_port}",
-          %{endif}
           %{if container.host_port != null}
             "hostport": ${container.host_port},
           %{endif}
