@@ -151,10 +151,9 @@ resource "aws_ecs_service" "ecs-service" {
 }
 
 
-
 resource "null_resource" "alb_exists" {
   triggers = {
-    alb_name = var.alb_arn
+    alb_name = var.lb_arn
   }
 }
 

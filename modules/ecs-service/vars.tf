@@ -90,8 +90,7 @@ variable "execution_role_arn" {
   default = ""
 }
 
-variable "alb_arn" {
-}
+variable "lb_arn" {}
 
 variable "fargate_service_security_groups" {
   default = []
@@ -129,7 +128,11 @@ variable "ingress_rules" {
     from_port       = number
     to_port         = number
     protocol        = string
-    security_groups = list(string)
+    security_groups = optional(list(string))
+    cidr_blocks     = optional(list(string))
+    description     = optional(string)
+    prefix_list_ids = optional(list(string))
+    self            = optional(bool)
   }))
 }
 
