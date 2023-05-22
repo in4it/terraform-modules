@@ -12,15 +12,15 @@
       "essential": true,
       "portmappings" : [
         {
-          "name": "main_${container.host_port}",
           %{if container.host_port != null}
+            "name": "${container.host_port}",
             "hostport": ${container.host_port},
           %{endif}
           "containerport": ${container.application_port}
         }
         %{ for key, additional_port in container.additional_ports ~}
         ,{
-          "name": "sec_${additional_port}",
+          "name": "${additional_port}",
           "hostport": ${additional_port},
           "containerport": ${additional_port}
         }
