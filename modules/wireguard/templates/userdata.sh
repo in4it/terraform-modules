@@ -23,7 +23,8 @@ mv ./build/amazon-efs-utils*deb /
 apt-get -y install /amazon-efs-utils*deb
 rm /amazon-efs-utils*deb
 mkdir /efs
-mount -t efs -o tls ${efs_fs_id} /efs
+echo -e "${efs_fs_id}\t/efs\tefs\ttls" >> /etc/fstab
+mount /efs
 
 mkdir /efs/firezone
 aws s3 cp s3://${s3_bucket}/firezone/docker-compose.yml /efs/firezone/
