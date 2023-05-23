@@ -32,7 +32,7 @@ curl -L -o /bin/aws-env https://github.com/in4it/aws-env/releases/download/v0.7/
 chmod +x /bin/aws-env
 
 cd /efs/firezone
-AWS_ENV_PATH=${aws_env_path} AWS_REGION=${aws_region} /bin/aws-env --format=dotenv > .env
+AWS_ENV_PATH=${aws_env_path} AWS_REGION=${aws_region} /bin/aws-env --format=dotenv | sed 's#\$#\\$#g' > .env
 
 echo "# The ability to change the IPv4 and IPv6 address pool will be removed
 # in a future Firezone release in order to reduce the possible combinations
