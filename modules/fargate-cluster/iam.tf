@@ -48,7 +48,6 @@ EOF
 }
 
 resource "aws_iam_role_policy" "ecs-task-execution-custom-role-policy" {
-  count  = var.execution_role_policy == "" ? 0 : 1
   name   = "ecs-task-execution-custom-role-policy-${var.cluster_name}"
   role   = aws_iam_role.ecs-task-execution-role.id
   policy = var.execution_role_policy
