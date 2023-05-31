@@ -20,3 +20,6 @@ output "service_name" {
 output "ecr_url" {
   value = length(var.containers) == 0 && var.existing_ecr == "" ? aws_ecr_repository.ecs-service.0.repository_url : ""
 }
+output "ecr_arn" {
+  value = length(var.containers) == 0 && var.existing_ecr == "" ? aws_ecr_repository.ecs-service.0.arn : ""
+}
