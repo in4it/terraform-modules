@@ -353,3 +353,33 @@ module "mysql" {
 }
 ```
 
+## Wireguard site-to-site
+```
+module "site2site" {
+  source             = "github.com/in4it/terraform-modules/modules/wireguard-site2site"
+  env                = "prod"
+  identifier         = "site2site"
+  vpc_id             = "vpc-123456"
+  instance_subnet_id = "subnet-123456"
+
+  instance_type      = "t3.medium"
+
+  vpn_destination_pubkey        = "wireguard public key destination"
+  vpn_internal_cidr             = "10.0.0.0/16"  # siteA internal ip range (this side)
+  vpn_destination_allowed_ips   = "10.1.0.0/16"  # siteB ip range
+  vpn_destination_public_ip     = "1.2.3.4"      # siteB public IP
+
+  listeners = [
+    {
+        port        = "51820"
+        protocol    = "udp"
+        cidr_blocks = ["1.2.3.4/32"] # site B public IP
+    },
+    {
+        port        = "0"
+        protocol    = "-1"
+        cidr_blocks = ["10.0.0.0/16"] # siteA internal IP range
+    },
+  ]
+}
+```
