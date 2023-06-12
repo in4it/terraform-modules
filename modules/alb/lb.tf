@@ -8,7 +8,7 @@ resource "aws_lb" "lb" {
   security_groups            = [aws_security_group.lb.id]
   subnets                    = var.vpc_subnets
   idle_timeout               = var.idle_timeout
-  enable_deletion_protection = false
+  enable_deletion_protection = var.enable_deletion_protection
 
   drop_invalid_header_fields = var.drop_invalid_header_fields
 
