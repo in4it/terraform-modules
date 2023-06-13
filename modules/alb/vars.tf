@@ -61,3 +61,8 @@ variable "drop_invalid_header_fields" {
   type    = bool
   default = false
 }
+
+variable "enable_deletion_protection" {
+  description = "Enable Deletion Protection"
+  default     = true
+}
