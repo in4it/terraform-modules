@@ -90,7 +90,7 @@ variable "execution_role_arn" {
   default = ""
 }
 
-variable "lb_arn" {}
+variable "alb_arn" {}
 
 variable "fargate_service_security_groups" {
   default = []
