@@ -246,22 +246,3 @@ variable "enable_execute_command" {
   type    = bool
   default = false
 }
-
-variable "service_connect_enabled" {
-  type    = bool
-  default = false
-}
-
-variable "service_connect_namespace" {
-  type    = string
-  default = ""
-}
-variable "service_connect_services" {
-  type = list(object({
-    discovery_name        = string
-    port_name             = string
-    client_alias_dns_name = string
-    client_alias_port     = number
-  }))
-  default = []
-}

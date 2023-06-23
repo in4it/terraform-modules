@@ -13,14 +13,12 @@
       "portmappings" : [
         {
           %{if container.host_port != null}
-            "name": "${container.host_port}",
             "hostport": ${container.host_port},
           %{endif}
           "containerport": ${container.application_port}
         }
         %{ for key, additional_port in container.additional_ports ~}
         ,{
-          "name": "${additional_port}",
           "hostport": ${additional_port},
           "containerport": ${additional_port}
         }
