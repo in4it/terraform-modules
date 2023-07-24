@@ -30,6 +30,12 @@ resource "aws_db_instance" "rds" {
   deletion_protection          = var.deletion_protection
   performance_insights_enabled = var.performance_insight_enabled
 
+  snapshot_identifier = var.initial_snapshot_id != "" ? var.initial_snapshot_id : null
+
+  lifecycle {
+    ignore_changes = [snapshot_identifier]
+  }
+
   tags = {
     Name = var.name
   }

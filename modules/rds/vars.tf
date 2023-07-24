@@ -88,3 +88,9 @@ variable "password_override_special" {
   description = "override special characters used for rds password"
   default     = "!#$%&*()-_=+[]{}<>:?"
 }
+
+variable "initial_snapshot_id" {
+  type = string
+  description = "Initial snapshot DB to restore from (useful for restoring from a different region or account)"
+  default     = ""
+}
