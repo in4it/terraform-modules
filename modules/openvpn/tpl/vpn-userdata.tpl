@@ -20,7 +20,7 @@ chmod 600 /etc/openvpn/onelogin.conf
 systemctl start docker
 systemctl enable docker
 sleep 3
-aws ecr-public get-login-password --region ${aws_region} | docker login --username AWS --password-stdin public.ecr.aws/y9x3p3i6
+aws ecr get-login-password --region ${aws_region} --endpoint https://api.ecr.${aws_region}.amazonaws.com
 if [ ! -e /etc/openvpn/openvpn.conf ]; then
    echo "No config files found, generating...."
    aws s3 cp s3://${project_name}-configuration-${env}/openvpnconfig/vars /etc/openvpn/vars --endpoint https://s3.${aws_region}.amazonaws.com --region ${aws_region}
