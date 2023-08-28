@@ -29,6 +29,7 @@ resource "aws_db_instance" "rds" {
 
   deletion_protection          = var.deletion_protection
   performance_insights_enabled = var.performance_insight_enabled
+  allow_major_version_upgrade  = var.allow_major_version_upgrade
 
   tags = {
     Name = var.name

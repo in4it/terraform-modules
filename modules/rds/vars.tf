@@ -88,3 +88,7 @@ variable "password_override_special" {
   description = "override special characters used for rds password"
   default     = "!#$%&*()-_=+[]{}<>:?"
 }
+variable "allow_major_version_upgrade" {
+  description = "When upgrading the major version of an engine, allow_major_version_upgrade must be set to true."
+  default     = false
+}
