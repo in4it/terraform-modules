@@ -12,7 +12,7 @@ resource "aws_iam_role" "aikido-security-readonly-role" {
             "Action": "sts:AssumeRole",
             "Condition": {
                 "StringEquals": {
-                  "sts:ExternalId": "aikido-776"
+                  "sts:ExternalId": "${var.aikido-role-external-id}"
                 }
             }
         }
