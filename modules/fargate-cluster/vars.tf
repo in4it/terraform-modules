@@ -5,7 +5,7 @@ variable "cluster_name" {
 }
 
 variable "execution_role_policy" {
-  default = ""
+  default = null
 }
 
 variable "log_retention_days" {
