@@ -35,16 +35,19 @@ resource "aws_codedeploy_deployment_group" "codedeploy" {
     service_name = var.ecs_service_name
   }
 
-  load_balancer_info {
-    target_group_pair_info {
-      prod_traffic_route {
-        listener_arns = var.listener_arns
-      }
+  dynamic "load_balancer_info" {
+    for_each = length(compact(var.listener_arns)) == 0 ? [] : [1]
+    content {
+      target_group_pair_info {
+        prod_traffic_route {
+          listener_arns = compact(var.listener_arns)
+        }
 
-      dynamic target_group {
-        for_each = var.target_group_names
-        content {
-          name = target_group.value
+        dynamic target_group {
+          for_each = var.target_group_names
+          content {
+            name = target_group.value
+          }
         }
       }
     }
