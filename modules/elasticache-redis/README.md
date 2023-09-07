@@ -33,6 +33,7 @@ No modules.
 | <a name="input_engine_version"></a> [engine\_version](#input\_engine\_version) | n/a | `string` | `"7.0"` | no |
 | <a name="input_env"></a> [env](#input\_env) | Deployment environment : dev \| stg \| prod  etc.. | `any` | n/a | yes |
 | <a name="input_family"></a> [family](#input\_family) | n/a | `string` | `"redis7"` | no |
+| <a name="input_ingress_rules"></a> [ingress\_rules](#input\_ingress\_rules) | n/a | <pre>list(object({<br>    from_port        = number<br>    to_port          = number<br>    protocol         = string<br>    security_groups  = optional(list(string))<br>    cidr_blocks      = optional(list(string))<br>    ipv6_cidr_blocks = optional(list(string))<br>    description      = optional(string)<br>    prefix_list_ids  = optional(list(string))<br>    self             = optional(bool)<br>  }))</pre> | n/a | yes |
 | <a name="input_maintenance_window"></a> [maintenance\_window](#input\_maintenance\_window) | n/a | `string` | `"sun:05:00-sun:06:00"` | no |
 | <a name="input_multi_az_enabled"></a> [multi\_az\_enabled](#input\_multi\_az\_enabled) | Enable Multi-AZ Support | `bool` | `false` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name prefix for the Elasticache cluster | `any` | n/a | yes |
