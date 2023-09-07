@@ -15,6 +15,19 @@ variable "subnet_ids" {
   description = "List of Subnet IDs to deploy the new cluster"
   type        = list(string)
 }
+variable "ingress_rules" {
+  type = list(object({
+    from_port        = number
+    to_port          = number
+    protocol         = string
+    security_groups  = optional(list(string))
+    cidr_blocks      = optional(list(string))
+    ipv6_cidr_blocks = optional(list(string))
+    description      = optional(string)
+    prefix_list_ids  = optional(list(string))
+    self             = optional(bool)
+  }))
+}
 variable "family" {
   default = "redis7"
 }

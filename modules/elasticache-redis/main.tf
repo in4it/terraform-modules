@@ -26,11 +26,20 @@ resource "aws_security_group" "redis" {
   name        = "${local.name}-sg"
   description = "Security group for ${local.name}"
   vpc_id      = data.aws_vpc.this.id
-  ingress {
-    from_port   = var.port
-    to_port     = var.port
-    protocol    = "tcp"
-    cidr_blocks = [data.aws_vpc.this.cidr_block]
+
+  dynamic "ingress" {
+    for_each = var.ingress_rules
+    content {
+      from_port        = ingress.value.from_port
+      to_port          = ingress.value.to_port
+      protocol         = ingress.value.protocol
+      description      = try(ingress.value.description, "")
+      security_groups  = try(ingress.value.security_groups, [])
+      cidr_blocks      = try(ingress.value.cidr_blocks, [])
+      ipv6_cidr_blocks = try(ingress.value.ipv6_cidr_blocks, [])
+      prefix_list_ids  = try(ingress.value.prefix_list_ids, [])
+      self             = try(ingress.value.self, false)
+    }
   }
   egress {
     from_port   = 0
@@ -71,8 +80,8 @@ resource "aws_elasticache_replication_group" "redis" {
 
   subnet_group_name  = aws_elasticache_subnet_group.redis.name
   security_group_ids = [aws_security_group.redis.id]
-  
-  at_rest_encryption_enabled    = var.rest_encryption_enabled
+
+  at_rest_encryption_enabled = var.rest_encryption_enabled
   transit_encryption_enabled = var.transit_encryption_enabled
 
   maintenance_window         = var.maintenance_window
