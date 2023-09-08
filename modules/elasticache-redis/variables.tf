@@ -9,8 +9,8 @@ variable "name_suffix" {
   description = "Suffix for the Elasticache cluster name"
 }
 variable "override_name" {
-  type = string
-  default = null
+  type = bool
+  default = false
   description = "Override name for existing clusters to not recreate the cluster"
 }
 variable "vpc_id" {
