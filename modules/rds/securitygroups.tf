@@ -1,5 +1,5 @@
 locals {
-  port = data.aws_rds_engine_version.rds_version.engine == "mysql" ? 3306 : 5432
+  port = contains(["mysql", "mariadb"], data.aws_rds_engine_version.rds_version.engine) ? 3306 : 5432
 }
 resource "aws_security_group" "rds" {
   name        = "${var.name}-rds"
