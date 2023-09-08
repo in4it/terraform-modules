@@ -10,6 +10,7 @@ variable "name_suffix" {
 }
 variable "override_name" {
   type = string
+  default = null
   description = "Override name for existing clusters to not recreate the cluster"
 }
 variable "vpc_id" {
