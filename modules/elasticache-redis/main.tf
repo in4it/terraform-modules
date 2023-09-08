@@ -1,5 +1,5 @@
 locals {
-  name = try(var.override_name, "${var.name}-${var.env}-${var.name_suffix}")
+  name = coalesce(var.override_name, "${var.name}-${var.env}-${var.name_suffix}")
   parameters = concat(var.parameters, var.cluster_mode_enabled == false ? [] : [
     {
       name  = "cluster-enabled", # Needed for cluster mode and autoscaling
