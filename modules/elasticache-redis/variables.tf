@@ -8,6 +8,10 @@ variable "name_suffix" {
   default     = "redis"
   description = "Suffix for the Elasticache cluster name"
 }
+variable "override_name" {
+  type = optional(string)
+  description = "Override name for existing clusters to not recreate the cluster"
+}
 variable "vpc_id" {
   description = "VPC to deploy the new cluster"
 }

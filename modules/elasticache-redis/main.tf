@@ -1,5 +1,5 @@
 locals {
-  name = "${var.name}-${var.env}-${var.name_suffix}"
+  name = try(var.override_name, "${var.name}-${var.env}-${var.name_suffix}")
   parameters = concat(var.parameters, var.cluster_mode_enabled == false ? [] : [
     {
       name  = "cluster-enabled", # Needed for cluster mode and autoscaling
@@ -21,7 +21,6 @@ resource "aws_elasticache_subnet_group" "redis" {
   subnet_ids = var.subnet_ids
 }
 
-# Allow access from the VPC CIDR only
 resource "aws_security_group" "redis" {
   name        = "${local.name}-sg"
   description = "Security group for ${local.name}"
