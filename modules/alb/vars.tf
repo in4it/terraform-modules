@@ -13,6 +13,10 @@ variable "vpc_subnets" {
 variable "domain" {
 }
 
+variable "extra_domains" {
+  default = []
+}
+
 variable "default_target_arn" {
   default = ""
 }
