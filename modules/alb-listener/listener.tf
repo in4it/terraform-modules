@@ -9,7 +9,7 @@ resource "aws_alb_listener" "alb-listener" {
   load_balancer_arn = var.ALB_ARN
   port              = var.ALB_PORT
   protocol          = var.ALB_PROTOCOL
-  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  ssl_policy        = var.SSL_POLICY
   certificate_arn   = data.aws_acm_certificate.certificate.arn
 
   default_action {
