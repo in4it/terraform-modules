@@ -5,6 +5,11 @@
 resource "aws_ecs_cluster" "cluster" {
   name = var.cluster_name
 
+  setting {
+    name  = "containerInsights"
+    value = var.ecs_insights
+  }
+
   dynamic "configuration" {
     for_each = var.enable_execute_command ? [""] : []
     content {

@@ -4,6 +4,10 @@ variable "log_group" {
 variable "cluster_name" {
 }
 
+variable "ecs_insights"  {
+  default = "disabled"
+}
+
 variable "execution_role_policy" {
   default = ""
 }
