@@ -16,9 +16,27 @@ aws s3 cp s3://${project_name}-configuration-${env}/openvpnconfig/onelogin.conf 
 chown nobody:nogroup /etc/openvpn/onelogin.conf
 chmod 600 /etc/openvpn/onelogin.conf
 
-# Run container
-systemctl start docker
-systemctl enable docker
+%{ for listener in listeners ~}
+cat  > /etc/systemd/system/docker-openvpn-${listener.port}-${listener.protocol}@.service << 'EOF'
+[Unit]
+Description=OpenVPN Docker Container
+Documentation=https://github.com/kylemanna/docker-openvpn
+After=network.target docker.service
+Requires=docker.service
+
+[Service]
+RestartSec=10
+Restart=always
+
+ExecStartPre=-/usr/bin/docker rm -f openvpn-${listener.port}-${listener.protocol}
+
+ExecStart=/usr/bin/docker run --privileged --log-driver=awslogs --log-opt awslogs-region=${aws_region} --log-opt awslogs-group=${log_group} -v /etc/openvpn:/etc/openvpn -p ${listener.port}:1194/${listener.protocol} --cap-add=NET_ADMIN --name openvpn-${listener.port}-${listener.protocol} ${openvpn_public_ecr}
+
+[Install]
+WantedBy=multi-user.target
+EOF
+%{ endfor ~}
+
 sleep 3
 aws ecr get-login-password --region ${aws_region} --endpoint https://api.ecr.${aws_region}.amazonaws.com
 if [ ! -e /etc/openvpn/openvpn.conf ]; then
@@ -31,12 +49,12 @@ if [ ! -e /etc/openvpn/openvpn.conf ]; then
    echo "script-security 3" >> /etc/openvpn/openvpn.conf
    echo "reneg-sec ${reneg_sec}" >> /etc/openvpn/openvpn.conf
    %{ for listener in listeners ~}
-       docker run --log-driver=awslogs --log-opt awslogs-region=${aws_region} --log-opt awslogs-group=${log_group} -v /etc/openvpn:/etc/openvpn --restart=always -d -p ${listener.port}:1194/${listener.protocol} --cap-add=NET_ADMIN --name openvpn-${listener.port}-${listener.protocol} ${openvpn_public_ecr}
+       systemctl enable --now docker-openvpn-${listener.port}-${listener.protocol}@${env}
    %{ endfor ~}
    aws s3 sync /etc/openvpn s3://${project_name}-configuration-${env}/openvpn --endpoint https://s3.${aws_region}.amazonaws.com --region ${aws_region}
 else
    echo "Config files found, starting OpenVPN..."
    %{ for listener in listeners ~}
-       docker run --log-driver=awslogs --log-opt awslogs-region=${aws_region} --log-opt awslogs-group=${log_group} -v /etc/openvpn:/etc/openvpn -d -p ${listener.port}:1194/${listener.protocol} --cap-add=NET_ADMIN --name openvpn-${listener.port}-${listener.protocol} ${openvpn_public_ecr}
+       systemctl enable --now docker-openvpn-${listener.port}-${listener.protocol}@${env}
    %{ endfor ~}
 fi
