@@ -30,6 +30,11 @@ resource "aws_instance" "openvpn" {
     encrypted = true
   }
 
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+  }
+
   tags = {
     Name = "${var.project_name}-vpn-${var.env}"
     Env  = var.env
