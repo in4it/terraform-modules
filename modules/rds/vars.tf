@@ -92,3 +92,9 @@ variable "allow_major_version_upgrade" {
   description = "When upgrading the major version of an engine, allow_major_version_upgrade must be set to true."
   default     = false
 }
+
+variable "initial_snapshot_id" {
+  type = string
+  description = "Initial (Decrypted) snapshot DB to restore from (useful for restoring from a different region or account)"
+  default     = ""
+}

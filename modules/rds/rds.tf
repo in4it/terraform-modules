@@ -31,6 +31,12 @@ resource "aws_db_instance" "rds" {
   performance_insights_enabled = var.performance_insight_enabled
   allow_major_version_upgrade  = var.allow_major_version_upgrade
 
+  snapshot_identifier = var.initial_snapshot_id != "" ? var.initial_snapshot_id : null
+
+  lifecycle {
+    ignore_changes = [snapshot_identifier]
+  }
+
   tags = {
     Name = var.name
   }
