@@ -95,6 +95,6 @@ variable "allow_major_version_upgrade" {
 
 variable "initial_snapshot_id" {
   type = string
-  description = "Initial snapshot DB to restore from (useful for restoring from a different region or account)"
+  description = "Initial (Decrypted) snapshot DB to restore from (useful for restoring from a different region or account)"
   default     = ""
 }
