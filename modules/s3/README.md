@@ -28,6 +28,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_cloudfront_origin_access_identity_arn"></a> [cloudfront\_origin\_access\_identity\_arn](#input\_cloudfront\_origin\_access\_identity\_arn) | CloudFront Origin Access ARN | `string` | `""` | no |
+| <a name="input_cloudfront_origin_access_identity_iam_actions"></a> [cloudfront\_origin\_access\_identity\_iam\_actions](#input\_cloudfront\_origin\_access\_identity\_iam\_actions) | iam actions to give cloudfront access to | `list(string)` | <pre>[<br>  "s3:Get*"<br>]</pre> | no |
 | <a name="input_name"></a> [name](#input\_name) | name of the s3 bucket | `any` | n/a | yes |
 | <a name="input_versioning"></a> [versioning](#input\_versioning) | enable s3 versioning | `bool` | `true` | no |
 
