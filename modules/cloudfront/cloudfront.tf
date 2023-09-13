@@ -32,6 +32,11 @@ resource "aws_cloudfront_distribution" "this" {
       restriction_type = "none"
     }
   }
+
+  viewer_certificate {
+    cloudfront_default_certificate = true
+  }
+
   tags = {
     Name = var.name
   }
