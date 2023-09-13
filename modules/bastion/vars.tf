@@ -21,3 +21,7 @@ variable "root_block_device_encryption" {
   description = "encrypt root block device"
   default     = true
 }
+variable "user_data"{
+  description = "Custom user_data for the bastion to run on startup"
+  value       = ""
+}
