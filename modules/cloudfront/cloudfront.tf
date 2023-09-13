@@ -18,11 +18,11 @@ resource "aws_cloudfront_distribution" "this" {
   dynamic "origin" {
     for_each = { for origins in var.s3_origins : origins.domain_name => origins }
     content {
-      domain_name = origin.value.s3_origins
+      domain_name = origin.value.domain_name
       origin_id   = origin.value.origin_id
 
       s3_origin_config {
-        origin_access_identity = origin.value.origin_access_identity
+        origin_access_identity = aws_cloudfront_origin_access_identity.this.cloudfront_access_identity_path
       }
     }
   }
