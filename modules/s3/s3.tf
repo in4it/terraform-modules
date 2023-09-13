@@ -35,27 +35,51 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
 
 resource "aws_s3_bucket_policy" "this" {
   bucket = aws_s3_bucket.this.id
-  policy = <<EOF
-{
-  "Id": "S3Policy",
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "AllowSSLRequestsOnly",
-      "Action": "s3:*",
-      "Effect": "Deny",
-      "Resource": [
+  policy = data.aws_iam_policy_document.this.json
+}
+
+data "aws_iam_policy_document" "this" {
+  policy_id = "s3-bucket-policy"
+
+  dynamic "statement" {
+    for_each = var.cloudfront_origin_access_identity_arn == "" ? [] : [var.cloudfront_origin_access_identity_arn]
+    content {
+      sid = "PolicyForCouldFrontPrivateContent"
+      principals {
+        identifiers = [
+          var.cloudfront_origin_access_identity_arn
+        ]
+        type = "AWS"
+      }
+      effect = "Allow"
+      actions = [
+        "s3:*"
+      ]
+      resources = [
         "arn:aws:s3:::${aws_s3_bucket.this.id}",
-        "arn:aws:s3:::${aws_s3_bucket.this.id}/*"
-      ],
-      "Condition": {
-        "Bool": {
-          "aws:SecureTransport": "false"
-        }
-      },
-      "Principal": "*"
+        "arn:aws:s3:::${aws_s3_bucket.this.id}/*",
+      ]
     }
-  ]
+  }
+  statement {
+    sid = "allowSSLRequestsOnly"
+    principals {
+      identifiers = ["*"]
+      type        = "*"
+    }
+    effect = "Deny"
+    actions = [
+      "s3:*"
+    ]
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.this.id}",
+      "arn:aws:s3:::${aws_s3_bucket.this.id}/*",
+    ]
+    condition {
+      test     = "Bool"
+      values   = ["false"]
+      variable = "aws:secureTransport"
+    }
+  }
 }
-EOF
-}
+
