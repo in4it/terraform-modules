@@ -25,6 +25,11 @@ resource "aws_instance" "bastion" {
   root_block_device {
     encrypted = var.root_block_device_encryption
   }
+
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+  }
   
   tags = {
     Name = var.name
