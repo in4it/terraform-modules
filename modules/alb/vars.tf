@@ -30,7 +30,7 @@ variable "tls" {
 }
 
 variable "tls_policy" {
-  default = "ELBSecurityPolicy-2016-08"
+  default = "ELBSecurityPolicy-TLS13-1-2-2021-06"
 }
 
 variable "idle_timeout" {
