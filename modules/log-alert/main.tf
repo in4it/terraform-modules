@@ -18,7 +18,6 @@ resource "aws_lambda_function" "alerter" {
       ENV             = var.env
       SNS_ALERT_TOPIC = aws_sns_topic.alert_topic.arn
       SUBJECT         = join(" - ", ["[${var.env}] ", var.subject_prefix])
-      SHOW_AS_TABLE = var.show_as_table
     }
   }
 
