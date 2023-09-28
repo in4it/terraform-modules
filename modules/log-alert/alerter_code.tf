@@ -3,17 +3,19 @@ data "archive_file" "code" {
   output_path = "${path.module}/alerter.zip"
   source_content_filename = "alerter.py"
   source_content = <<EOF
+import os
 import base64
 import json
-import os
 import zlib
 from datetime import datetime
-
 import boto3
 
-sns = boto3.client('sns')
 topic = os.environ['SNS_ALERT_TOPIC']
 subject = os.environ['SUBJECT']
+
+session = boto3.session.Session()
+region = session.region_name
+sns = session.client('sns')
 
 
 def handler(event, context):
@@ -21,7 +23,11 @@ def handler(event, context):
     unzipped_payload = zlib.decompress(payload, 16 + zlib.MAX_WBITS)
     log_event = json.loads(unzipped_payload)
 
-    formatted_messages = format_messages(log_event.get('logEvents', []))
+    log_group = log_event.get('logGroup')
+    log_stream = log_event.get('logStream')
+    cloudwatch_link = f"https://{region}.console.aws.amazon.com/cloudwatch/home?region={region}#logsV2:log-groups/log-group/{log_group}/log-events/{log_stream}"
+
+    formatted_messages = format_messages(log_event, cloudwatch_link)
 
     response = sns.publish(
         TopicArn=topic,
@@ -37,11 +43,11 @@ def handler(event, context):
     }
 
 
-def format_messages(log_events):
-    formatted_messages = ['Log Events:']
+def format_messages(log_events, logstream_link):
+    formatted_messages = ['CloudWatch Log Stream:', logstream_link, '\n']
     for event in log_events:
         timestamp = datetime.utcfromtimestamp(event['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
-        message = f"--- (id: {event['id']}) \n [{timestamp} UTC]: [{event['message']}] \n"
+        message = f"--- \n (id: {event['id']}) \n [{timestamp} UTC]: [{event['message']}] \n --- \n"
         formatted_messages.append(message)
     return '\n'.join(formatted_messages)
 EOF
