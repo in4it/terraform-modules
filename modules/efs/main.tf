@@ -25,8 +25,8 @@ resource "aws_efs_mount_target" "this" {
 }
 
 resource "aws_security_group" "this" {
-  name        = "${var.name}-EFS-SG"
-  description = "${var.name}-EFS-SG"
+  name        = "${var.name}-efs-sg"
+  description = "${var.name}-efs-sg"
   vpc_id      = var.vpc_id
 
   ingress {
