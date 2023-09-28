@@ -33,3 +33,9 @@ variable "env" {
   default     = "dev"
   description = "Environment name"
 }
+
+variable "show_as_table" {
+  type        = bool
+  default     = false
+  description = "Format logs as html table (default: false). Only worth using for email."
+}

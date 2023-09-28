@@ -12,6 +12,7 @@ import boto3
 
 topic = os.environ['SNS_ALERT_TOPIC']
 subject = os.environ['SUBJECT']
+show_as_table = os.environ.get('SHOW_AS_TABLE', 'False').lower() == 'true'
 
 session = boto3.session.Session()
 region = session.region_name
@@ -27,7 +28,7 @@ def handler(event, context):
     log_stream = log_event.get('logStream')
     cloudwatch_link = f"https://{region}.console.aws.amazon.com/cloudwatch/home?region={region}#logsV2:log-groups/log-group/{log_group}/log-events/{log_stream}"
 
-    formatted_messages = format_messages(log_event, cloudwatch_link)
+    formatted_messages = format_as_table(log_event, cloudwatch_link) if show_as_table else format_as_text(log_event, cloudwatch_link)
 
     response = sns.publish(
         TopicArn=topic,
@@ -43,12 +44,24 @@ def handler(event, context):
     }
 
 
-def format_messages(log_events, logstream_link):
+def format_as_text(log_events, logstream_link):
     formatted_messages = ['CloudWatch Log Stream:', logstream_link, '\n']
     for event in log_events:
         timestamp = datetime.utcfromtimestamp(event['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
         message = f"--- \n (id: {event['id']}) \n [{timestamp} UTC]: [{event['message']}] \n --- \n"
         formatted_messages.append(message)
     return '\n'.join(formatted_messages)
+
+def format_as_table(log_events, logstream_link):
+    messages = ['CloudWatch Log Stream:', logstream_link, '\n', '<table border="1">', '<tr><th>ID</th><th>Timestamp</th><th>Message</th></tr>']
+
+    for event in log_events:
+        log_id = event['id']
+        timestamp = datetime.utcfromtimestamp(event['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S UTC')
+        message = event['message']
+        messages.append(f'<tr><td>{log_id}</td><td>{timestamp}</td><td>{message}</td></tr>')
+
+    messages.append('</table>')
+    return ''.join(messages)
 EOF
 }
