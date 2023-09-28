@@ -9,8 +9,8 @@ resource "aws_lb" "lb" {
   subnets                    = var.vpc_subnets
   idle_timeout               = var.idle_timeout
   enable_deletion_protection = var.enable_deletion_protection
-
   drop_invalid_header_fields = var.drop_invalid_header_fields
+  desync_mitigation_mode     = var.desync_mitigation_mode
 
   dynamic "access_logs" {
     for_each = length(keys(var.access_logs)) == 0 ? [] : [var.access_logs]

@@ -70,3 +70,7 @@ variable "enable_deletion_protection" {
   description = "Enable Deletion Protection"
   default     = true
 }
+
+variable "desync_mitigation_mode"  {
+  default = "defensive"
+}
