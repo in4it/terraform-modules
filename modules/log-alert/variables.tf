@@ -7,7 +7,7 @@ variable "log_groups" {
 variable "logs_filter" {
   type        = string
   description = "The filter to scan the logs for"
-  default     = "{ ($.message = \"*error*\") || ($.message = \"*Error*\") || ($.message = \"*ERROR*\") || ($.message = \"*Exception*\") }"
+  default     = "?error ?Error ?ERROR ?Exception ?EXCEPTION ?exception"
 }
 
 variable "alert_emails" {
