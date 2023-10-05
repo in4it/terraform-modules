@@ -34,4 +34,5 @@ variable "additional_policy_statements" {
       variable = string
     }))
   }))
+  default = []
 }
