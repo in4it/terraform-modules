@@ -51,3 +51,8 @@ variable "public_access_block" {
     restrict_public_buckets = true
   }
 }
+variable "cloudfront_allow_path" {
+  description = "S3 path to allow cloudfront access to. Default allows access to the entire bucket."
+  type        = string
+  default     = ""
+}

@@ -53,10 +53,10 @@ data "aws_iam_policy_document" "this" {
       }
       effect  = "Allow"
       actions = var.cloudfront_origin_access_identity_iam_actions
-      resources = [
+      resources = var.cloudfront_allow_path == "" ? [
         "arn:aws:s3:::${aws_s3_bucket.this.id}",
         "arn:aws:s3:::${aws_s3_bucket.this.id}/*",
-      ]
+      ] : ["${aws_s3_bucket.this.arn}/${var.cloudfront_allow_path}"]
     }
   }
   statement {
