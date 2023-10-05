@@ -17,3 +17,21 @@ variable "cloudfront_origin_access_identity_iam_actions" {
   type        = list(string)
   default     = ["s3:Get*"]
 }
+variable "additional_policy_statements" {
+  description = "additional policy statements to add to the s3 bucket policy"
+  type = list(object({
+    sid = optional(string)
+    principals = object({
+      identifiers = list(string)
+      type        = string
+    })
+    effect    = string
+    actions   = list(string)
+    resources = list(string)
+    condition = optional(object({
+      test     = string
+      values   = list(string)
+      variable = string
+    }))
+  }))
+}

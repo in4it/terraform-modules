@@ -79,5 +79,23 @@ data "aws_iam_policy_document" "this" {
       variable = "aws:secureTransport"
     }
   }
+  dynamic "statement" {
+    for_each = var.additional_policy_statements == "" ? [] : var.additional_policy_statements
+    content {
+      sid = try(each.value.sid, "AdditionS3Policy${each.key}")
+      principals {
+        identifiers = each.value.principals.identifiers
+        type        = each.value.principals.type
+      }
+      effect    = each.value.effect
+      actions   = each.value.actions
+      resources = each.value.resources
+      condition {
+        test     = each.value.condition.test
+        values   = each.value.condition.values
+        variable = each.value.condition.variable
+      }
+    }
+  }
 }
 
