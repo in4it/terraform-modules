@@ -80,20 +80,23 @@ data "aws_iam_policy_document" "this" {
     }
   }
   dynamic "statement" {
-    for_each = var.additional_policy_statements == "" ? [] : var.additional_policy_statements
+    for_each = var.additional_policy_statements
     content {
-      sid = try(each.value.sid, "AdditionS3Policy${each.key}")
+      sid = try(statement.value.sid, "AdditionS3Policy${statement.key}")
       principals {
-        identifiers = each.value.principals.identifiers
-        type        = each.value.principals.type
+        identifiers = statement.value.principals.identifiers
+        type        = statement.value.principals.type
       }
-      effect    = each.value.effect
-      actions   = each.value.actions
-      resources = each.value.resources
-      condition {
-        test     = each.value.condition.test
-        values   = each.value.condition.values
-        variable = each.value.condition.variable
+      effect    = statement.value.effect
+      actions   = statement.value.actions
+      resources = statement.value.resources
+      dynamic "condition" {
+        for_each = statement.value.condition == null ? [] : [statement.value.condition]
+        content {
+          test     = condition.value.test
+          values   = condition.value.values
+          variable = condition.value.variable
+        }
       }
     }
   }
