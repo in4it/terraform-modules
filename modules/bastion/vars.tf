@@ -3,7 +3,7 @@ variable "name" {
   default     = "bastion"
 }
 variable "vpc_id" {
-  description =" vpc id"
+  description = " vpc id"
 }
 variable "subnet_id" {
   description = "subnet id to launch bastion in"
@@ -20,4 +20,8 @@ variable "keypair_name" {
 variable "root_block_device_encryption" {
   description = "encrypt root block device"
   default     = true
+}
+variable "extra_security_group_ids" {
+  description = "list of extra security group ids to attach to the bastion"
+  default     = []
 }
