@@ -23,9 +23,10 @@ resource "aws_lb" "lb" {
 
 # certificate
 data "aws_acm_certificate" "certificate" {
-  count    = var.domain != "" ? 1 : 0
-  domain   = var.domain
-  statuses = ["ISSUED", "PENDING_VALIDATION"]
+  count       = var.domain != "" ? 1 : 0
+  domain      = var.domain
+  statuses    = ["ISSUED", "PENDING_VALIDATION"]
+  most_recent = true
 }
 
 # lb listener (https)
@@ -96,12 +97,13 @@ resource "aws_lb_listener" "lb-http" {
 
 # extra certificates
 data "aws_acm_certificate" "extra_certificates" {
-  for_each = { for domain in var.extra_domains: domain => domain }
-  domain   = each.value
-  statuses = ["ISSUED"]
+  for_each    = { for domain in var.extra_domains : domain => domain }
+  domain      = each.value
+  statuses    = ["ISSUED"]
+  most_recent = true
 }
 resource "aws_lb_listener_certificate" "alb_https_extra_certificates" {
-  for_each        = var.tls ? { for domain in var.extra_domains: domain => domain } : { }
+  for_each        = var.tls ? { for domain in var.extra_domains : domain => domain } : {}
   listener_arn    = aws_lb_listener.lb-https[0].arn
   certificate_arn = data.aws_acm_certificate.extra_certificates[each.value].arn
 }
