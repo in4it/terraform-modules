@@ -9,8 +9,8 @@ variable "name_suffix" {
   description = "Suffix for the Elasticache cluster name"
 }
 variable "override_name" {
-  type = bool
-  default = false
+  type        = bool
+  default     = false
   description = "Override name for existing clusters to not recreate the cluster"
 }
 variable "vpc_id" {
@@ -91,4 +91,16 @@ variable "rest_encryption_enabled" {
 }
 variable "maintenance_window" {
   default = "sun:05:00-sun:06:00"
+}
+variable "existing_subnet_group" {
+  default     = ""
+  description = "Use existing subnet group name (for resources import)"
+}
+variable "existing_security_group" {
+  default     = ""
+  description = "Use existing security group id (for resources import)"
+}
+variable "existing_parameter_group" {
+  default     = ""
+  description = "Use existing parameter group (for resources import)"
 }

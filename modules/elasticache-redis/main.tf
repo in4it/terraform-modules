@@ -1,5 +1,5 @@
 locals {
-  name       = var.override_name ? var.name : "${var.name}-${var.env}-${var.name_suffix}"
+  name = var.override_name ? var.name : "${var.name}-${var.env}-${var.name_suffix}"
   parameters = concat(var.parameters, var.cluster_mode_enabled == false ? [] : [
     {
       name  = "cluster-enabled", # Needed for cluster mode and autoscaling
@@ -17,11 +17,15 @@ data "aws_vpc" "this" {
 }
 
 resource "aws_elasticache_subnet_group" "redis" {
+  count = var.existing_subnet_group == "" ? 1 : 0
+
   name       = "${local.name}-subg"
   subnet_ids = var.subnet_ids
 }
 
 resource "aws_security_group" "redis" {
+  count = var.existing_security_group == "" ? 1 : 0
+
   name        = "${local.name}-sg"
   description = "Security group for ${local.name}"
   vpc_id      = data.aws_vpc.this.id
@@ -50,6 +54,8 @@ resource "aws_security_group" "redis" {
 
 # Redis Cluster
 resource "aws_elasticache_parameter_group" "redis" {
+  count = var.existing_parameter_group == "" ? 1 : 0
+
   name        = "${local.name}-pg"
   description = "Elasticache parameter group for ${local.name}"
   family      = var.family
@@ -75,10 +81,11 @@ resource "aws_elasticache_replication_group" "redis" {
 
   engine_version       = var.engine_version
   port                 = var.port
-  parameter_group_name = aws_elasticache_parameter_group.redis.name
+  parameter_group_name = var.existing_parameter_group != "" ? var.existing_parameter_group : aws_elasticache_parameter_group.redis[0].name
 
-  subnet_group_name  = aws_elasticache_subnet_group.redis.name
-  security_group_ids = [aws_security_group.redis.id]
+  subnet_group_name    = var.existing_subnet_group != "" ? var.existing_subnet_group : aws_elasticache_subnet_group.redis[0].name
+  security_group_ids   = var.existing_security_group != "" ? [var.existing_security_group] : [aws_security_group.redis[0].id]
+  security_group_names = var.existing_security_group != "" ? [data.aws_security_group.existing[0].name] : [aws_security_group.redis[0].name]
 
   at_rest_encryption_enabled = var.rest_encryption_enabled
   transit_encryption_enabled = var.transit_encryption_enabled
@@ -90,4 +97,9 @@ resource "aws_elasticache_replication_group" "redis" {
   auto_minor_version_upgrade = true
 
   tags = local.tags
+}
+data "aws_security_group" "existing" {
+  count = var.existing_security_group != "" ? 1 : 0
+
+  id = var.existing_security_group
 }
