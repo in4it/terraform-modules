@@ -102,6 +102,7 @@ resource "aws_ecs_service" "ecs-service" {
   launch_type                        = var.launch_type
   platform_version                   = var.launch_type == "FARGATE" ? var.platform_version : null
   enable_execute_command             = var.enable_execute_command
+  health_check_grace_period_seconds  = var.health_check_grace_period_seconds
 
   dynamic "load_balancer" {
     for_each = [values(aws_lb_target_group.ecs-service)[0]] // only get firsts element from the target groups. TODO: read whether it should be blue / green (currently we'll always go for blue)
