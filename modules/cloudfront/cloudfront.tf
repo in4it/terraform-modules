@@ -34,8 +34,15 @@ resource "aws_cloudfront_distribution" "this" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn            = lookup(var.viewer_certificate, "acm_certificate_arn", null)
+    cloudfront_default_certificate = lookup(var.viewer_certificate, "cloudfront_default_certificate", null)
+    iam_certificate_id             = lookup(var.viewer_certificate, "iam_certificate_id", null)
+
+    minimum_protocol_version = lookup(var.viewer_certificate, "minimum_protocol_version", "TLSv1")
+    ssl_support_method       = lookup(var.viewer_certificate, "ssl_support_method", null)
   }
+
+  aliases = var.aliases
 
   tags = {
     Name = var.name

@@ -10,3 +10,21 @@ variable "s3_origins" {
   }))
   default = []
 }
+variable "aliases" {
+  description = "List of aliases for the CloudFront distribution"
+  type        = list(string)
+  default     = []
+}
+variable "viewer_certificate" {
+  description = "The SSL configuration for this distribution"
+  type = object({
+    acm_certificate_arn            = optional(string)
+    cloudfront_default_certificate = optional(bool)
+    iam_certificate_id             = optional(string)
+    minimum_protocol_version       = optional(string)
+    ssl_support_method             = optional(string)
+  })
+  default = {
+    cloudfront_default_certificate = true
+  }
+}
