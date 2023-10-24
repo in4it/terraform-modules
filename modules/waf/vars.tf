@@ -1,6 +1,6 @@
 variable "name" {
   description = "name of WAF"
-  default = "alb-waf"
+  default     = "alb-waf"
 }
 variable "lb_arn" {
   description = "ARN of ALB"
@@ -8,7 +8,7 @@ variable "lb_arn" {
 
 variable "env" {
   description = "optional environment"
-  default = ""
+  default     = ""
 }
 
 variable "ratelimit_rules" {
@@ -30,7 +30,8 @@ variable "managed_rules" {
     managed_rule_name        = string
     managed_rule_vendor_name = string
     block                    = bool
-    rules_to_enable          = list(string)
+    blocking_rules           = optional(list(string))
+    allowing_rules           = optional(list(string))
   }))
   default = []
 }
