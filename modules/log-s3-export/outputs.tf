@@ -1,5 +1,5 @@
 output "bucket_arn" {
-  value = aws_s3_bucket.logs_retention_bucket.arn
+  value = module.logs_export_bucket.bucket_arn
 }
 
 output "lambda_arn" {

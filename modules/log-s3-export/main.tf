@@ -8,7 +8,7 @@ resource "random_string" "suffix" {
 
 # Event trigger once a day
 resource "aws_cloudwatch_event_rule" "once_a_day" {
-  name                = "${var.name}-log-retention-run-lambda-${random_string.suffix.result}"
+  name                = "${var.name}-log-export-run-lambda-${random_string.suffix.result}"
   description         = "Trigger lambda function that grabs yesterdays Cloudwatch logs and sends them to an S3 bucket with CreateExportTask"
   schedule_expression = "cron(1 0 * * ? *)"
 }
@@ -45,11 +45,12 @@ resource "aws_lambda_function" "log_exporter" {
 
   environment {
     variables = {
-      EXPORT_BUCKET = aws_s3_bucket.logs_retention_bucket.bucket
+      EXPORT_BUCKET = module.logs_export_bucket.bucket_name
       LOG_GROUPS    = jsonencode(var.log_groups_list)
       BUCKET_PREFIX = var.bucket_prefix
       DAYS_BEFORE   = var.export_days_before
-      RETRY         = 5
+      RETRY         = var.check_retry_attempts
+      RETRY_TIMEOUT = var.check_retry_timeout
     }
   }
   tracing_config {
@@ -59,7 +60,7 @@ resource "aws_lambda_function" "log_exporter" {
 
 # IAM for lambda function
 resource "aws_iam_role" "log_exporter" {
-  name               = "${var.name}-log-s3-retention-exporter-${random_string.suffix.result}"
+  name               = "${var.name}-log-s3-export-${random_string.suffix.result}"
   assume_role_policy = data.aws_iam_policy_document.log_exporter_sts.json
 }
 
@@ -100,10 +101,10 @@ data "aws_iam_policy_document" "log_exporter" {
       "s3:PutBucketAcl",
       "s3:GetBucketAcl"
     ]
-    resources = ["${aws_s3_bucket.logs_retention_bucket.arn}/*"]
+    resources = ["${module.logs_export_bucket.bucket_arn}/*"]
   }
   depends_on = [
-    aws_s3_bucket.logs_retention_bucket
+    module.logs_export_bucket
   ]
 }
 
@@ -118,49 +119,70 @@ resource "aws_iam_role_policy_attachment" "log_exporter" {
 }
 
 # S3 bucket
-resource "aws_s3_bucket" "logs_retention_bucket" {
-  bucket = "${lower(var.name)}-logs-retention-${random_string.suffix.result}"
+module "logs_export_bucket" {
+  source = "../../modules/s3"
 
-  lifecycle {
-    ignore_changes = [
-      lifecycle_rule
-    ]
-  }
-}
+  name       = "${lower(var.name)}-log-export-${random_string.suffix.result}"
+  versioning = false
+  additional_policy_statements = [
+    {
+      sid    = "BucketACL"
+      effect = "Allow"
+      actions   = ["s3:GetBucketAcl", "s3:PutBucketAcl"]
+      resources = [module.logs_export_bucket.bucket_arn]
+      principals = {
+        type        = "Service"
+        identifiers = ["logs.${var.aws_region}.amazonaws.com"]
+      }
+    },
+    {
+      sid       = "PutObject"
+      effect    = "Allow"
+      actions   = ["s3:PutObject", "s3:PutObjectAcl"]
+      resources = ["${module.logs_export_bucket.bucket_arn}/*"]
+      principals = {
+        type        = "Service"
+        identifiers = ["logs.${var.aws_region}.amazonaws.com"]
+      }
 
-resource "aws_s3_bucket_lifecycle_configuration" "s3" {
-  bucket = aws_s3_bucket.logs_retention_bucket.id
+      condition = {
+        test     = "StringEquals"
+        variable = "s3:x-amz-acl"
 
-  rule {
-    id     = "logs"
-    status = "Enabled"
-
-    filter {
-      prefix = "${var.bucket_prefix}/"
+        values = [
+          "bucket-owner-full-control"
+        ]
+      }
     }
+  ]
 
-    transition {
-      days          = var.days_to_archive
-      storage_class = var.archive_class
+  lifecycle_rules = [
+    {
+      id     = "logs"
+      status = "Enabled"
+
+      filter = {
+        prefix = "${var.bucket_prefix}/"
+      }
+
+      transition = {
+        days          = var.days_to_archive
+        storage_class = var.archive_class
+      }
+
+      expiration = {
+        days = var.days_to_expire
+      }
     }
-
-    expiration {
-      days = var.days_to_expire
-    }
-  }
-}
-
-resource "aws_s3_bucket_policy" "s3" {
-  bucket = aws_s3_bucket.logs_retention_bucket.id
-  policy = data.aws_iam_policy_document.s3.json
+  ]
 }
 
 data "aws_iam_policy_document" "s3" {
 
   statement {
-    sid       = "GetBucketACL"
+    sid       = "BucketACL"
     actions   = ["s3:GetBucketAcl", "s3:PutBucketAcl"]
-    resources = [aws_s3_bucket.logs_retention_bucket.arn]
+    resources = [module.logs_export_bucket.bucket_arn]
 
     principals {
       type        = "Service"
@@ -171,7 +193,7 @@ data "aws_iam_policy_document" "s3" {
   statement {
     sid       = "PutObject"
     actions   = ["s3:PutObject", "s3:PutObjectAcl"]
-    resources = ["${aws_s3_bucket.logs_retention_bucket.arn}/*"]
+    resources = ["${module.logs_export_bucket.bucket_arn}/*"]
 
     principals {
       type        = "Service"
