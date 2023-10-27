@@ -12,7 +12,9 @@ No requirements.
 
 ## Modules
 
-No modules.
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_logs_export_bucket"></a> [logs\_export\_bucket](#module\_logs\_export\_bucket) | ../../modules/s3 | n/a |
 
 ## Resources
 
@@ -25,9 +27,6 @@ No modules.
 | [aws_iam_role_policy_attachment.log_exporter](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_lambda_function.log_exporter](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_function) | resource |
 | [aws_lambda_permission.allow_triggering_function](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission) | resource |
-| [aws_s3_bucket.logs_retention_bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
-| [aws_s3_bucket_lifecycle_configuration.s3](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_lifecycle_configuration) | resource |
-| [aws_s3_bucket_policy.s3](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_policy) | resource |
 | [random_string.suffix](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) | resource |
 | [archive_file.lambda_zip](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
 | [aws_iam_policy_document.log_exporter](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -41,6 +40,8 @@ No modules.
 | <a name="input_archive_class"></a> [archive\_class](#input\_archive\_class) | n/a | `string` | `"GLACIER"` | no |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | n/a | `string` | n/a | yes |
 | <a name="input_bucket_prefix"></a> [bucket\_prefix](#input\_bucket\_prefix) | n/a | `string` | n/a | yes |
+| <a name="input_check_retry_attempts"></a> [check\_retry\_attempts](#input\_check\_retry\_attempts) | Number of times to retry checking status of an export task | `number` | `5` | no |
+| <a name="input_check_retry_timeout"></a> [check\_retry\_timeout](#input\_check\_retry\_timeout) | Number of milli-seconds to wait before retrying checking status of an export task | `number` | `5000` | no |
 | <a name="input_days_to_archive"></a> [days\_to\_archive](#input\_days\_to\_archive) | Number of days to keep logs in S3 before moving to Glacier | `number` | `180` | no |
 | <a name="input_days_to_expire"></a> [days\_to\_expire](#input\_days\_to\_expire) | Number of days to keep logs in S3 before expiring/deleting | `number` | `365` | no |
 | <a name="input_export_days_before"></a> [export\_days\_before](#input\_export\_days\_before) | Number of days to export logs from | `number` | `1` | no |
