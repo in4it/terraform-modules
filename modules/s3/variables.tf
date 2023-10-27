@@ -56,3 +56,29 @@ variable "cloudfront_allow_path" {
   type        = string
   default     = ""
 }
+variable "lifecycle_rules" {
+  description = "lifecycle rules to add to the bucket"
+  type = list(object({
+    id     = string
+    status = string # "Enabled" or "Disabled"
+    transition = object({
+      date          = optional(string)
+      days          = optional(number)
+      storage_class = string
+    })
+    expiration = object({
+      days = number
+    })
+    filter = object({
+      prefix                   = optional(string)
+      object_size_less_than    = optional(number)
+      object_size_greater_than = optional(number)
+      and                      = optional(any)
+      tag = optional(object({
+        key   = string
+        value = string
+      }))
+    })
+  }))
+  default = []
+}

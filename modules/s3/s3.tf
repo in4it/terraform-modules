@@ -102,3 +102,51 @@ data "aws_iam_policy_document" "this" {
   }
 }
 
+# Lifecycle rules
+resource "aws_s3_bucket_lifecycle_configuration" "this" {
+  count = length(var.lifecycle_rules) > 0 ? 1 : 0
+
+  bucket = aws_s3_bucket.this.id
+
+  dynamic "rule" {
+    for_each = var.lifecycle_rules
+    content {
+      id     = rule.value.id
+      status = rule.value.status
+
+      dynamic "filter" {
+        for_each = rule.value.filter == null ? [] : [rule.value.filter]
+        content {
+          prefix                   = lookup(filter.value, "prefix", null)
+          object_size_greater_than = lookup(filter.value, "object_size_greater_than", null)
+          object_size_less_than    = lookup(filter.value, "object_size_less_than", null)
+          dynamic "and" {
+            for_each = filter.value.and == null ? [] : [filter.value.and]
+            content {
+              prefix                   = lookup(and.value, "prefix", null)
+              object_size_greater_than = lookup(and.value, "object_size_greater_than", null)
+              object_size_less_than    = lookup(and.value, "object_size_less_than", null)
+              tags                     = lookup(and.value, "tags", null)
+            }
+          }
+        }
+      }
+
+      dynamic "transition" {
+        for_each = rule.value.transition == null ? [] : [rule.value.transition]
+        content {
+          storage_class = transition.value.storage_class
+          date          = lookup(transition.value, "date", null)
+          days          = lookup(transition.value, "days", null)
+        }
+      }
+
+      dynamic "expiration" {
+        for_each = rule.value.expiration == null ? [] : [rule.value.expiration]
+        content {
+          days = expiration.value.days
+        }
+      }
+    }
+  }
+}

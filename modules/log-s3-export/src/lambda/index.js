@@ -16,6 +16,7 @@ exports.handler = async function (event, context) {
   const BUCKET_PREFIX = process.env.BUCKET_PREFIX;
   const DAYS_BEFORE = process.env.DAYS_BEFORE || 1;
   const RETRY = process.env.RETRY || 5;
+  const RETRY_TIMEOUT = process.env.RETRY_TIMEOUT || RETRY_TIMEOUT;
 
   const results = {
     success: [],
@@ -50,7 +51,7 @@ exports.handler = async function (event, context) {
       // Status checking, with 5 time retry
       for (let i = 0; i < RETRY; i++) {
         // Wait some seconds for it to complete
-        await sleep(5000);
+        await sleep(RETRY_TIMEOUT);
 
         console.log(`> Checking Status.. try No.${i}`);
         let currentStatus = await getExportStatus(res.taskId, cwLogs);
@@ -63,7 +64,7 @@ exports.handler = async function (event, context) {
           results.success.push(logGroup);
           break;
         }
-        if (i == retry - 1) {
+        if (i == RETRY - 1) {
           results.timeout.push(logGroup);
         }
       }

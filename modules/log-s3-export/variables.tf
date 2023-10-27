@@ -36,4 +36,13 @@ variable "days_to_expire" {
   default     = 365
   description = "Number of days to keep logs in S3 before expiring/deleting"
 }
-
+variable "check_retry_timeout" {
+  type        = number
+  default     = 5000
+  description = "Number of milli-seconds to wait before retrying checking status of an export task"
+}
+variable "check_retry_attempts" {
+  type        = number
+  default     = 5
+  description = "Number of times to retry checking status of an export task"
+}
