@@ -74,5 +74,9 @@ exports.handler = async function (event, context) {
     }
   }
   console.log("> Lambda Task Completed: ", results);
+  
+  if (results.failed.length > 0) {
+    throw new Error("Some tasks failed");
+  }
   return results;
 };
