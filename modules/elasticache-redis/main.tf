@@ -85,7 +85,7 @@ resource "aws_elasticache_replication_group" "redis" {
 
   subnet_group_name    = var.existing_subnet_group != "" ? var.existing_subnet_group : aws_elasticache_subnet_group.redis[0].name
   security_group_ids   = var.existing_security_group != "" ? [var.existing_security_group] : [aws_security_group.redis[0].id]
-  security_group_names = var.existing_security_group != "" ? [data.aws_security_group.existing[0].name] : [aws_security_group.redis[0].name]
+  # security_group_names = var.existing_security_group != "" ? [data.aws_security_group.existing[0].name] : [aws_security_group.redis[0].name]
 
   at_rest_encryption_enabled = var.rest_encryption_enabled
   transit_encryption_enabled = var.transit_encryption_enabled
