@@ -62,8 +62,9 @@ resource "aws_db_parameter_group" "rds" {
   dynamic "parameter" {
     for_each = var.parameters
     content {
-      name  = parameter.value.name
-      value = parameter.value.value
+      name         = parameter.value.name
+      value        = parameter.value.value
+      apply_method = coalesce(parameter.value.pending_reboot, false) ? "pending-reboot" : "immediate"
     }
   }
 }
