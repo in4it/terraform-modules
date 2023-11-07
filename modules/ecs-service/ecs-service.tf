@@ -105,7 +105,7 @@ resource "aws_ecs_service" "ecs-service" {
   health_check_grace_period_seconds  = var.health_check_grace_period_seconds
 
   dynamic "load_balancer" {
-    for_each = [values(aws_lb_target_group.ecs-service)[0]] // only get firsts element from the target groups. TODO: read whether it should be blue / green (currently we'll always go for blue)
+    for_each = length(aws_lb_target_group.ecs-service) == 0 ? [] : [values(aws_lb_target_group.ecs-service)[0]] // only get firsts element from the target groups. TODO: read whether it should be blue / green (currently we'll always go for blue)
     content {
       target_group_arn = load_balancer.value.arn
       container_name   = length(var.containers) == 0 ? var.application_name : var.exposed_container_name

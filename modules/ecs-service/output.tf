@@ -3,7 +3,7 @@ output "target_group_arns" {
 }
 
 output "target_group_arn" {
-  value = element([for ecs-service in aws_lb_target_group.ecs-service : ecs-service.arn], 0)
+  value = length(aws_lb_target_group.ecs-service) > 0 ? element([for ecs-service in aws_lb_target_group.ecs-service : ecs-service.arn], 0) : null
 }
 
 output "target_group_names" {
