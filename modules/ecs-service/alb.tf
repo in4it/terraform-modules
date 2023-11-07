@@ -9,6 +9,9 @@ locals {
     "${var.application_name}-blue",
     "${var.application_name}-green"
   ])
+
+  is_private = var.alb_arn == null
+  target_groups = local.is_private ? [] : (var.enable_blue_green ? local.blue_green_target_group : var.enable_internal_lb ? setunion(local.single_target_group, local.internal_lb_target_group) : local.single_target_group)
 }
 
 #
@@ -16,7 +19,7 @@ locals {
 #
 
 resource "aws_lb_target_group" "ecs-service" {
-  for_each             = var.enable_blue_green ? local.blue_green_target_group : var.enable_internal_lb ? setunion(local.single_target_group, local.internal_lb_target_group) : local.single_target_group
+  for_each             = local.target_groups
   name                 = each.value
   port                 = var.application_port
   protocol             = var.protocol
