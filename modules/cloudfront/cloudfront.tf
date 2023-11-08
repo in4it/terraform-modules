@@ -5,6 +5,8 @@ resource "aws_cloudfront_origin_access_identity" "this" {
 resource "aws_cloudfront_distribution" "this" {
   enabled = true
 
+  default_root_object = var.default_root_object 
+
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
