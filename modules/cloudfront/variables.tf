@@ -28,3 +28,8 @@ variable "viewer_certificate" {
     cloudfront_default_certificate = true
   }
 }
+variable "default_root_object" {
+  description = "Object that you want CloudFront to return (for example, index.html) when an end user requests the root URL."
+  type        = string
+  default     = null
+}
