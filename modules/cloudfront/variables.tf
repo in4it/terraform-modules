@@ -28,3 +28,16 @@ variable "viewer_certificate" {
     cloudfront_default_certificate = true
   }
 }
+variable "default_root_object" {
+  description = "Object that you want CloudFront to return (for example, index.html) when an end user requests the root URL."
+  type        = string
+  default     = null
+}
+variable "function_associations" {
+  description = "Function associations for the CloudFront distribution"
+  type = list(object({
+    event_type   = string
+    function_arn = string
+  }))
+  default = []
+}
