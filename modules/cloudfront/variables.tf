@@ -33,3 +33,11 @@ variable "default_root_object" {
   type        = string
   default     = null
 }
+variable "function_associations" {
+  description = "Function associations for the CloudFront distribution"
+  type = list(object({
+    event_type   = string
+    function_arn = string
+  }))
+  default = []
+}

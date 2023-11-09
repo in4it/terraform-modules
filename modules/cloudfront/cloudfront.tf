@@ -5,7 +5,7 @@ resource "aws_cloudfront_origin_access_identity" "this" {
 resource "aws_cloudfront_distribution" "this" {
   enabled = true
 
-  default_root_object = var.default_root_object 
+  default_root_object = var.default_root_object
 
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD"]
@@ -15,6 +15,14 @@ resource "aws_cloudfront_distribution" "this" {
     compress               = true
 
     cache_policy_id = "658327ea-f89d-4fab-a63d-7e88639e58f6"
+
+    dynamic "function_association" {
+      for_each = toset(var.function_associations)
+      content {
+        event_type   = function_association.value.event_type
+        function_arn = function_association.value.function_arn
+      }
+    }
   }
 
   dynamic "origin" {
