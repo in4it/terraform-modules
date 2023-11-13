@@ -7,12 +7,12 @@ resource "aws_kms_key" "terraform-state" {
 resource "aws_kms_alias" "terraform-state" {
   count         = var.kms-encryption ? 1 : 0
   name          = "alias/terraform-state"
-  target_key_id = aws_kms_key.terraform-state.key_id
+  target_key_id = aws_kms_key.terraform-state[0].key_id
 }
 
 resource "aws_kms_key_policy" "terraform_state" {
   count  = var.kms-encryption && length(var.principals) > 0 ? 1 : 0
-  key_id = aws_kms_key.terraform-state.id
+  key_id = aws_kms_key.terraform-state[0].id
   policy = data.aws_iam_policy_document.terraform-state.json
 }
 
