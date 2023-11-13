@@ -42,11 +42,6 @@ resource "aws_s3_bucket_versioning" "infrastructure" {
   }
 }
 
-resource "aws_s3_bucket_acl" "infrastructure" {
-  bucket = aws_s3_bucket.infrastructure.id
-  acl    = "private"
-}
-
 resource "aws_s3_bucket_public_access_block" "infrastructure" {
   bucket = aws_s3_bucket.infrastructure.id
 
