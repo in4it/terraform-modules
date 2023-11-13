@@ -56,7 +56,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "infrastructure" {
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm     = length(aws_kms_key.terraform-state) > 0 ? "aws:kms" : "AES256"
-      kms_master_key_id = length(aws_kms_key.terraform-state) > 0 ? aws_kms_key.terraform-state[0] : null
+      kms_master_key_id = length(aws_kms_key.terraform-state) > 0 ? aws_kms_key.terraform-state[0].id : null
     }
   }
 }
