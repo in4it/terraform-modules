@@ -6,7 +6,7 @@ resource "aws_kms_key" "terraform-state" {
 
 resource "aws_kms_alias" "terraform-state" {
   count         = var.kms-encryption ? 1 : 0
-  name          = "alias/terraform-state"
+  name          = "alias/${var.project}-${var.env}-terraform-state"
   target_key_id = aws_kms_key.terraform-state[0].key_id
 }
 
