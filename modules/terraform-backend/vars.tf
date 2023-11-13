@@ -14,8 +14,7 @@ variable "lock_table_enabled" {
 }
 
 variable "kms-encryption" {
-  type = bool
-  default = false
+  default = true
   description = "True - to Create KMS key to use for encrypting the S3 bucket. Otherwise - AES256 will be used"
 }
 
