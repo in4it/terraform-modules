@@ -1,4 +1,5 @@
 resource "aws_dynamodb_table" "terraform-state-lock" {
+  count          = var.lock_table_enabled ? 1 : 0
   name           = "terraform-state-lock"
   read_capacity  = 1
   write_capacity = 1

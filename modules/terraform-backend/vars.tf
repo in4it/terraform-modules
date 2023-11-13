@@ -8,6 +8,11 @@ variable "project" {
   description = "The name of the project/product"
 }
 
+variable "lock_table_enabled" {
+  default = true
+  description = "True - to enable locking of the state file with DynamoDB"
+}
+
 variable "kms-encryption" {
   type = bool
   default = false
