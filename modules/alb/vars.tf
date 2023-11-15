@@ -15,6 +15,7 @@ variable "domain" {
 
 variable "extra_domains" {
   default = []
+  type = list(string)
 }
 
 variable "default_target_arn" {
@@ -44,7 +45,7 @@ variable "access_logs" {
 }
 
 variable "tcp_ingress" {
-  type = map(list(string))
+  type    = map(list(string))
   default = {
     "80"  = ["0.0.0.0/0"]
     "443" = ["0.0.0.0/0"]
@@ -71,6 +72,11 @@ variable "enable_deletion_protection" {
   default     = true
 }
 
-variable "desync_mitigation_mode"  {
+variable "desync_mitigation_mode" {
   default = "defensive"
+}
+
+variable "use_wildcard_certificate" {
+  default     = false
+  description = "Use wildcard certificate for all domains"
 }
