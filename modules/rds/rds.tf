@@ -69,3 +69,18 @@ resource "aws_db_parameter_group" "rds" {
   }
 }
 
+module "secret" {
+  count  = var.create_secret ? 1 : 0
+  source = "git@github.com:in4it/terraform-modules.git//modules/rds/secret"
+
+  name        = var.name
+  description = "${var.name} credentials"
+
+  username             = aws_db_instance.rds.username
+  port                 = aws_db_instance.rds.port
+  host                 = aws_db_instance.rds.address
+  dbname               = aws_db_instance.rds.db_name
+  engine               = aws_db_instance.rds.engine
+  dbInstanceIdentifier = aws_db_instance.rds.identifier
+  password             = aws_db_instance.rds.password
+}
