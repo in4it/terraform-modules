@@ -80,6 +80,10 @@ variable "set_password" {
   description = "if true, set a random password"
   default     = true
 }
+variable "create_secret" {
+  description = "if true, create a Secret Manager secret with db credentials"
+  default     = false
+}
 variable "allow_self" {
   description = "if true, allows traffic from self"
   default     = false
