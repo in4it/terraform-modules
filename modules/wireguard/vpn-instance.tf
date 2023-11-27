@@ -30,10 +30,7 @@ resource "aws_instance" "vpn" {
     http_tokens                 = "required"
   }
 
-  tags = {
-    Name = "vpn-${var.env}"
-    Env  = var.env
-  }
+  tags = merge({ Name = "vpn-${var.env}", Env = var.env }, var.tags)
 }
 
 resource "aws_eip" "vpn_ip" {
