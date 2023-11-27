@@ -48,3 +48,8 @@ variable "vpn_destination_pubkey" {
 variable "vpn_destination_public_ip" {
 
 }
+
+variable "tags" {
+    default = {}
+    type = map(string)
+}

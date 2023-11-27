@@ -52,3 +52,8 @@ variable "listeners" {
 variable "env" {
     default = "prod"
 }
+
+variable "tags" {
+    default = {}
+    type = map(string)
+}
