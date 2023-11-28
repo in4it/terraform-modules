@@ -61,7 +61,7 @@ variable "lifecycle_rules" {
   type = list(object({
     id     = string
     status = string # "Enabled" or "Disabled"
-    transition = optional((object({
+    transition = optional(object({
       date          = optional(string)
       days          = optional(number)
       storage_class = string
