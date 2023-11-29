@@ -91,7 +91,7 @@ data "aws_iam_policy_document" "this" {
       actions   = statement.value.actions
       resources = statement.value.resources
       dynamic "condition" {
-        for_each = statement.value.condition == null ? [] : [statement.value.condition]
+        for_each = statement.value.conditions == null ? [] : statement.value.conditions
         content {
           test     = condition.value.test
           values   = condition.value.values

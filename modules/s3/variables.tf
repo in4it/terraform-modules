@@ -28,11 +28,11 @@ variable "additional_policy_statements" {
     effect    = string
     actions   = list(string)
     resources = list(string)
-    condition = optional(object({
+    conditions = optional(list(object({
       test     = string
       values   = list(string)
       variable = string
-    }))
+    })))
   }))
   default = []
 }
