@@ -28,11 +28,11 @@ variable "additional_policy_statements" {
     effect    = string
     actions   = list(string)
     resources = list(string)
-    condition = optional(object({
+    conditions = optional(list(object({
       test     = string
       values   = list(string)
       variable = string
-    }))
+    })))
   }))
   default = []
 }
@@ -61,15 +61,15 @@ variable "lifecycle_rules" {
   type = list(object({
     id     = string
     status = string # "Enabled" or "Disabled"
-    transition = object({
+    transition = optional(object({
       date          = optional(string)
       days          = optional(number)
       storage_class = string
-    })
-    expiration = object({
+    }))
+    expiration = optional(object({
       days = number
-    })
-    filter = object({
+    }))
+    filter = optional(object({
       prefix                   = optional(string)
       object_size_less_than    = optional(number)
       object_size_greater_than = optional(number)
@@ -78,7 +78,7 @@ variable "lifecycle_rules" {
         key   = string
         value = string
       }))
-    })
+    }))
   }))
   default = []
 }
