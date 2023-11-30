@@ -74,10 +74,12 @@ resource "aws_s3_bucket_versioning" "awsconfig-s3" {
   }
 }
 
-resource "aws_s3_bucket_acl" "awsconfig-s3" {
+resource "aws_s3_bucket_ownership_controls" "awsconfig-s3" {
   count  = var.use_existing_bucket ? 0 : 1
   bucket = aws_s3_bucket.awsconfig-s3.0.id
-  acl    = "private"
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
 }
 
 resource "aws_s3_bucket_policy" "awsconfig-s3" {
