@@ -99,7 +99,7 @@ variable "hosted_zone_id" {
 #EC2
 variable "instance_type" {
   type    = string
-  default = "t3.nano"
+  default = "t3a.nano"
 }
 
 #Onelogin
