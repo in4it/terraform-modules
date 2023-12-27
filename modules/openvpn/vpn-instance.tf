@@ -28,6 +28,8 @@ resource "aws_instance" "openvpn" {
 
   root_block_device {
     encrypted = true
+    volume_type = "gp3"
+    volume_size = 32
   }
 
   metadata_options {
