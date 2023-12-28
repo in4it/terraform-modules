@@ -6,7 +6,7 @@ curl http://169.254.169.254/latest/meta-data/iam/info
 
 apt-get update
 mkdir -p /etc/openvpn
-apt-get -y install docker.io awscli 
+apt-get -y install docker.io awscli curl netcat
 
 aws s3 sync s3://${project_name}-configuration-${env}/openvpn /etc/openvpn --endpoint https://s3.${aws_region}.amazonaws.com --region ${aws_region} --exclude "*issued/client*" --exclude "*private/client*"
 aws s3 cp s3://${project_name}-configuration-${env}/openvpnconfig/openvpn-client.conf /etc/openvpn/openvpn-client.conf --endpoint https://s3.${aws_region}.amazonaws.com --region ${aws_region}
@@ -58,3 +58,62 @@ else
        systemctl enable --now docker-openvpn-${listener.port}-${listener.protocol}@${env}
    %{ endfor ~}
 fi
+
+cat <<'EOF' > /home/ubuntu/check_ports.sh
+#!/bin/bash
+
+# Redirecting output to both the log file and system logger
+exec > >(tee /var/log/check_ports.log|logger -t check-ports -s 2>/dev/console) 2>&1
+
+max_attempts=3
+attempt_counter=0
+
+check_port() {
+  local port=$1
+  local protocol=$2
+  local success_counter=0
+
+  if [ "$protocol" = "tcp" ]; then
+    if nc -zvw10 localhost $port; then
+      return 0 # port is up
+    fi
+  elif [ "$protocol" = "udp" ]; then
+    # Note: UDP check might not be reliable
+    if echo "" | nc -u -w1 localhost $port; then
+      return 0 # port is up
+    fi
+  fi
+  return 1 # port is down
+}
+
+while true; do
+  for listener in %{ for listener in listeners ~}${listener.port} ${listener.protocol} %{ endfor ~}; do
+    port=$(echo $listener | cut -d' ' -f1)
+    protocol=$(echo $listener | cut -d' ' -f2)
+    if check_port $port $protocol; then
+      echo "$protocol port $port is up!"
+      success_counter=$((success_counter+1))
+    else
+      echo "$protocol port $port is down!"
+      attempt_counter=$((attempt_counter+1))
+    fi
+  done
+
+  # Check if any port has reached max attempts
+  if [ $attempt_counter -ge $max_attempts ]; then
+    echo "Max attempts reached for one or more ports, triggering reboot..."
+    sudo reboot
+  fi
+
+  # Reset attempt counter after going through all ports
+  attempt_counter=0
+  # Sleep before rechecking
+  sleep 60
+done
+EOF
+
+# Make the script executable
+chmod +x /home/ubuntu/check_ports.sh
+
+# Run the script in the background
+nohup /home/ubuntu/check_ports.sh &
