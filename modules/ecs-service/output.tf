@@ -15,17 +15,17 @@ output "task_security_group_id" {
 }
 
 output "service_name" {
-  value = aws_ecs_service.ecs-service.name
+  value = var.enable_blue_green ? aws_ecs_service.ecs-service-bg[0].name : aws_ecs_service.ecs-service[0].name
 }
-  
+
 output "ecr_url" {
   value = length(var.containers) == 0 && var.existing_ecr == "" ? aws_ecr_repository.ecs-service.0.repository_url : ""
 }
-  
+
 output "ecr_arn" {
   value = length(var.containers) == 0 && var.existing_ecr == "" ? aws_ecr_repository.ecs-service.0.arn : ""
 }
-  
+
 output "ecr_name" {
   value = length(var.containers) == 0 && var.existing_ecr == "" ? aws_ecr_repository.ecs-service.0.name : ""
 }
