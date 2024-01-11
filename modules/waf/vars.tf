@@ -3,7 +3,7 @@ variable "name" {
   default     = "alb-waf"
 }
 variable "lb_arns" {
-  type = list(string)
+  type = set(string)
   description = "ARN of ALBs"
 }
 
