@@ -2,8 +2,9 @@ variable "name" {
   description = "name of WAF"
   default     = "alb-waf"
 }
-variable "lb_arn" {
-  description = "ARN of ALB"
+variable "lb_arns" {
+  type = list(string)
+  description = "ARN of ALBs"
 }
 
 variable "env" {
