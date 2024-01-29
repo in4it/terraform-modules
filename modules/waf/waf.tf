@@ -74,7 +74,8 @@ resource "aws_wafv2_web_acl" "this" {
           dynamic "rule_action_override" {
             for_each = merge(
               { for r in coalesce(rule.value.blocking_rules,[]) : r => "block" },
-              { for r in coalesce(rule.value.allowing_rules,[]) : r => "allow" }
+              { for r in coalesce(rule.value.allowing_rules,[]) : r => "allow" },
+              { for r in coalesce(rule.value.counting_rules,[]) : r => "count"}
             )
             content {
               name = rule_action_override.key
@@ -86,6 +87,11 @@ resource "aws_wafv2_web_acl" "this" {
                 }
                 dynamic "allow" {
                   for_each = rule_action_override.value == "allow" ? [1] : []
+                  content {
+                  }
+                }
+                dynamic "count" {
+                  for_each = rule_action_override.value == "count" ? [1] : []
                   content {
                   }
                 }

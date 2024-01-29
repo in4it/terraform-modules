@@ -32,6 +32,7 @@ variable "managed_rules" {
     block                    = bool
     blocking_rules           = optional(list(string))
     allowing_rules           = optional(list(string))
+    counting_rules           = optional(list(string))
   }))
   default = []
 }
