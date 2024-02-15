@@ -7,16 +7,23 @@ variable "versioning" {
   default     = true
 }
 
-variable "cloudfront_origin_access_identity_arn" {
-  description = "CloudFront Origin Access ARN"
-  default     = ""
+variable "cloudfront_origins" {
+  description = <<EOF
+  List of cloudfront origins to allow access to the bucket. Example:
+  [{
+    oai_arn         = string       # The ARN of the OAI to allow access to the bucket
+    oai_iam_actions = list(string) # ["s3:GetObject*"]
+    allow_path      = string       # S3 path to allow cloudfront access to. Default allows access to the entire bucket.
+  }]
+  EOF
+  type = list(object({
+    oai_arn         = string       
+    oai_iam_actions = list(string) 
+    allow_path      = string       
+  }))
+  default = []
 }
 
-variable "cloudfront_origin_access_identity_iam_actions" {
-  description = "iam actions to give cloudfront access to"
-  type        = list(string)
-  default     = ["s3:Get*"]
-}
 variable "additional_policy_statements" {
   description = "additional policy statements to add to the s3 bucket policy"
   type = list(object({
@@ -51,11 +58,7 @@ variable "public_access_block" {
     restrict_public_buckets = true
   }
 }
-variable "cloudfront_allow_path" {
-  description = "S3 path to allow cloudfront access to. Default allows access to the entire bucket."
-  type        = string
-  default     = ""
-}
+
 variable "lifecycle_rules" {
   description = "lifecycle rules to add to the bucket"
   type = list(object({
