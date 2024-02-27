@@ -37,8 +37,10 @@ resource "aws_lambda_function" "ecs_sqs_scaling" {
 
   environment {
     variables = {
-      CONFIG = jsonencode(var.config)
-      ENV    = var.env
+      CONFIG                  = jsonencode(var.config)
+      ENV                     = var.env
+      CUSTOM_METRIC_NAMESPACE = var.custom_metric_namespace
+      CUSTOM_METRIC_NAME      = var.custom_metric_name
     }
   }
   tracing_config {

@@ -1,5 +1,6 @@
-// Lambda function that generates a custom backlog Cloudwatch metric for an ECS worker service that processes messages from an SQS queue.
-// The function is triggered by a Cloudwatch Event Rule that runs every minute.
+// =============================================================================
+// Lambda function that generates a custom backlog Cloudwatch metric for multiple ECS worker services that processes messages from SQS queues.
+// The function is triggered by a Cloudwatch Event Rule that runs on a period.
 // As input the function expects a CONFIG json array with the following object structure:
 //
 //  {
@@ -12,26 +13,19 @@
 //     ...
 // }
 // For each service, the function:
-// 1) Gets the number of messages in the SQS queue.
+// 1) Gets the SQS queue info - url + attributes.
 // 2) Gets the number of ECS tasks that are running and pending.
 // 3) Calculates the backlog metric as the number of messages in the queue divided by the number of ECS tasks.
 // 4) Publishes the backlog metric to Cloudwatch.
 
-import {
-  SQSClient,
-  GetQueueUrlCommand,
-  GetQueueAttributes,
-} from "@aws-sdk/client-sqs";
+import { SQSClient, GetQueueUrlCommand, GetQueueAttributes } from "@aws-sdk/client-sqs";
 import { ECSClient, DescribeServicesCommand } from "@aws-sdk/client-ecs";
-import {
-  CloudWatchClient,
-  PutMetricDataCommand,
-} from "@aws-sdk/client-cloudwatch";
-const { checkEnvs } = require("./functions");
+import { CloudWatchClient, PutMetricDataCommand } from "@aws-sdk/client-cloudwatch";
+import { checkEnvs } from "./functions";
 
 exports.handler = async (event) => {
   checkEnvs(["CONFIG", "ENV", "CUSTOM_METRIC_NAMESPACE", "CUSTOM_METRIC_NAME"]);
-
+  const debugMode = process.env.DEBUG == "true" ? true : false;
   const CONFIG = JSON.parse(event.CONFIG);
 
   const results = {
@@ -40,9 +34,7 @@ exports.handler = async (event) => {
   };
   const sqsClient = new SQSClient({ region: process.env.AWS_REGION });
   const ecsClient = new ECSClient({ region: process.env.AWS_REGION });
-  const cloudwatchClient = new CloudWatchClient({
-    region: process.env.AWS_REGION,
-  });
+  const cwClient = new CloudWatchClient({ region: process.env.AWS_REGION });
 
   for (const [serviceName, config] of Object.entries(CONFIG)) {
     try {
@@ -68,8 +60,7 @@ exports.handler = async (event) => {
       );
       data.service = res3.services[0];
 
-      const trackingMetric =
-        data.sqsAttributes[config.tracking_sqs_queue_metric];
+      const trackingMetric = data.sqsAttributes[config.tracking_sqs_queue_metric];
       const runningCount = data.service.runningCount;
       const pendingCount = data.service.pendingCount;
       const taskCount = runningCount + pendingCount;
@@ -108,11 +99,12 @@ exports.handler = async (event) => {
       };
       console.log(metric);
 
-      if (process.env.ENV == "DEBUG") {
+      // Skip Cloudwatch publish if in debug mode for testing
+      if (debugMode) {
         console.log("[DEBUG MODE] Skipping Cloudwatch metric publish");
         continue;
       }
-      await cloudwatchClient.send(new PutMetricDataCommand(metric));
+      await cwClient.send(new PutMetricDataCommand(metric));
 
       results.success.push({ serviceName, data, backlog });
     } catch (error) {

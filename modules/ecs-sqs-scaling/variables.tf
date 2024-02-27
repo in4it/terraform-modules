@@ -14,11 +14,20 @@ variable "config" {
     ecs_service               = string
     tracking_sqs_queue        = string
     tracking_sqs_queue_metric = optional(string)
-    metric_name               = optional(string)
   }))
 }
 
 variable "lambda_trigger_period" {
   description = "The period to trigger the custom metric generation"
   default     = "1 minute"
+}
+
+variable "custom_metric_namespace" {
+  description = "The namespace for the custom metric to be generated"
+  default     = "ECS/CustomerMetrics"
+}
+
+variable "custom_metric_name" {
+  description = "The name of the custom metric to be generated"
+  default     = "ECSWorkerBacklog"
 }
