@@ -70,7 +70,15 @@ data "aws_iam_policy_document" "ecs_sqs_scaling_sts" {
 }
 
 data "aws_iam_policy_document" "ecs_sqs_scaling" {
-
+  statement {
+    sid = "LogsAccess"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = ["*"]
+  }
   statement {
     sid = "CloudwatchAccess"
     actions = [

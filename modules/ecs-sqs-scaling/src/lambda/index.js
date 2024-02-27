@@ -18,15 +18,15 @@
 // 3) Calculates the backlog metric as the number of messages in the queue divided by the number of ECS tasks.
 // 4) Publishes the backlog metric to Cloudwatch.
 
-import { SQSClient, GetQueueUrlCommand, GetQueueAttributes } from "@aws-sdk/client-sqs";
-import { ECSClient, DescribeServicesCommand } from "@aws-sdk/client-ecs";
-import { CloudWatchClient, PutMetricDataCommand } from "@aws-sdk/client-cloudwatch";
-import { checkEnvs } from "./functions";
+const { checkEnvs } = require("./functions");
+const { SQSClient, GetQueueUrlCommand, GetQueueAttributes } = require("@aws-sdk/client-sqs");
+const { ECSClient, DescribeServicesCommand } = require("@aws-sdk/client-ecs");
+const { CloudWatchClient, PutMetricDataCommand } = require("@aws-sdk/client-cloudwatch");
 
 exports.handler = async (event) => {
   checkEnvs(["CONFIG", "ENV", "CUSTOM_METRIC_NAMESPACE", "CUSTOM_METRIC_NAME"]);
   const debugMode = process.env.DEBUG == "true" ? true : false;
-  const CONFIG = JSON.parse(event.CONFIG);
+  const CONFIG = JSON.parse(process.env.CONFIG);
 
   const results = {
     success: [],
