@@ -31,3 +31,8 @@ variable "custom_metric_name" {
   description = "The name of the custom metric to be generated"
   default     = "ECSWorkerBacklog"
 }
+
+variable "debug_mode" {
+  description = "Enable debug mode for the lambda function"
+  default     = false
+}
