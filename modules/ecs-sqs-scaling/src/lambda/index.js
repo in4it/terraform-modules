@@ -1,7 +1,7 @@
 // =============================================================================
 // Lambda function that generates a custom backlog Cloudwatch metric for multiple ECS worker services that processes messages from SQS queues.
 // The function is triggered by a Cloudwatch Event Rule that runs on a period.
-// As input the function expects a CONFIG json array with the following object structure:
+// As input the function expects a CONFIG json object with the following structure:
 //
 //  {
 //     "servicea": {
