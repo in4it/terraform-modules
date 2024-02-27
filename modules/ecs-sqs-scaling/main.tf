@@ -92,6 +92,7 @@ data "aws_iam_policy_document" "ecs_sqs_scaling" {
     sid = "SQSAccess"
     actions = [
       "sqs:GetQueueAttributes",
+      "sqs:GetQueueUrl",
       "sqs:ListQueues",
       "sqs:Describe*"
     ]

@@ -19,15 +19,22 @@
 // 4) Publishes the backlog metric to Cloudwatch.
 
 const { checkEnvs } = require("./functions");
-const { SQSClient, GetQueueUrlCommand, GetQueueAttributes } = require("@aws-sdk/client-sqs");
+const {
+  SQSClient,
+  GetQueueUrlCommand,
+  GetQueueAttributesCommand,
+} = require("@aws-sdk/client-sqs");
 const { ECSClient, DescribeServicesCommand } = require("@aws-sdk/client-ecs");
-const { CloudWatchClient, PutMetricDataCommand } = require("@aws-sdk/client-cloudwatch");
+const {
+  CloudWatchClient,
+  PutMetricDataCommand,
+} = require("@aws-sdk/client-cloudwatch");
 
 exports.handler = async (event) => {
   checkEnvs(["CONFIG", "ENV", "CUSTOM_METRIC_NAMESPACE", "CUSTOM_METRIC_NAME"]);
   const debugMode = process.env.DEBUG == "true" ? true : false;
   const CONFIG = JSON.parse(process.env.CONFIG);
-
+  console.log(process.env.AWS_REGION);
   const results = {
     success: [],
     failed: [],
@@ -39,18 +46,26 @@ exports.handler = async (event) => {
   for (const [serviceName, config] of Object.entries(CONFIG)) {
     try {
       const data = {};
+      console.log("Processing service:", serviceName);
+      console.log("config:", config);
 
       // Get Queue details
       const res = await sqsClient.send(
-        new GetQueueUrlCommand({ QueueName: config.tracking_sqs_queue })
+        new GetQueueUrlCommand({
+          QueueName: config.tracking_sqs_queue,
+        })
       );
       data.queueUrl = res.QueueUrl;
 
       const res2 = await sqsClient.send(
-        new GetQueueAttributes({ QueueUrl: data.queueUrl })
+        new GetQueueAttributesCommand({
+          QueueUrl: data.queueUrl,
+          AttributeNames: [config.tracking_sqs_queue_metric],
+        })
       );
       data.sqsAttributes = res2.Attributes;
-
+      console.log("res2:", res2);
+      console.log("data.sqsAttr:", data.sqsAttributes);
       // Get ECS Service details
       const res3 = await ecsClient.send(
         new DescribeServicesCommand({
@@ -60,7 +75,8 @@ exports.handler = async (event) => {
       );
       data.service = res3.services[0];
 
-      const trackingMetric = data.sqsAttributes[config.tracking_sqs_queue_metric];
+      const trackingMetric =
+        data.sqsAttributes[config.tracking_sqs_queue_metric];
       const runningCount = data.service.runningCount;
       const pendingCount = data.service.pendingCount;
       const taskCount = runningCount + pendingCount;
@@ -112,5 +128,8 @@ exports.handler = async (event) => {
     }
   }
   console.log(results);
+  if (results.failed.length > 0) {
+    throw new Error(`Failed to process some services ${results.failed}`);
+  }
   return results;
 };
