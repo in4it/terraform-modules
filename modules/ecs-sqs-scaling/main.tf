@@ -1,4 +1,4 @@
-# Event trigger once a day
+# Event trigger
 resource "aws_cloudwatch_event_rule" "trigger_every" {
   name                = "${var.name_prefix}-${var.env}-trigger"
   description         = "Trigger lambda function to generate custom ECS scaling metric"
