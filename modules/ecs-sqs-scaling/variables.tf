@@ -6,7 +6,6 @@ variable "env" {
   description = "The environment this module is being deployed to"
 }
 
-# Cloudwatch variables
 variable "config" {
   description = "Configuration for the custom metric generation. Add a new object for each ECS worker service you want to scale based on the SQS queue size."
   type = map(object({
