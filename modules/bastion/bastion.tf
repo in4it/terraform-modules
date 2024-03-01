@@ -14,7 +14,7 @@ data "aws_ami" "al" {
 resource "aws_instance" "bastion" {
   ami                    = data.aws_ami.al.id
   instance_type          = var.instance_type
-  subnet_id              = aws_security_group.bastion.id
+  subnet_id              = var.subnet_id
   vpc_security_group_ids = [aws_security_group.bastion.id]
   iam_instance_profile   = aws_iam_instance_profile.bastion.name
 
