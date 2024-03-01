@@ -1,38 +1,40 @@
-data "aws_ami" "ubuntu" {
+data "aws_ami" "al" {
   most_recent = true
-
+  owners      = ["amazon"]
+  filter {
+    name   = "architecture"
+    values = ["arm64"]
+  }
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
+    values = ["al2023-ami-2023*"]
   }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["099720109477"] # Canonical
 }
 
 resource "aws_instance" "bastion" {
-  ami                    = data.aws_ami.ubuntu.id
-  instance_type          = "t3.nano"
-  subnet_id              = var.subnet_id
+  ami                    = data.aws_ami.al.id
+  instance_type          = var.instance_type
+  subnet_id              = aws_security_group.bastion.id
   vpc_security_group_ids = [aws_security_group.bastion.id]
-  key_name               = var.keypair_name
   iam_instance_profile   = aws_iam_instance_profile.bastion.name
-    
+
   root_block_device {
     encrypted = var.root_block_device_encryption
   }
 
   metadata_options {
-    http_endpoint               = "enabled"
-    http_tokens                 = "required"
+    http_endpoint = "enabled"
+    http_tokens   = "required"
   }
-  
+
   tags = {
     Name = var.name
   }
-} 
+
+  user_data = <<EOF
+  #!/bin/bash
+  yum upgrade
+  sudo systemctl status amazon-ssm-agent
+  EOF
+}
 

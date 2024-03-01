@@ -10,12 +10,7 @@ variable "subnet_id" {
 }
 variable "instance_type" {
   description = "bastion instance type"
-}
-variable "ingress_cidr" {
-  description = "bastion ingress cidr block to allow"
-}
-variable "keypair_name" {
-  description = "name of the ssh keypair to use"
+  default     = "t4g.nano"
 }
 variable "root_block_device_encryption" {
   description = "encrypt root block device"
