@@ -57,3 +57,6 @@ variable "tags" {
     default = {}
     type = map(string)
 }
+variable "db_engine_version" {
+  default = "15.5"
+}
