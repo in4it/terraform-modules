@@ -107,25 +107,22 @@ variable "fargate_service_subnetids" {
 }
 
 variable "existing_ecr" {
-  default = ""
+  type = object({
+    repo_url = string
+  })
+  default = null
 }
 
 variable "secrets" {
   description = "secrets to set"
-  default     = []
-  type = list(object({
-    name      = string
-    valueFrom = string
-  }))
+  default     = {}
+  type = map(string)
 }
 
 variable "environments" {
   description = "environments to set"
-  default     = []
-  type = list(object({
-    name  = string
-    value = string
-  }))
+  default     = {}
+  type = map(string)
 }
 
 variable "ingress_rules" {
