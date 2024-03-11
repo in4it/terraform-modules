@@ -1,11 +1,19 @@
+locals {
+  create_ecr = length(var.containers) == 0 && var.existing_ecr == null
+  ecr_name   = var.ecr_prefix == "" ? var.application_name : "${var.ecr_prefix}/{var.application_name}"
+
+  environments = [for k, v in var.environments : { name = k, value = v }]
+  secrets      = [for k, v in var.secrets : { name = k, valueFrom = v }]
+}
+
 #
 # ecr 
 #
 
 resource "aws_ecr_repository" "ecs-service" {
-  count = length(var.containers) == 0 && var.existing_ecr == "" ? 1 : 0
+  count = local.create_ecr ? 1 : 0
 
-  name = var.ecr_prefix == "" ? var.application_name : "${var.ecr_prefix}/{var.application_name}"
+  name = local.ecr_name
 
   image_scanning_configuration {
     scan_on_push = true
@@ -27,24 +35,26 @@ locals {
   template-vars = {
     aws_region = var.aws_region
     log_group  = var.log_group
-    containers = length(var.containers) > 0 ? var.containers : [{
-      application_name    = var.application_name
-      host_port           = var.launch_type == "FARGATE" ? var.application_port : 0
-      application_port    = var.application_port
-      additional_ports    = var.additional_ports
-      application_version = var.application_version
-      ecr_url             = var.existing_ecr == "" ? aws_ecr_repository.ecs-service.0.repository_url : var.existing_ecr
-      cpu_reservation     = var.cpu_reservation
-      memory_reservation  = var.memory_reservation
-      command             = var.command
-      links               = []
-      dependsOn           = []
-      mountpoints         = var.mountpoints
-      secrets             = var.secrets
-      environments        = var.environments
-      environment_files   = var.environment_files
-      docker_labels       = {}
-    }]
+    containers = length(var.containers) > 0 ? var.containers : [
+      {
+        application_name    = var.application_name
+        host_port           = var.launch_type == "FARGATE" ? var.application_port : 0
+        application_port    = var.application_port
+        additional_ports    = var.additional_ports
+        application_version = var.application_version
+        ecr_url             = var.existing_ecr == null ? aws_ecr_repository.ecs-service.0.repository_url : var.existing_ecr.repo_url
+        cpu_reservation     = var.cpu_reservation
+        memory_reservation  = var.memory_reservation
+        command             = var.command
+        links               = []
+        dependsOn           = []
+        mountpoints         = var.mountpoints
+        secrets             = local.secrets
+        environments        = local.environments
+        environment_files   = var.environment_files
+        docker_labels       = {}
+      }
+    ]
   }
 }
 
@@ -72,7 +82,9 @@ resource "aws_ecs_task_definition" "ecs-service-taskdef" {
           transit_encryption = efs_volume_configuration.value.transit_encryption
           root_directory     = efs_volume_configuration.value.root_directory
           dynamic "authorization_config" {
-            for_each = efs_volume_configuration.value.authorization_config !=null ? (length(efs_volume_configuration.value.authorization_config) > 0 ? [efs_volume_configuration.value.authorization_config] : []) : []
+            for_each = efs_volume_configuration.value.authorization_config !=null ? (length(efs_volume_configuration.value.authorization_config) > 0 ? [
+              efs_volume_configuration.value.authorization_config
+            ] : []) : []
             content {
               access_point_id = authorization_config.value.access_point_id
               iam             = authorization_config.value.iam
@@ -89,8 +101,8 @@ resource "aws_ecs_task_definition" "ecs-service-taskdef" {
 #
 
 resource "aws_ecs_service" "ecs-service" {
-  name    = var.application_name
-  cluster = var.cluster_arn
+  name            = var.application_name
+  cluster         = var.cluster_arn
   task_definition = "${aws_ecs_task_definition.ecs-service-taskdef.family}:${max(
     aws_ecs_task_definition.ecs-service-taskdef.revision,
     data.aws_ecs_task_definition.ecs-service.revision,
@@ -105,7 +117,8 @@ resource "aws_ecs_service" "ecs-service" {
   health_check_grace_period_seconds  = var.health_check_grace_period_seconds
 
   dynamic "load_balancer" {
-    for_each = length(aws_lb_target_group.ecs-service) == 0 ? [] : [values(aws_lb_target_group.ecs-service)[0]] // only get firsts element from the target groups. TODO: read whether it should be blue / green (currently we'll always go for blue)
+    for_each = length(aws_lb_target_group.ecs-service) == 0 ? [] : [values(aws_lb_target_group.ecs-service)[0]]
+    // only get firsts element from the target groups. TODO: read whether it should be blue / green (currently we'll always go for blue)
     content {
       target_group_arn = load_balancer.value.arn
       container_name   = length(var.containers) == 0 ? var.application_name : var.exposed_container_name
@@ -138,7 +151,6 @@ resource "aws_ecs_service" "ecs-service" {
 
   depends_on = [null_resource.alb_exists]
 }
-
 
 
 resource "null_resource" "alb_exists" {
