@@ -8,6 +8,10 @@ variable "launch_type" {
   default = "EC2"
 }
 
+variable "use_arm" {
+  default = false
+}
+
 variable "ecr_prefix" {
   default = ""
 }

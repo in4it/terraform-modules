@@ -75,6 +75,12 @@ resource "aws_ecs_task_definition" "ecs-service-taskdef" {
   network_mode             = var.launch_type == "FARGATE" ? "awsvpc" : "bridge"
   cpu                      = var.launch_type == "FARGATE" ? var.cpu_reservation : null
   memory                   = var.launch_type == "FARGATE" ? var.memory_reservation : null
+
+  runtime_platform {
+    cpu_architecture        = var.use_arm ? "ARM64" : "X86_64"
+    operating_system_family = "LINUX"
+  }
+
   dynamic "volume" {
     for_each = var.volumes
     content {
