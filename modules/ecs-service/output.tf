@@ -1,3 +1,7 @@
+output "task_definition_arn" {
+  value = aws_ecs_task_definition.ecs-service-taskdef.arn
+}
+
 output "target_group_arns" {
   value = [for ecs-service in aws_lb_target_group.ecs-service : ecs-service.arn]
 }
