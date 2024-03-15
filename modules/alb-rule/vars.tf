@@ -9,6 +9,11 @@ variable "target_group_arn" {
 
 variable "condition_field" {
   default = ""
+  description = "host-header or path-pattern"
+  validation {
+    condition     = contains(["host-header", "path-pattern"], var.condition_field)
+    error_message = "Valid values for condition_field are host-header or path-pattern."
+  }
 }
 
 variable "condition_values" {
