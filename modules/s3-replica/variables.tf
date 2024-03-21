@@ -1,4 +1,4 @@
-variable "name" {
+variable "bucket_name" {
   description = "name of the s3 bucket"
 }
 
@@ -84,4 +84,13 @@ variable "lifecycle_rules" {
     }))
   }))
   default = []
+}
+
+variable "create_source" {
+  default     = false
+  description = "Create source s3 bucket as well"
+}
+
+variable "replica_suffix" {
+  default = "-replica"
 }

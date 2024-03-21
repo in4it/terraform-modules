@@ -51,8 +51,8 @@ data "aws_iam_policy_document" "this" {
         ]
         type = "AWS"
       }
-      effect  = "Allow"
-      actions = statement.value.oai_iam_actions
+      effect    = "Allow"
+      actions   = statement.value.oai_iam_actions
       resources = statement.value.allow_path == "" ? [
         "arn:aws:s3:::${aws_s3_bucket.this.id}",
         "arn:aws:s3:::${aws_s3_bucket.this.id}/*",
@@ -65,7 +65,7 @@ data "aws_iam_policy_document" "this" {
       identifiers = ["*"]
       type        = "*"
     }
-    effect = "Deny"
+    effect  = "Deny"
     actions = [
       "s3:*"
     ]
@@ -105,7 +105,6 @@ data "aws_iam_policy_document" "this" {
 # Lifecycle rules
 resource "aws_s3_bucket_lifecycle_configuration" "this" {
   count = length(var.lifecycle_rules) > 0 ? 1 : 0
-
   bucket = aws_s3_bucket.this.id
 
   dynamic "rule" {
