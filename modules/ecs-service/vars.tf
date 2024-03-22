@@ -194,35 +194,35 @@ variable "containers" {
     application_name    = string
     host_port           = number
     application_port    = number
-    additional_ports    = list(string)
-    application_version = string
+    additional_ports    = optional(list(string), [])
+    application_version = optional(string, "latest")
     ecr_url             = string
     cpu_reservation     = number
     memory_reservation  = number
-    command             = list(string)
-    links               = list(string)
-    docker_labels       = map(string)
-    dependsOn           = list(object({
+    command             = optional(list(string), [])
+    links               = optional(list(string), [])
+    docker_labels       = optional(map(string), {})
+    dependsOn           = optional(list(object({
       containerName = string
       condition     = string
-    }))
-    mountpoints = list(object({
+    })), [])
+    mountpoints = optional(list(object({
       containerPath = string
       sourceVolume  = string
       readOnly      = optional(bool, false)
-    }))
-    secrets = list(object({
+    })), [])
+    secrets = optional(list(object({
       name      = string
       valueFrom = string
-    }))
-    environments = list(object({
+    })), [])
+    environments = optional(list(object({
       name  = string
       value = string
-    }))
-    environment_files = list(object({
+    })), [])
+    environment_files = optional(list(object({
       value = string
       type  = string
-    }))
+    })), [])
   }))
 }
 
