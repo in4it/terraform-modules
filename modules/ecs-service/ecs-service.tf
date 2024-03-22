@@ -42,6 +42,7 @@ locals {
     containers = length(var.containers) > 0 ? var.containers : [
       {
         application_name    = var.application_name
+        essential           = true
         host_port           = var.launch_type == "FARGATE" ? var.application_port : 0
         application_port    = var.application_port
         additional_ports    = var.additional_ports

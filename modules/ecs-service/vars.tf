@@ -120,18 +120,18 @@ variable "existing_ecr" {
 variable "secrets" {
   description = "secrets to set"
   default     = {}
-  type = map(string)
+  type        = map(string)
 }
 
 variable "environments" {
   description = "environments to set"
   default     = {}
-  type = map(string)
+  type        = map(string)
 }
 
 variable "ingress_rules" {
   default = []
-  type = list(object({
+  type    = list(object({
     from_port       = number
     to_port         = number
     protocol        = string
@@ -154,12 +154,12 @@ variable "deployment_controller" {
 variable "volumes" {
   description = "volumes to create in task definition"
   default     = []
-  type = list(object({
-    name = string
+  type        = list(object({
+    name                     = string
     efs_volume_configuration = optional(object({
-      file_system_id     = string
-      transit_encryption = string
-      root_directory     = optional(string)
+      file_system_id       = string
+      transit_encryption   = string
+      root_directory       = optional(string)
       authorization_config = optional(object({
         access_point_id = string
         iam             = string
@@ -171,7 +171,7 @@ variable "volumes" {
 variable "mountpoints" {
   description = "mountpoints to in container definition"
   default     = []
-  type = list(object({
+  type        = list(object({
     containerPath = string
     sourceVolume  = string
   }))
@@ -189,7 +189,8 @@ variable "task_security_groups" {
 variable "containers" {
   description = "Containers in container definition"
   default     = []
-  type = list(object({
+  type        = list(object({
+    essential           = optional(bool, true)
     application_name    = string
     host_port           = number
     application_port    = number
@@ -201,14 +202,14 @@ variable "containers" {
     command             = list(string)
     links               = list(string)
     docker_labels       = map(string)
-    dependsOn = list(object({
+    dependsOn           = list(object({
       containerName = string
       condition     = string
     }))
     mountpoints = list(object({
       containerPath = string
       sourceVolume  = string
-      readOnly      = bool
+      readOnly      = optional(bool, false)
     }))
     secrets = list(object({
       name      = string

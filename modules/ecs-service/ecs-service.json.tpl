@@ -9,7 +9,7 @@
       %{if container.command != null}
         "command": ${jsonencode([for command in container.command : command])},
       %{endif}
-      "essential": true,
+      "essential": ${container.essential},
       "portmappings" : [
         {
           %{if container.host_port != null}
@@ -34,7 +34,15 @@
         }${envFileKey+1 == length(container.environment_files)? "" : ","}
         %{ endfor ~}
       ],
-      "mountpoints": ${jsonencode([for mountpoint in container.mountpoints : mountpoint])},
+      "mountpoints":[
+      %{ for mountKey, mountpoint in container.mountpoints ~}
+      {
+            "containerPath":"${mountpoint.containerPath}",
+            "sourceVolume": "${mountpoint.sourceVolume}",
+            "readOnly": ${tobool(try(mountpoint.readOnly, false))}
+      }${mountKey+1 == length(container.mountpoints)? "" : ","}
+      %{ endfor ~}
+      ],
       "links": ${jsonencode([for link in container.links : link])},
       "dependsOn": ${jsonencode([for dependsOn in container.dependsOn : dependsOn])},
       "logconfiguration": {
