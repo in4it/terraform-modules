@@ -211,14 +211,8 @@ variable "containers" {
       sourceVolume  = string
       readOnly      = optional(bool, false)
     })), [])
-    secrets = optional(list(object({
-      name      = string
-      valueFrom = string
-    })), [])
-    environments = optional(list(object({
-      name  = string
-      value = string
-    })), [])
+    secrets           = optional(map(string), {})
+    environments      = optional(map(string), {})
     environment_files = optional(list(object({
       value = string
       type  = string
