@@ -1,9 +1,6 @@
 locals {
   create_ecr = length(var.containers) == 0 && var.existing_ecr == null
   ecr_name   = var.ecr_prefix == "" ? var.application_name : "${var.ecr_prefix}/{var.application_name}"
-
-  environments = [for k, v in var.environments : { name = k, value = v }]
-  secrets      = [for k, v in var.secrets : { name = k, valueFrom = v }]
 }
 
 #
@@ -54,8 +51,8 @@ locals {
         links               = []
         dependsOn           = []
         mountpoints         = var.mountpoints
-        secrets             = local.secrets
-        environments        = local.environments
+        secrets             = var.secrets
+        environments        = var.environments
         environment_files   = var.environment_files
         docker_labels       = {}
       }
