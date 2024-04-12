@@ -21,6 +21,11 @@ resource "aws_ecr_repository" "ecs-service" {
   }
 }
 
+resource "aws_cloudwatch_log_group" "logs" {
+  name              = var.application_name
+  retention_in_days = var.logs_retention_days
+}
+
 #
 # get latest active revision
 #
@@ -35,7 +40,7 @@ data "aws_ecs_task_definition" "ecs-service" {
 locals {
   template-vars = {
     aws_region = var.aws_region
-    log_group  = var.log_group
+    log_group  = aws_cloudwatch_log_group.logs.name
     containers = length(var.containers) > 0 ? var.containers : [
       {
         application_name    = var.application_name

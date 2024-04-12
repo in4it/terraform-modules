@@ -35,3 +35,7 @@ output "ecr_arn" {
 output "ecr_name" {
   value = length(aws_ecr_repository.ecs-service) > 0 ? aws_ecr_repository.ecs-service.0.name : ""
 }
+
+output "log_group_name" {
+  value = aws_cloudwatch_log_group.logs.name
+}

@@ -87,7 +87,8 @@ variable "command" {
   default = []
 }
 
-variable "log_group" {
+variable "logs_retention_days" {
+  default = 30
 }
 
 variable "task_role_arn" {
