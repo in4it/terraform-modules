@@ -120,13 +120,13 @@ variable "existing_ecr" {
 
 variable "secrets" {
   description = "secrets to set"
-  default     = {}
+  default = {}
   type        = map(string)
 }
 
 variable "environments" {
   description = "environments to set"
-  default     = {}
+  default = {}
   type        = map(string)
 }
 
@@ -150,6 +150,11 @@ variable "enable_internal_lb" {
 
 variable "deployment_controller" {
   default = ""
+
+  validation {
+    condition     = var.deployment_controller == "ECS" || var.deployment_controller == "CODE_DEPLOY"
+    error_message = "Must be ECS or CODE_DEPLOY"
+  }
 }
 
 variable "volumes" {

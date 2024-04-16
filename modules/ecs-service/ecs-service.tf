@@ -1,6 +1,16 @@
 locals {
   create_ecr = length(var.containers) == 0 && var.existing_ecr == null
   ecr_name   = var.ecr_prefix == "" ? var.application_name : "${var.ecr_prefix}/{var.application_name}"
+
+  task_revision = var.deployment_controller == "CODE_DEPLOY" ? split("/", data.aws_ecs_service.ecs-service.task_definition)[1] : "${aws_ecs_task_definition.ecs-service-taskdef.family}:${max(
+    aws_ecs_task_definition.ecs-service-taskdef.revision,
+    data.aws_ecs_task_definition.ecs-service.revision,
+  )}"
+}
+
+data "aws_ecs_service" "ecs-service" {
+  cluster_arn  = var.cluster_arn
+  service_name = var.application_name
 }
 
 #
@@ -116,10 +126,7 @@ resource "aws_ecs_task_definition" "ecs-service-taskdef" {
 resource "aws_ecs_service" "ecs-service" {
   name            = var.application_name
   cluster         = var.cluster_arn
-  task_definition = "${aws_ecs_task_definition.ecs-service-taskdef.family}:${max(
-    aws_ecs_task_definition.ecs-service-taskdef.revision,
-    data.aws_ecs_task_definition.ecs-service.revision,
-  )}"
+  task_definition = local.task_revision
   iam_role                           = var.launch_type != "FARGATE" ? var.service_role_arn : null
   desired_count                      = var.desired_count
   deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
