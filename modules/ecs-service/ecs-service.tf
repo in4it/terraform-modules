@@ -32,7 +32,7 @@ resource "aws_ecr_repository" "ecs-service" {
 }
 
 resource "aws_cloudwatch_log_group" "logs" {
-  name              = var.application_name
+  name              = "/aws/ecs/${var.application_name}"
   retention_in_days = var.logs_retention_days
 }
 
