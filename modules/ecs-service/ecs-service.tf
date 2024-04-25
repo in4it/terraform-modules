@@ -2,8 +2,15 @@ locals {
   create_ecr = length(var.containers) == 0 && var.existing_ecr == null
   ecr_name   = var.ecr_prefix == "" ? var.application_name : "${var.ecr_prefix}/{var.application_name}"
 
-  environments = [for k, v in var.environments : { name = k, value = v }]
-  secrets      = [for k, v in var.secrets : { name = k, valueFrom = v }]
+  task_revision = var.deployment_controller == "CODE_DEPLOY" ? split("/", data.aws_ecs_service.ecs-service.task_definition)[1] : "${aws_ecs_task_definition.ecs-service-taskdef.family}:${max(
+    aws_ecs_task_definition.ecs-service-taskdef.revision,
+    data.aws_ecs_task_definition.ecs-service.revision,
+  )}"
+}
+
+data "aws_ecs_service" "ecs-service" {
+  cluster_arn  = var.cluster_arn
+  service_name = var.application_name
 }
 
 #
@@ -24,6 +31,11 @@ resource "aws_ecr_repository" "ecs-service" {
   }
 }
 
+resource "aws_cloudwatch_log_group" "logs" {
+  name              = "/aws/ecs/${var.application_name}"
+  retention_in_days = var.logs_retention_days
+}
+
 #
 # get latest active revision
 #
@@ -38,7 +50,7 @@ data "aws_ecs_task_definition" "ecs-service" {
 locals {
   template-vars = {
     aws_region = var.aws_region
-    log_group  = var.log_group
+    log_group  = aws_cloudwatch_log_group.logs.name
     containers = length(var.containers) > 0 ? var.containers : [
       {
         application_name    = var.application_name
@@ -54,8 +66,8 @@ locals {
         links               = []
         dependsOn           = []
         mountpoints         = var.mountpoints
-        secrets             = local.secrets
-        environments        = local.environments
+        secrets             = var.secrets
+        environments        = var.environments
         environment_files   = var.environment_files
         docker_labels       = {}
       }
@@ -114,10 +126,7 @@ resource "aws_ecs_task_definition" "ecs-service-taskdef" {
 resource "aws_ecs_service" "ecs-service" {
   name            = var.application_name
   cluster         = var.cluster_arn
-  task_definition = "${aws_ecs_task_definition.ecs-service-taskdef.family}:${max(
-    aws_ecs_task_definition.ecs-service-taskdef.revision,
-    data.aws_ecs_task_definition.ecs-service.revision,
-  )}"
+  task_definition = local.task_revision
   iam_role                           = var.launch_type != "FARGATE" ? var.service_role_arn : null
   desired_count                      = var.desired_count
   deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent

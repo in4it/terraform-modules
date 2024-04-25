@@ -24,8 +24,8 @@
         }
         %{ endfor ~}
       ],
-      "secrets": ${jsonencode([for secret in container.secrets : secret])},
-      "environment":${jsonencode([for environment in container.environments : environment])},
+      "secrets": ${jsonencode([for k, v in container.secrets : { name = k, valueFrom = v }])},
+      "environment":${jsonencode([for k, v in container.environments : { name = k, value = v }])},
       "environmentFiles":[
         %{ for envFileKey, envFile in container.environment_files ~}
         {
