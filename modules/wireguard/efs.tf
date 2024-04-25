@@ -17,7 +17,7 @@ resource "aws_efs_mount_target" "vpn" {
 resource "aws_security_group" "vpn-efs" {
   name        = "vpn-efs"
   description = "vpn-efs"
-  vpc_id      = var.vpc_id
+  vpc_id      = data.aws_subnet.vpn.vpc_id
 
   ingress {
     from_port       = 2049

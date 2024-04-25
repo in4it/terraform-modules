@@ -7,7 +7,7 @@ module "vpn-rds" {
   engine_version = var.db_engine_version
   username       = "vpn"
   database_name  = "vpn"
-  vpc_id         = var.vpc_id
+  vpc_id         = data.aws_subnet.vpn.vpc_id
   instance_type  = var.db_instance_type
   subnet_group   = ""
   subnet_ids     = var.db_subnet_ids

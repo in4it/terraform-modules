@@ -1,6 +1,10 @@
 data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
+data "aws_subnet" "vpn" {
+  id = var.instance_subnet_id
+}
+
 resource "aws_instance" "vpn" {
   depends_on = [
     aws_s3_object.docker-compose,
@@ -59,7 +63,7 @@ data "aws_ami" "ubuntu" {
 
 resource "aws_security_group" "vpn-instance" {
   name   = "vpn-sg-${var.env}"
-  vpc_id = var.vpc_id
+  vpc_id = data.aws_subnet.vpn.vpc_id
 
   dynamic "ingress" {
     for_each = var.listeners

@@ -4,9 +4,6 @@ variable "instance_type" {
 variable "db_instance_type" {
     default = "db.t4g.micro"
 }
-variable "vpc_id" {
-
-}
 variable "instance_subnet_id" {
     description = "subnet to launch the EC2 in"
 }
