@@ -44,6 +44,8 @@ resource "aws_eip" "vpn_ip" {
   lifecycle {
     prevent_destroy = true
   }
+
+  tags = merge({ Name = "vpn-${var.env}", Env = var.env }, var.tags)
 }
 
 resource "aws_cloudwatch_log_group" "cloudwatch-ec2-vpn" {
