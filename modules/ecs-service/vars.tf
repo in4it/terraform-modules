@@ -87,7 +87,8 @@ variable "command" {
   default = []
 }
 
-variable "log_group" {
+variable "logs_retention_days" {
+  default = 30
 }
 
 variable "task_role_arn" {
@@ -119,13 +120,13 @@ variable "existing_ecr" {
 
 variable "secrets" {
   description = "secrets to set"
-  default     = {}
+  default = {}
   type        = map(string)
 }
 
 variable "environments" {
   description = "environments to set"
-  default     = {}
+  default = {}
   type        = map(string)
 }
 
@@ -149,6 +150,11 @@ variable "enable_internal_lb" {
 
 variable "deployment_controller" {
   default = ""
+
+  validation {
+    condition     = var.deployment_controller == "ECS" || var.deployment_controller == "CODE_DEPLOY"
+    error_message = "Must be ECS or CODE_DEPLOY"
+  }
 }
 
 variable "volumes" {
@@ -211,14 +217,8 @@ variable "containers" {
       sourceVolume  = string
       readOnly      = optional(bool, false)
     })), [])
-    secrets = optional(list(object({
-      name      = string
-      valueFrom = string
-    })), [])
-    environments = optional(list(object({
-      name  = string
-      value = string
-    })), [])
+    secrets           = optional(map(string), {})
+    environments      = optional(map(string), {})
     environment_files = optional(list(object({
       value = string
       type  = string
