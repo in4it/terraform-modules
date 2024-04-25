@@ -1,5 +1,5 @@
 variable "instance_type" {
-    default = "t3.micro"
+    default = "t3a.micro"
 }
 variable "db_instance_type" {
     default = "db.t4g.micro"
