@@ -255,3 +255,8 @@ variable "enable_execute_command" {
   type    = bool
   default = false
 }
+variable "log_group" {
+  default = ""
+  type = string
+  description = "Log-group name to use. If not set, a log-group will be created with the name /aws/ecs/<application_name>"
+}

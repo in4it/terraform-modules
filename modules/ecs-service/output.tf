@@ -8,7 +8,7 @@ output "target_group_arns" {
 
 output "target_group_arn" {
   value = length(aws_lb_target_group.ecs-service) > 0 ? element([
-    for ecs-service in aws_lb_target_group.ecs-service :ecs-service.arn
+    for ecs-service in aws_lb_target_group.ecs-service : ecs-service.arn
   ], 0) : null
 }
 
@@ -37,5 +37,5 @@ output "ecr_name" {
 }
 
 output "log_group_name" {
-  value = aws_cloudwatch_log_group.logs.name
+  value = var.log_group != "" ? var.log_group : aws_cloudwatch_log_group.logs[0].name
 }

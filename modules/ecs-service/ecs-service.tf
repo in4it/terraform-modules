@@ -32,6 +32,7 @@ resource "aws_ecr_repository" "ecs-service" {
 }
 
 resource "aws_cloudwatch_log_group" "logs" {
+  count             = var.log_group != "" ? 0 : 1
   name              = "/aws/ecs/${var.application_name}"
   retention_in_days = var.logs_retention_days
 }
@@ -50,7 +51,7 @@ data "aws_ecs_task_definition" "ecs-service" {
 locals {
   template-vars = {
     aws_region = var.aws_region
-    log_group  = aws_cloudwatch_log_group.logs.name
+    log_group  = var.log_group != "" ? var.log_group : aws_cloudwatch_log_group.logs[0].name
     containers = length(var.containers) > 0 ? var.containers : [
       {
         application_name    = var.application_name
@@ -105,7 +106,7 @@ resource "aws_ecs_task_definition" "ecs-service-taskdef" {
           transit_encryption = efs_volume_configuration.value.transit_encryption
           root_directory     = efs_volume_configuration.value.root_directory
           dynamic "authorization_config" {
-            for_each = efs_volume_configuration.value.authorization_config !=null ? (length(efs_volume_configuration.value.authorization_config) > 0 ? [
+            for_each = efs_volume_configuration.value.authorization_config != null ? (length(efs_volume_configuration.value.authorization_config) > 0 ? [
               efs_volume_configuration.value.authorization_config
             ] : []) : []
             content {
@@ -124,9 +125,9 @@ resource "aws_ecs_task_definition" "ecs-service-taskdef" {
 #
 
 resource "aws_ecs_service" "ecs-service" {
-  name            = var.application_name
-  cluster         = var.cluster_arn
-  task_definition = local.task_revision
+  name                               = var.application_name
+  cluster                            = var.cluster_arn
+  task_definition                    = local.task_revision
   iam_role                           = var.launch_type != "FARGATE" ? var.service_role_arn : null
   desired_count                      = var.desired_count
   deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
