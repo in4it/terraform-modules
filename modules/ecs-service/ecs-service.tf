@@ -2,13 +2,14 @@ locals {
   create_ecr = length(var.containers) == 0 && var.existing_ecr == null
   ecr_name   = var.ecr_prefix == "" ? var.application_name : "${var.ecr_prefix}/{var.application_name}"
 
-  task_revision = var.deployment_controller == "CODE_DEPLOY" ? split("/", data.aws_ecs_service.ecs-service.task_definition)[1] : "${aws_ecs_task_definition.ecs-service-taskdef.family}:${max(
+  task_revision = var.redeploy_service ? "${aws_ecs_task_definition.ecs-service-taskdef.family}:${max(
     aws_ecs_task_definition.ecs-service-taskdef.revision,
     data.aws_ecs_task_definition.ecs-service.revision,
-  )}"
+  )}" : split("/", data.aws_ecs_service.ecs-service[0].task_definition)[1]
 }
 
 data "aws_ecs_service" "ecs-service" {
+  count = var.redeploy_service ? 0 : 1
   cluster_arn  = var.cluster_arn
   service_name = var.application_name
 }

@@ -256,7 +256,11 @@ variable "enable_execute_command" {
   default = false
 }
 variable "log_group" {
-  default = ""
-  type = string
+  default     = ""
+  type        = string
   description = "Log-group name to use. If not set, a log-group will be created with the name /aws/ecs/<application_name>"
+}
+variable "redeploy_service" {
+  description = "Changes the updated taskdefinition revision which causes ecs service to redeploy"
+  default = true
 }
