@@ -23,7 +23,6 @@ variable "default_cache_behavior" {
       lambda_arn   = string
       include_body = bool
     })))
-
     forwarded_values = optional(object({
       query_string = bool
       cookies = object({
@@ -56,6 +55,11 @@ variable "ordered_cache_behaviors" {
     function_associations = optional(list(object({
       event_type   = string
       function_arn = string
+    })))
+    lambda_function_associations = optional(list(object({
+      event_type   = string
+      lambda_arn   = string
+      include_body = bool
     })))
     forwarded_values = optional(object({
       query_string = bool
