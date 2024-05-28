@@ -94,7 +94,7 @@ resource "aws_cloudfront_distribution" "this" {
         }
       }
       dynamic "lambda_function_association" {
-        for_each = var.default_cache_behavior["lambda_function_association"] != null ? var.default_cache_behavior["lambda_function_association"] : []
+        for_each = var.default_cache_behavior["lambda_function_associations"] != null ? var.default_cache_behavior["lambda_function_associations"] : []
         iterator = lambda_function_association
         content {
           event_type   = lambda_function_association.value.event_type
