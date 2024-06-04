@@ -16,6 +16,10 @@ cd /root
 git clone https://github.com/aws/efs-utils
 cd efs-utils
 git checkout v1.36.0
+# patch depreciation warning
+wget https://patch-diff.githubusercontent.com/raw/aws/efs-utils/pull/217.patch
+patch -p1 < 217.patch
+# end patch
 ./build-deb.sh
 mv ./build/amazon-efs-utils*deb /
 apt-get -y install /amazon-efs-utils*deb
