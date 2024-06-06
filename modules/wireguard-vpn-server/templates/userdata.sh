@@ -8,7 +8,7 @@ apt-get install binutils -y
 systemctl stop vpn-rest-server
 systemctl stop vpn-configmanager
 wg-quick down vpn
-rm -rf /vpn/config/*
+rm -rf /vpn/config
 rm -rf /vpn/secrets
 
 # efs helper
@@ -24,13 +24,22 @@ patch -p1 < 217.patch
 mv ./build/amazon-efs-utils*deb /
 apt-get -y install /amazon-efs-utils*deb
 rm /amazon-efs-utils*deb
-echo -e "${efs_fs_id}\t/vpn/config\tefs\t_netdev,noresvport,tls" >> /etc/fstab
+echo -e "${efs_fs_id}\t/efs\tefs\t_netdev,noresvport,tls" >> /etc/fstab
 systemctl daemon-reload
-mount /vpn/config
 
-# set permissions
-chown vpn:vpn /vpn/config
-chmod 700 /vpn/config
+# create directories and mount
+mount /efs
+mkdir -p /efs/config
+chown -R vpn:vpn /efs
+chmod 700 /efs
+chmod 700 /efs/config
+mkdir -p /efs/secrets
+chmod 700 /efs/secrets
+
+mkdir /vpn/config
+mount --bind /efs/config /vpn/config
+mkdir /vpn/secrets
+mount --bind /efs/secrets /vpn/secrets
 
 # restart vpn
 systemctl start vpn-rest-server
