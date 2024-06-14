@@ -6,7 +6,7 @@ resource "aws_instance" "vpn-server" {
   instance_type          = var.instance_type
   subnet_id              = var.instance_subnet_id
   vpc_security_group_ids = [aws_security_group.vpn-server.id]
-  iam_instance_profile   = aws_iam_instance_profile.vpn-server.name
+  iam_instance_profile   = var.instance_profile_name != "" ? var.instance_profile_name : aws_iam_instance_profile.vpn-server.name
 
   user_data_base64 = base64encode(templatefile("${path.module}/templates/userdata.sh", {
     aws_region         = data.aws_region.current.name
