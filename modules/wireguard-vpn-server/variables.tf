@@ -9,6 +9,12 @@ variable "vpc_id" {
 variable "instance_subnet_id" {
     description = "subnet to launch the VPN Server in"
 }
+
+variable "instance_profile_name" {
+    default     = ""
+    description = "use a custom instance profile"
+}
+
 variable "efs_subnet_ids" {
     description = "subnets to create the efs mountpoints in"
 }
