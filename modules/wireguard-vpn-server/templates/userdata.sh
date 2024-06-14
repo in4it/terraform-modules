@@ -25,21 +25,24 @@ mv ./build/amazon-efs-utils*deb /
 apt-get -y install /amazon-efs-utils*deb
 rm /amazon-efs-utils*deb
 echo -e "${efs_fs_id}\t/efs\tefs\t_netdev,noresvport,tls" >> /etc/fstab
+echo -e "${efs_fs_id}:/config\t/vpn/config\tefs\t_netdev,noresvport,tls" >> /etc/fstab
+echo -e "${efs_fs_id}:/secrets\t/vpn/secrets\tefs\t_netdev,noresvport,tls" >> /etc/fstab
 systemctl daemon-reload
 
 # create directories and mount
+mkdir -p /efs
 mount /efs
 mkdir -p /efs/config
-chown -R vpn:vpn /efs
+chown vpn:vpn /efs/config
 chmod 700 /efs
 chmod 700 /efs/config
 mkdir -p /efs/secrets
 chmod 700 /efs/secrets
 
 mkdir /vpn/config
-mount --bind /efs/config /vpn/config
+mount /vpn/config
 mkdir /vpn/secrets
-mount --bind /efs/secrets /vpn/secrets
+mount /vpn/secrets
 
 # restart vpn
 systemctl start vpn-rest-server
