@@ -47,3 +47,4 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_vpn-ip"></a> [vpn-ip](#output\_vpn-ip) | n/a |
+| <a name="output_vpn-sg"></a> [vpn-sg](#output\_vpn-sg) | n/a |
