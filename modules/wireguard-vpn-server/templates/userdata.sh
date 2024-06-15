@@ -24,9 +24,17 @@ patch -p1 < 217.patch
 mv ./build/amazon-efs-utils*deb /
 apt-get -y install /amazon-efs-utils*deb
 rm /amazon-efs-utils*deb
+
+# set mounts in fstab
 echo -e "${efs_fs_id}\t/efs\tefs\t_netdev,noresvport,tls" >> /etc/fstab
 echo -e "${efs_fs_id}:/config\t/vpn/config\tefs\t_netdev,noresvport,tls" >> /etc/fstab
 echo -e "${efs_fs_id}:/secrets\t/vpn/secrets\tefs\t_netdev,noresvport,tls" >> /etc/fstab
+
+# require mounts before starting the vpn server
+sed -i 's#\[Unit\]#[Unit]\nRequires=vpn-config.mount vpn-secrets.mount\nAfter=vpn-config.mount vpn-secrets.mount#' /etc/systemd/system/vpn-configmanager.service
+sed -i 's#\[Unit\]#[Unit]\nRequires=vpn-config.mount vpn-secrets.mount\nAfter=vpn-config.mount vpn-secrets.mount#' /etc/systemd/system/vpn-rest-server.service
+
+# reload systemd
 systemctl daemon-reload
 
 # create directories and mount
