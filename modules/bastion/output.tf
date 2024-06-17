@@ -5,3 +5,7 @@ output "security-group-id" {
 output "instance-id" {
   value = aws_instance.bastion.id
 }
+
+output "start-session-command" {
+  value = "aws ssm start-session --target ${aws_instance.bastion.id}"
+}
