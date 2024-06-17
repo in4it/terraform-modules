@@ -1,5 +1,5 @@
 locals {
-  create_ecr = length(var.containers) == 0 && var.existing_ecr == null
+  create_ecr = var.create_ecr || (length(var.containers) == 0 && var.existing_ecr == null)
   ecr_name   = var.ecr_prefix == "" ? var.application_name : "${var.ecr_prefix}/{var.application_name}"
 
   task_revision = var.redeploy_service ? "${aws_ecs_task_definition.ecs-service-taskdef.family}:${max(

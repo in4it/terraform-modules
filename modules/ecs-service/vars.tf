@@ -264,3 +264,8 @@ variable "redeploy_service" {
   description = "Changes the updated taskdefinition revision which causes ecs service to redeploy"
   default = true
 }
+variable "create_ecr" {
+  description = "Controls if ECR repo should be created"
+  type        = bool
+  default     = true
+}
