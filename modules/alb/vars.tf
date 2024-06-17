@@ -74,3 +74,7 @@ variable "enable_deletion_protection" {
 variable "desync_mitigation_mode"  {
   default = "defensive"
 }
+
+variable "http_to_https_redirect" {
+  default = false
+}
