@@ -34,7 +34,7 @@ resource "aws_eip" "vpn-server" {
 }
 
 data "aws_ami" "vpn-server" {
-  owners      = ["aws-marketplace"]
+  owners      = [var.ami_owner]
   most_recent = true
 
   filter {

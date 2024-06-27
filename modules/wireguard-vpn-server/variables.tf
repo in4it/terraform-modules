@@ -50,3 +50,7 @@ variable "tags" {
     default = {}
     type = map(string)
 }
+
+variable "ami_owner" {
+    default = "aws-marketplace"
+}
