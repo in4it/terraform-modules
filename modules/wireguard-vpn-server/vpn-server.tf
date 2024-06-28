@@ -20,9 +20,10 @@ resource "aws_instance" "vpn-server" {
   metadata_options {
     http_endpoint               = "enabled"
     http_tokens                 = "required"
+    instance_metadata_tags      = "enabled"
   }
 
-  tags = merge({ Name = "vpn-server-${var.env}", env = var.env }, var.tags)
+  tags = merge({ Name = "vpn-server-${var.env}", env = var.env, license = var.license }, var.tags)
 }
 
 resource "aws_eip" "vpn-server" {

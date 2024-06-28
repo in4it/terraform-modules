@@ -54,3 +54,7 @@ variable "tags" {
 variable "ami_owner" {
     default = "aws-marketplace"
 }
+
+variable "license" {
+    default = "marketplace"
+}
