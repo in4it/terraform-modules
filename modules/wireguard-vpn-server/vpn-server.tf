@@ -2,6 +2,9 @@ data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
 resource "aws_instance" "vpn-server" {
+  depends_on = [
+    aws_efs_mount_target.vpn-server-config
+  ]
   ami                    = data.aws_ami.vpn-server.id
   instance_type          = var.instance_type
   subnet_id              = var.instance_subnet_id
