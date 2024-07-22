@@ -17,6 +17,7 @@ resource "aws_lb" "lb" {
     content {
       bucket  = lookup(access_logs.value, "bucket", "${var.lb_name}-lb-logs")
       enabled = lookup(access_logs.value, "enabled", true)
+      prefix  = lookup(access_logs.value, "prefix", null)
     }
   }
 }
@@ -96,7 +97,7 @@ resource "aws_lb_listener" "lb-http" {
   dynamic "default_action" {
     for_each = var.http_to_https_redirect ? [1] : []
     content {
-      type        = "redirect"
+      type = "redirect"
       redirect {
         port        = "443"
         protocol    = "HTTPS"
@@ -108,13 +109,13 @@ resource "aws_lb_listener" "lb-http" {
 
 # extra certificates
 data "aws_acm_certificate" "extra_certificates" {
-  for_each    = {for domain in var.extra_domains : domain => domain}
+  for_each    = { for domain in var.extra_domains : domain => domain }
   domain      = each.value
   statuses    = ["ISSUED"]
   most_recent = true
 }
 resource "aws_lb_listener_certificate" "alb_https_extra_certificates" {
-  for_each        = var.tls ? {for domain in var.extra_domains : domain => domain} : {}
+  for_each        = var.tls ? { for domain in var.extra_domains : domain => domain } : {}
   listener_arn    = aws_lb_listener.lb-https[0].arn
   certificate_arn = data.aws_acm_certificate.extra_certificates[each.value].arn
 }
