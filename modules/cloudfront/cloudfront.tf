@@ -116,7 +116,14 @@ resource "aws_cloudfront_distribution" "this" {
       }
     }
   }
-
+  dynamic "logging_config" {
+    for_each = var.logging_config != null ? [var.logging_config] : []
+    content {
+      bucket          = logging_config.value.bucket
+      include_cookies = lookup(logging_config.value, "include_cookies", false)
+      prefix          = lookup(logging_config.value, "prefix", null)
+    }
+  }
   restrictions {
     geo_restriction {
       restriction_type = var.geo_restriction.restriction_type

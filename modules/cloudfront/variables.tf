@@ -121,3 +121,12 @@ variable "custom_error_responses" {
   }))
   default = null
 }
+variable "logging_config" {
+  description = "The logging configuration for this distribution"
+  type = object({
+    include_cookies = optional(bool)
+    bucket          = optional(string)
+    prefix          = optional(string)
+  })
+  default = null
+}
