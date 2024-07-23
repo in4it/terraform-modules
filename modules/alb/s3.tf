@@ -1,11 +1,11 @@
 # LB logs
 
 data "aws_elb_service_account" "main" {
-  count = length(var.access_logs)
+  count = length(keys(var.access_logs)) > 0 ? 1 : 0
 }
 
 resource "aws_s3_bucket" "lb_logs" {
-  count  = length(var.access_logs)
+  count  = length(keys(var.access_logs)) > 0 ? 1 : 0
   bucket = "${var.lb_name}-lb-logs"
 
   tags = {
@@ -14,7 +14,7 @@ resource "aws_s3_bucket" "lb_logs" {
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "lb_logs" {
-  count  = length(var.access_logs)
+  count  = length(keys(var.access_logs)) > 0 ? 1 : 0
   bucket = aws_s3_bucket.lb_logs[0].id
 
   rule {
@@ -25,7 +25,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "lb_logs" {
 }
 
 resource "aws_s3_bucket_versioning" "lb_logs" {
-  count  = length(var.access_logs)
+  count = length(keys(var.access_logs)) > 0 ? 1 : 0
   bucket = aws_s3_bucket.lb_logs[0].id
   versioning_configuration {
     status = "Disabled"
@@ -36,7 +36,7 @@ resource "aws_s3_bucket_versioning" "lb_logs" {
 }
 
 resource "aws_s3_bucket_policy" "lb_logs" {
-  count  = length(var.access_logs)
+  count = length(keys(var.access_logs)) > 0 ? 1 : 0
   bucket = aws_s3_bucket.lb_logs[0].id
   policy = <<EOF
 {
@@ -76,7 +76,7 @@ EOF
 }
 
 resource "aws_s3_bucket_public_access_block" "lb-logs" {
-  count  = length(var.access_logs)
+  count = length(keys(var.access_logs)) > 0 ? 1 : 0
   bucket = aws_s3_bucket.lb_logs[0].id
 
   block_public_acls       = true
