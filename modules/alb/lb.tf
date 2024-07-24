@@ -15,7 +15,7 @@ resource "aws_lb" "lb" {
   dynamic "access_logs" {
     for_each = length(keys(var.access_logs)) == 0 ? [] : [var.access_logs]
     content {
-      bucket  = lookup(access_logs.value, "bucket", aws_s3_bucket.lb_logs[0].bucket)
+      bucket  = lookup(access_logs.value, "bucket", "${var.lb_name}-lb-logs")
       enabled = lookup(access_logs.value, "enabled", true)
       prefix  = lookup(access_logs.value, "prefix", null)
     }
