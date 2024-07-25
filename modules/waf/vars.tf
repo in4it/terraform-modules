@@ -54,6 +54,5 @@ variable "regex_match_rules" {
     statement  = any
     rule_label = optional(list(string), null)
   }))
-  default = null
-
+  default = []
 }
