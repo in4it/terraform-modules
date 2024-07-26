@@ -2,9 +2,18 @@ variable "name" {
   description = "name of WAF"
   default     = "alb-waf"
 }
+variable "scope" {
+  description = "scope of WAF, use 'CLOUDFRONT' for CloudFront distributions"
+  default     = "REGIONAL"
+  validation {
+    condition     = var.scope == "REGIONAL" || var.scope == "CLOUDFRONT"
+    error_message = "scope must be REGIONAL or CLOUDFRONT"
+  }
+}
 variable "lb_arns" {
-  type = set(string)
-  description = "ARN of ALBs"
+  type        = set(string)
+  description = "ARN of ALBs to associate with WAF"
+  default     = []
 }
 
 variable "env" {
@@ -34,6 +43,16 @@ variable "managed_rules" {
     blocking_rules           = optional(list(string))
     allowing_rules           = optional(list(string))
     counting_rules           = optional(list(string))
+  }))
+  default = []
+}
+variable "regex_match_rules" {
+  type = list(object({
+    name       = string
+    priority   = number
+    action     = string # "count" or "block"
+    statement  = any
+    rule_label = optional(list(string), null)
   }))
   default = []
 }
