@@ -103,7 +103,7 @@ resource "aws_wafv2_web_acl" "this" {
 
       visibility_config {
         cloudwatch_metrics_enabled = true
-        metric_name                = "ratelimit-${rule.value.name}"
+        metric_name                = "managedrules-${rule.value.name}"
         sampled_requests_enabled   = true
       }
     }
@@ -113,10 +113,9 @@ resource "aws_wafv2_web_acl" "this" {
     content {
       name     = rule.value.name
       priority = rule.value.priority
-
-      override_action {
-        dynamic "none" {
-          for_each = rule.value.action == "none" ? [1] : []
+      action {
+        dynamic "block" {
+          for_each = rule.value.action == "block" ? [1] : []
           content {
           }
         }
@@ -125,8 +124,8 @@ resource "aws_wafv2_web_acl" "this" {
           content {
           }
         }
-        dynamic "block" {
-          for_each = rule.value.action == "block" ? [1] : []
+        dynamic "allow" {
+          for_each = rule.value.action == "allow" ? [1] : []
           content {
           }
         }
@@ -179,17 +178,9 @@ resource "aws_wafv2_web_acl" "this" {
                 }
               }
             }
-            dynamic "text_transformation" {
-              for_each = lookup(rule.value.statement, "text_transformation", null) != null ? [
-                for rule in lookup(rule.value.statement, "text_transformation") : {
-                  priority = rule.priority
-                  type     = rule.type
-              }] : []
-
-              content {
-                priority = text_transformation.value.priority
-                type     = text_transformation.value.type
-              }
+            text_transformation {
+              priority = 0
+              type     = "NONE"
             }
           }
         }
