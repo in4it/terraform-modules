@@ -87,6 +87,12 @@ variable "command" {
   default = []
 }
 
+variable "health_check_cmd" {
+  type        = string
+  default     = null
+  description = "Container Health Check command to be executed in the default shell"
+}
+
 variable "logs_retention_days" {
   default = 30
 }
@@ -206,6 +212,7 @@ variable "containers" {
     cpu_reservation     = number
     memory_reservation  = number
     command             = optional(list(string), [])
+    health_check_cmd          = optional(string)
     links               = optional(list(string), [])
     docker_labels       = optional(map(string), {})
     dependsOn           = optional(list(object({

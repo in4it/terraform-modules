@@ -65,6 +65,7 @@ locals {
         cpu_reservation     = var.cpu_reservation
         memory_reservation  = var.memory_reservation
         command             = var.command
+        health_check_cmd    = var.health_check_cmd
         links               = []
         dependsOn           = []
         mountpoints         = var.mountpoints
