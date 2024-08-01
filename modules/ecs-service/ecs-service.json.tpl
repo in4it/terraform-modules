@@ -9,6 +9,9 @@
       %{if container.command != null}
         "command": ${jsonencode([for command in container.command : command])},
       %{endif}
+      %{if container.health_check_cmd != null}
+        "healthCheck": {"command": ["CMD-SHELL", "${container.health_check_cmd}"]},
+      %{endif}
       "essential": ${container.essential},
       "portmappings" : [
         {
