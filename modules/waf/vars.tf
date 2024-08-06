@@ -24,11 +24,18 @@ variable "env" {
 variable "ratelimit_rules" {
   description = "ratelimiting rules"
   type = list(object({
-    name              = string
-    limit             = number
-    priority          = number
-    exclude_ip_ranges = list(string)
-    block             = bool
+    name                  = string
+    limit                 = number
+    priority              = number
+    exclude_ip_ranges     = optional(list(string))
+    include_ip_ranges     = optional(list(string))
+    aggregate_key_type    = optional(string) // IP | FORWARDED_IP | CUSTOM_KEYS | CONSTANT
+    evaluation_window_sec = optional(number)
+    custom_response = optional(object({
+      code     = number
+      body_key = string
+    }))
+    block = bool
   }))
   default = []
 }

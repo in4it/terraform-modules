@@ -16,6 +16,13 @@ resource "aws_wafv2_web_acl" "this" {
         dynamic "block" {
           for_each = rule.value.block ? [1] : []
           content {
+            dynamic "custom_response" {
+              for_each = rule.value.custom_response != null ? [true] : []
+              content {
+                response_code            = rule.value.custom_response.code
+                custom_response_body_key = rule.value.custom_response.body_key
+              }
+            }
           }
         }
         dynamic "count" {
@@ -26,14 +33,24 @@ resource "aws_wafv2_web_acl" "this" {
       }
       statement {
         rate_based_statement {
-          limit              = rule.value.limit
-          aggregate_key_type = "IP"
+          limit                 = rule.value.limit
+          aggregate_key_type    = try(rule.value.aggregate_key_type, "IP")
+          evaluation_window_sec = try(rule.value.evaluation_window_sec, 300)
 
           scope_down_statement {
-            not_statement {
+            and_statement {
               statement {
                 ip_set_reference_statement {
                   arn = aws_wafv2_ip_set.ratelimit_ipset[rule.value.name].arn
+                }
+              }
+              statement {
+                not_statement {
+                  statement {
+                    ip_set_reference_statement {
+                      arn = aws_wafv2_ip_set.ratelimit_ipset[rule.value.name].arn
+                    }
+                  }
                 }
               }
             }
@@ -200,7 +217,16 @@ resource "aws_wafv2_web_acl" "this" {
   }
 }
 
-resource "aws_wafv2_ip_set" "ratelimit_ipset" {
+resource "aws_wafv2_ip_set" "ratelimit_ipset_exclude" {
+  for_each = { for r in var.ratelimit_rules : r.name => r }
+
+  name               = "${each.value.name}-ipset"
+  description        = "Ratelimit IP exclusion"
+  scope              = "REGIONAL"
+  ip_address_version = "IPV4"
+  addresses          = each.value.exclude_ip_ranges
+}
+resource "aws_wafv2_ip_set" "ratelimit_ipset_include" {
   for_each = { for r in var.ratelimit_rules : r.name => r }
 
   name               = "${each.value.name}-ipset"
