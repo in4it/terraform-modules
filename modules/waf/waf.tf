@@ -36,20 +36,73 @@ resource "aws_wafv2_web_acl" "this" {
           limit                 = rule.value.limit
           aggregate_key_type    = try(rule.value.aggregate_key_type, "IP")
           evaluation_window_sec = try(rule.value.evaluation_window_sec, 300)
-
           scope_down_statement {
-            and_statement {
-              statement {
-                ip_set_reference_statement {
-                  arn = aws_wafv2_ip_set.ratelimit_ipset[rule.value.name].arn
+            dynamic "not_statement" {
+              for_each = rule.value.exclude_ip_ranges != null ? [1] : []
+              content {
+                statement {
+                  ip_set_reference_statement {
+                    arn = aws_wafv2_ip_set.ratelimit_ipset_exclude[rule.value.name].arn
+                  }
                 }
               }
-              statement {
-                not_statement {
-                  statement {
-                    ip_set_reference_statement {
-                      arn = aws_wafv2_ip_set.ratelimit_ipset[rule.value.name].arn
+            }
+            dynamic "regex_match_statement" {
+              for_each = lookup(rule.value, "statement", null) != null ? [rule.value.statement] : []
+
+              content {
+                regex_string = regex_match_statement.value.regex_string
+
+                dynamic "field_to_match" {
+                  for_each = lookup(rule.value.statement, "field_to_match", null) != null ? [rule.value.statement.field_to_match] : []
+
+                  content {
+                    dynamic "all_query_arguments" {
+                      for_each = lookup(field_to_match.value, "all_query_arguments", null) != null ? [1] : []
+                      content {}
                     }
+                    dynamic "body" {
+                      for_each = lookup(field_to_match.value, "body", null) != null ? [1] : []
+                      content {}
+                    }
+                    dynamic "method" {
+                      for_each = lookup(field_to_match.value, "method", null) != null ? [1] : []
+
+                      content {}
+                    }
+                    dynamic "query_string" {
+                      for_each = lookup(field_to_match.value, "query_string", null) != null ? [1] : []
+
+                      content {}
+                    }
+                    dynamic "single_header" {
+                      for_each = lookup(field_to_match.value, "single_header", null) != null ? [field_to_match.value.single_header] : []
+
+                      content {
+                        name = single_header.value.name
+                      }
+                    }
+                    dynamic "single_query_argument" {
+                      for_each = lookup(field_to_match.value, "single_query_argument", null) != null ? [field_to_match.value.single_query_argument] : []
+                      content {
+                        name = single_query_argument.value.name
+                      }
+                    }
+                    dynamic "uri_path" {
+                      for_each = lookup(field_to_match.value, "uri_path", null) != null ? [1] : []
+                      content {}
+                    }
+                  }
+                }
+                dynamic "text_transformation" {
+                  for_each = lookup(rule.value.statement, "text_transformation", null) != null ? rule.value.statement.text_transformation : [{
+                    priority = 0
+                    type     = "NONE"
+                  }]
+
+                  content {
+                    priority = text_transformation.value.priority
+                    type     = text_transformation.value.type
                   }
                 }
               }
@@ -195,9 +248,15 @@ resource "aws_wafv2_web_acl" "this" {
                 }
               }
             }
-            text_transformation {
-              priority = 0
-              type     = "NONE"
+            dynamic "text_transformation" {
+              for_each = lookup(rule.value.statement, "text_transformation", null) != null ? rule.value.statement.text_transformation : [{
+                priority = 0
+                type     = "NONE"
+              }]
+              content {
+                priority = text_transformation.value.priority
+                type     = text_transformation.value.type
+              }
             }
           }
         }
@@ -218,16 +277,7 @@ resource "aws_wafv2_web_acl" "this" {
 }
 
 resource "aws_wafv2_ip_set" "ratelimit_ipset_exclude" {
-  for_each = { for r in var.ratelimit_rules : r.name => r }
-
-  name               = "${each.value.name}-ipset"
-  description        = "Ratelimit IP exclusion"
-  scope              = "REGIONAL"
-  ip_address_version = "IPV4"
-  addresses          = each.value.exclude_ip_ranges
-}
-resource "aws_wafv2_ip_set" "ratelimit_ipset_include" {
-  for_each = { for r in var.ratelimit_rules : r.name => r }
+  for_each = { for r in var.ratelimit_rules : r.name => r if r.exclude_ip_ranges != null }
 
   name               = "${each.value.name}-ipset"
   description        = "Ratelimit IP exclusion"
