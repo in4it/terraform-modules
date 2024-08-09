@@ -87,6 +87,10 @@ variable "command" {
   default = []
 }
 
+variable "entrypoint" {
+  default = []
+}
+
 variable "health_check_cmd" {
   type        = string
   default     = null
