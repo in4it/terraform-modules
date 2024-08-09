@@ -28,14 +28,15 @@ variable "ratelimit_rules" {
     limit                 = number
     priority              = number
     exclude_ip_ranges     = optional(list(string))
-    aggregate_key_type    = optional(string) // IP | FORWARDED_IP | CUSTOM_KEYS | CONSTANT
+    aggregate_key_type    = optional(string) # IP | FORWARDED_IP | CUSTOM_KEYS | CONSTANT
     evaluation_window_sec = optional(number)
     custom_response = optional(object({
       code     = number
       body_key = string
     }))
-    statement = optional(any) // regex_match_statement 
-    block     = bool
+    statement       = optional(any)    # regex_match_statement 
+    override_action = optional(string) # count | block
+    action          = optional(string) # count | block | allow
   }))
   default = []
 }
@@ -46,18 +47,32 @@ variable "managed_rules" {
     priority                 = number
     managed_rule_name        = string
     managed_rule_vendor_name = string
-    block                    = bool
+    override_action          = optional(string) # count | block
     blocking_rules           = optional(list(string))
     allowing_rules           = optional(list(string))
     counting_rules           = optional(list(string))
   }))
   default = []
 }
+variable "other_rule_groups" {
+  description = "other rule groups"
+  type = list(object({
+    name            = string
+    priority        = number
+    rule_group_arn  = string
+    override_action = optional(string) # count | block
+    blocking_rules  = optional(list(string))
+    allowing_rules  = optional(list(string))
+    counting_rules  = optional(list(string))
+  }))
+  default = []
+
+}
 variable "regex_match_rules" {
   type = list(object({
     name       = string
     priority   = number
-    action     = string # "count" or "block"
+    action     = string # count | block
     statement  = any
     rule_label = optional(list(string), null)
   }))

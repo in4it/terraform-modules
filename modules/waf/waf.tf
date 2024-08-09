@@ -14,21 +14,24 @@ resource "aws_wafv2_web_acl" "this" {
 
       action {
         dynamic "block" {
-          for_each = rule.value.block ? [1] : []
+          for_each = rule.value.action == "block" ? [1] : []
           content {
             dynamic "custom_response" {
               for_each = rule.value.custom_response != null ? [true] : []
               content {
                 response_code            = rule.value.custom_response.code
-                custom_response_body_key = rule.value.custom_response.body_key
+                custom_response_body_key = try(rule.value.custom_response.body_key, null)
               }
             }
           }
         }
         dynamic "count" {
-          for_each = !rule.value.block ? [1] : []
-          content {
-          }
+          for_each = rule.value.action == "count" ? [1] : []
+          content {}
+        }
+        dynamic "allow" {
+          for_each = rule.value.action == "allow" ? [1] : []
+          content {}
         }
       }
       statement {
@@ -127,12 +130,12 @@ resource "aws_wafv2_web_acl" "this" {
 
       override_action {
         dynamic "none" {
-          for_each = rule.value.block ? [1] : []
+          for_each = rule.value.override_action == "none" ? [1] : []
           content {
           }
         }
         dynamic "count" {
-          for_each = !rule.value.block ? [1] : []
+          for_each = rule.value.override_action == "count" ? [1] : []
           content {
           }
         }
@@ -269,6 +272,81 @@ resource "aws_wafv2_web_acl" "this" {
       }
     }
   }
+
+  dynamic "rule" {
+    for_each = { for r in var.other_rule_groups : r.name => r }
+    content {
+      name     = rule.value.name
+      priority = rule.value.priority
+      # action {
+      #   dynamic "block" {
+      #     for_each = rule.value.action == "block" ? [1] : []
+      #     content {
+      #     }
+      #   }
+      #   dynamic "count" {
+      #     for_each = rule.value.action == "count" ? [1] : []
+      #     content {
+      #     }
+      #   }
+      #   dynamic "allow" {
+      #     for_each = rule.value.action == "allow" ? [1] : []
+      #     content {
+      #     }
+      #   }
+      # }
+      override_action {
+        dynamic "none" {
+          for_each = rule.value.override_action == "none" ? [1] : []
+          content {
+          }
+        }
+        dynamic "count" {
+          for_each = rule.value.override_action == "count" ? [1] : []
+          content {
+          }
+        }
+      }
+      statement {
+        rule_group_reference_statement {
+          arn = rule.value.rule_group_arn
+          dynamic "rule_action_override" {
+            for_each = merge(
+              { for r in coalesce(rule.value.blocking_rules, []) : r => "block" },
+              { for r in coalesce(rule.value.allowing_rules, []) : r => "allow" },
+              { for r in coalesce(rule.value.counting_rules, []) : r => "count" }
+            )
+            content {
+              name = rule_action_override.key
+              action_to_use {
+                dynamic "block" {
+                  for_each = rule_action_override.value == "block" ? [1] : []
+                  content {
+                  }
+                }
+                dynamic "allow" {
+                  for_each = rule_action_override.value == "allow" ? [1] : []
+                  content {
+                  }
+                }
+                dynamic "count" {
+                  for_each = rule_action_override.value == "count" ? [1] : []
+                  content {
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "other-${rule.value.name}"
+        sampled_requests_enabled   = true
+      }
+    }
+  }
+
   visibility_config {
     cloudwatch_metrics_enabled = true
     metric_name                = var.env == "" ? var.name : "${var.name}-${var.env}"
