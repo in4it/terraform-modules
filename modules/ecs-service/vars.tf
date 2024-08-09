@@ -212,6 +212,7 @@ variable "containers" {
     cpu_reservation     = number
     memory_reservation  = number
     command             = optional(list(string), [])
+    entrypoint          = optional(list(string), [])
     health_check_cmd    = optional(string)
     links               = optional(list(string), [])
     docker_labels       = optional(map(string), {})
