@@ -73,6 +73,10 @@ variable "healthcheck_path" {
   default = "/"
 }
 
+variable "healthcheck_timeout" {
+  default = "5"
+}
+
 variable "health_check_grace_period_seconds" {
   default = 0
 }
