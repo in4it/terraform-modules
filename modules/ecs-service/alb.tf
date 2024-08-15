@@ -34,6 +34,20 @@ resource "aws_lb_target_group" "ecs-service" {
       unhealthy_threshold = var.healthcheck_unhealthy_threshold
       protocol            = var.protocol
       path                = var.healthcheck_path
+      timeout             = var.healthcheck_timeout
+      interval            = var.healthcheck_interval
+      matcher             = var.healthcheck_matcher
+    }
+  }
+
+  dynamic "health_check" {
+    for_each = var.protocol == "HTTPS" ? [1] : []
+    content {
+      healthy_threshold   = var.healthcheck_healthy_threshold
+      unhealthy_threshold = var.healthcheck_unhealthy_threshold
+      protocol            = var.protocol
+      path                = var.healthcheck_path
+      timeout             = var.healthcheck_timeout
       interval            = var.healthcheck_interval
       matcher             = var.healthcheck_matcher
     }
