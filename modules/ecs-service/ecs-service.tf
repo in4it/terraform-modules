@@ -74,6 +74,8 @@ locals {
         environments        = var.environments
         environment_files   = var.environment_files
         docker_labels       = {}
+        fluent_bit          = var.fluent_bit
+        aws_firelens        = var.aws_firelens
       }
     ]
   }
