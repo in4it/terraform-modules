@@ -51,14 +51,30 @@
       ],
       "links": ${jsonencode([for link in container.links : link])},
       "dependsOn": ${jsonencode([for dependsOn in container.dependsOn : dependsOn])},
-      "logconfiguration": {
-            "logdriver": "awslogs",
-            "options": {
-                "awslogs-group": "${log_group}",
-                "awslogs-region": "${aws_region}",
-                "awslogs-stream-prefix": "${container.application_name}"
-            }
-      }
+      %{if container.fluent_bit == true}
+        "firelensConfiguration": {
+              "type": "fluentbit",
+              "options": {
+                  "config-file-type": "file",
+                  "config-file-value": "/fluent.conf"
+              }
+        },
+      %{endif}
+      %{if container.aws_firelens == false}
+        "logconfiguration": {
+              "logdriver": "awslogs",
+              "options": {
+                  "awslogs-group": "${log_group}",
+                  "awslogs-region": "${aws_region}",
+                  "awslogs-stream-prefix": "${container.application_name}"
+              }
+        }
+      %{endif}
+      %{if container.aws_firelens == true}
+        "logconfiguration": {
+              "logdriver": "awsfirelens"
+        }
+      %{endif}
     }${key+1 == length(containers)? "" : ","}
   %{ endfor ~}
 ]

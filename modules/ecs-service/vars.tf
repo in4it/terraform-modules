@@ -91,6 +91,16 @@ variable "command" {
   default = []
 }
 
+variable "fluent_bit" {
+  type    = bool
+  default = false
+}
+
+variable "aws_firelens" {
+  type    = bool
+  default = false
+}
+
 variable "entrypoint" {
   default = []
 }
@@ -224,6 +234,8 @@ variable "containers" {
     health_check_cmd    = optional(string)
     links               = optional(list(string), [])
     docker_labels       = optional(map(string), {})
+    fluent_bit          = optional(bool, false)
+    aws_firelens        = optional(bool, false)
     dependsOn           = optional(list(object({
       containerName = string
       condition     = string
