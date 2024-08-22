@@ -236,7 +236,10 @@ variable "containers" {
     docker_labels          = optional(map(string), {})
     fluent_bit             = optional(bool, false)
     aws_firelens           = optional(bool, false)
-    firelens_configuration = optional(any, null)
+    firelens_configuration = optional(object({
+      type    = string
+      options = map(string)
+    }), null)
     dependsOn = optional(list(object({
       containerName = string
       condition     = string

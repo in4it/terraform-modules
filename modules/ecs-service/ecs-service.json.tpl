@@ -52,7 +52,13 @@
       "links": ${jsonencode([for link in container.links : link])},
       "dependsOn": ${jsonencode([for dependsOn in container.dependsOn : dependsOn])},
       %{if container.fluent_bit == true}
-        "firelensConfiguration": ${jsonencode(container.firelens_configuration)},
+        "firelensConfiguration": ${ container.firelens_configuration!=null ? jsonencode(container.firelens_configuration): jsonencode({
+          "type": "fluentbit",
+          "options": {
+            "config-file-type": "file",
+            "config-file-value": "/fluent.conf"
+          }
+        })},
       %{endif}
       %{if container.aws_firelens == false}
         "logconfiguration": {
