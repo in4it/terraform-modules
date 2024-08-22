@@ -144,19 +144,19 @@ variable "existing_ecr" {
 
 variable "secrets" {
   description = "secrets to set"
-  default = {}
+  default     = {}
   type        = map(string)
 }
 
 variable "environments" {
   description = "environments to set"
-  default = {}
+  default     = {}
   type        = map(string)
 }
 
 variable "ingress_rules" {
   default = []
-  type    = list(object({
+  type = list(object({
     from_port       = number
     to_port         = number
     protocol        = string
@@ -184,12 +184,12 @@ variable "deployment_controller" {
 variable "volumes" {
   description = "volumes to create in task definition"
   default     = []
-  type        = list(object({
-    name                     = string
+  type = list(object({
+    name = string
     efs_volume_configuration = optional(object({
-      file_system_id       = string
-      transit_encryption   = string
-      root_directory       = optional(string)
+      file_system_id     = string
+      transit_encryption = string
+      root_directory     = optional(string)
       authorization_config = optional(object({
         access_point_id = string
         iam             = string
@@ -201,7 +201,7 @@ variable "volumes" {
 variable "mountpoints" {
   description = "mountpoints to in container definition"
   default     = []
-  type        = list(object({
+  type = list(object({
     containerPath = string
     sourceVolume  = string
   }))
@@ -219,24 +219,25 @@ variable "task_security_groups" {
 variable "containers" {
   description = "Containers in container definition"
   default     = []
-  type        = list(object({
-    essential           = optional(bool, true)
-    application_name    = string
-    host_port           = number
-    application_port    = number
-    additional_ports    = optional(list(string), [])
-    application_version = optional(string, "latest")
-    ecr_url             = string
-    cpu_reservation     = number
-    memory_reservation  = number
-    command             = optional(list(string), [])
-    entrypoint          = optional(list(string), [])
-    health_check_cmd    = optional(string)
-    links               = optional(list(string), [])
-    docker_labels       = optional(map(string), {})
-    fluent_bit          = optional(bool, false)
-    aws_firelens        = optional(bool, false)
-    dependsOn           = optional(list(object({
+  type = list(object({
+    essential              = optional(bool, true)
+    application_name       = string
+    host_port              = number
+    application_port       = number
+    additional_ports       = optional(list(string), [])
+    application_version    = optional(string, "latest")
+    ecr_url                = string
+    cpu_reservation        = number
+    memory_reservation     = number
+    command                = optional(list(string), [])
+    entrypoint             = optional(list(string), [])
+    health_check_cmd       = optional(string)
+    links                  = optional(list(string), [])
+    docker_labels          = optional(map(string), {})
+    fluent_bit             = optional(bool, false)
+    aws_firelens           = optional(bool, false)
+    firelens_configuration = optional(any, null)
+    dependsOn = optional(list(object({
       containerName = string
       condition     = string
     })), [])
@@ -245,8 +246,8 @@ variable "containers" {
       sourceVolume  = string
       readOnly      = optional(bool, false)
     })), [])
-    secrets           = optional(map(string), {})
-    environments      = optional(map(string), {})
+    secrets      = optional(map(string), {})
+    environments = optional(map(string), {})
     environment_files = optional(list(object({
       value = string
       type  = string
@@ -290,10 +291,20 @@ variable "log_group" {
 }
 variable "redeploy_service" {
   description = "Changes the updated taskdefinition revision which causes ecs service to redeploy"
-  default = true
+  default     = true
 }
 variable "create_ecr" {
   description = "Controls if ECR repo should be created"
   type        = bool
   default     = true
+}
+variable "firelens_configuration" {
+  type = any
+  default = {
+    type = "fluentbit"
+    options = {
+      config-file-type = "file"
+      config-file-value = "/fluent.conf"
+    }
+  }
 }

@@ -9,7 +9,7 @@ locals {
 }
 
 data "aws_ecs_service" "ecs-service" {
-  count = var.redeploy_service ? 0 : 1
+  count        = var.redeploy_service ? 0 : 1
   cluster_arn  = var.cluster_arn
   service_name = var.application_name
 }
@@ -55,27 +55,28 @@ locals {
     log_group  = var.log_group != "" ? var.log_group : aws_cloudwatch_log_group.logs[0].name
     containers = length(var.containers) > 0 ? var.containers : [
       {
-        application_name    = var.application_name
-        essential           = true
-        host_port           = var.launch_type == "FARGATE" ? var.application_port : 0
-        application_port    = var.application_port
-        additional_ports    = var.additional_ports
-        application_version = var.application_version
-        ecr_url             = var.existing_ecr == null ? aws_ecr_repository.ecs-service.0.repository_url : var.existing_ecr.repo_url
-        cpu_reservation     = var.cpu_reservation
-        memory_reservation  = var.memory_reservation
-        command             = var.command
-        entrypoint          = var.entrypoint
-        health_check_cmd    = var.health_check_cmd
-        links               = []
-        dependsOn           = []
-        mountpoints         = var.mountpoints
-        secrets             = var.secrets
-        environments        = var.environments
-        environment_files   = var.environment_files
-        docker_labels       = {}
-        fluent_bit          = var.fluent_bit
-        aws_firelens        = var.aws_firelens
+        application_name       = var.application_name
+        essential              = true
+        host_port              = var.launch_type == "FARGATE" ? var.application_port : 0
+        application_port       = var.application_port
+        additional_ports       = var.additional_ports
+        application_version    = var.application_version
+        ecr_url                = var.existing_ecr == null ? aws_ecr_repository.ecs-service.0.repository_url : var.existing_ecr.repo_url
+        cpu_reservation        = var.cpu_reservation
+        memory_reservation     = var.memory_reservation
+        command                = var.command
+        entrypoint             = var.entrypoint
+        health_check_cmd       = var.health_check_cmd
+        links                  = []
+        dependsOn              = []
+        mountpoints            = var.mountpoints
+        secrets                = var.secrets
+        environments           = var.environments
+        environment_files      = var.environment_files
+        docker_labels          = {}
+        fluent_bit             = var.fluent_bit
+        aws_firelens           = var.aws_firelens
+        firelens_configuration = var.firelens_configuration
       }
     ]
   }
