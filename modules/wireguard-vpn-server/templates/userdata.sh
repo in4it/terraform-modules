@@ -2,7 +2,9 @@
 
 apt-get update
 apt-get upgrade -y
-apt-get install binutils -y
+apt-get install binutils build-essential git rustc cargo pkg-config libssl-dev -y
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > /root/rustup.sh && chmod +x /root/rustup.sh && /root/rustup.sh -y
+. "$HOME/.cargo/env"
 
 # reinitialize vpn
 systemctl stop vpn-rest-server
@@ -16,15 +18,16 @@ rm -rf /vpn/tls-certs
 cd /root
 git clone https://github.com/aws/efs-utils
 cd efs-utils
-git checkout v1.36.0
-# patch depreciation warning
-wget https://patch-diff.githubusercontent.com/raw/aws/efs-utils/pull/217.patch
-patch -p1 < 217.patch
-# end patch
+git checkout v2.0.4
 ./build-deb.sh
 mv ./build/amazon-efs-utils*deb /
 apt-get -y install /amazon-efs-utils*deb
 rm /amazon-efs-utils*deb
+
+# Clean up packages after efs installation
+apt-get remove --purge -y binutils build-essential git rustc cargo pkg-config libssl-dev
+apt-get autoremove -y
+apt-get clean
 
 # set mounts in fstab
 echo -e "${efs_fs_id}\t/efs\tefs\t_netdev,noresvport,tls" >> /etc/fstab

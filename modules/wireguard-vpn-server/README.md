@@ -33,11 +33,13 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_ami_owner"></a> [ami\_owner](#input\_ami\_owner) | n/a | `string` | `"aws-marketplace"` | no |
 | <a name="input_efs_subnet_ids"></a> [efs\_subnet\_ids](#input\_efs\_subnet\_ids) | subnets to create the efs mountpoints in | `any` | n/a | yes |
 | <a name="input_env"></a> [env](#input\_env) | n/a | `string` | `"prod"` | no |
 | <a name="input_instance_profile_name"></a> [instance\_profile\_name](#input\_instance\_profile\_name) | use a custom instance profile | `string` | `""` | no |
 | <a name="input_instance_subnet_id"></a> [instance\_subnet\_id](#input\_instance\_subnet\_id) | subnet to launch the VPN Server in | `any` | n/a | yes |
 | <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | n/a | `string` | `"t3.small"` | no |
+| <a name="input_license"></a> [license](#input\_license) | n/a | `string` | `"marketplace"` | no |
 | <a name="input_listeners"></a> [listeners](#input\_listeners) | n/a | <pre>list(object({<br>    port        = string<br>    protocol    = string<br>    cidr_blocks = list(string)<br>  }))</pre> | <pre>[<br>  {<br>    "cidr_blocks": [<br>      "0.0.0.0/0"<br>    ],<br>    "port": "51820",<br>    "protocol": "udp"<br>  },<br>  {<br>    "cidr_blocks": [<br>      "0.0.0.0/0"<br>    ],<br>    "port": "80",<br>    "protocol": "tcp"<br>  },<br>  {<br>    "cidr_blocks": [<br>      "0.0.0.0/0"<br>    ],<br>    "port": "443",<br>    "protocol": "tcp"<br>  }<br>]</pre> | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(string)` | `{}` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC id to launch the VPN Server in | `any` | n/a | yes |
