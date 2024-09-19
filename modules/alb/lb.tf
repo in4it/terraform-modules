@@ -17,6 +17,7 @@ resource "aws_lb" "lb" {
     content {
       bucket  = lookup(access_logs.value, "bucket", "${var.lb_name}-lb-logs")
       enabled = lookup(access_logs.value, "enabled", true)
+      prefix  = lookup(access_logs.value, "prefix", null)
     }
   }
 }
@@ -79,7 +80,7 @@ resource "aws_lb_listener" "lb-http" {
   protocol          = "HTTP"
 
   dynamic "default_action" {
-    for_each = var.default_target_arn == "" ? local.fixed_response : local.forward_response
+    for_each = var.http_to_https_redirect ? [] : var.default_target_arn == "" ? local.fixed_response : local.forward_response
     content {
       target_group_arn = default_action.value.target_group_arn
       type             = default_action.value.type
@@ -90,6 +91,17 @@ resource "aws_lb_listener" "lb-http" {
           message_body = default_action.value.message_body
           status_code  = default_action.value.status_code
         }
+      }
+    }
+  }
+  dynamic "default_action" {
+    for_each = var.http_to_https_redirect ? [1] : []
+    content {
+      type = "redirect"
+      redirect {
+        port        = "443"
+        protocol    = "HTTPS"
+        status_code = "HTTP_301"
       }
     }
   }

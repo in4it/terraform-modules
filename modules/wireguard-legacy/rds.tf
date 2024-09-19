@@ -2,9 +2,9 @@ module "vpn-rds" {
   source         = "github.com/in4it/terraform-modules//modules/rds"
   name           = "vpn"
   storage        = "20"
-  storage_type   = "gp3"
+  storage_type   = "gp2"
   engine         = "postgres"
-  engine_version = var.db_engine_version
+  engine_version = "15.2"
   username       = "vpn"
   database_name  = "vpn"
   vpc_id         = var.vpc_id

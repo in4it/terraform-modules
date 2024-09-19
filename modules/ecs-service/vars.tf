@@ -8,6 +8,10 @@ variable "launch_type" {
   default = "EC2"
 }
 
+variable "use_arm" {
+  default = false
+}
+
 variable "ecr_prefix" {
   default = ""
 }
@@ -69,6 +73,10 @@ variable "healthcheck_path" {
   default = "/"
 }
 
+variable "healthcheck_timeout" {
+  default = "5"
+}
+
 variable "health_check_grace_period_seconds" {
   default = 0
 }
@@ -83,7 +91,28 @@ variable "command" {
   default = []
 }
 
-variable "log_group" {
+variable "fluent_bit" {
+  type    = bool
+  default = false
+}
+
+variable "aws_firelens" {
+  type    = bool
+  default = false
+}
+
+variable "entrypoint" {
+  default = []
+}
+
+variable "health_check_cmd" {
+  type        = string
+  default     = null
+  description = "Container Health Check command to be executed in the default shell"
+}
+
+variable "logs_retention_days" {
+  default = 30
 }
 
 variable "task_role_arn" {
@@ -107,30 +136,27 @@ variable "fargate_service_subnetids" {
 }
 
 variable "existing_ecr" {
-  default = ""
+  type = object({
+    repo_url = string
+  })
+  default = null
 }
 
 variable "secrets" {
   description = "secrets to set"
-  default     = []
-  type = list(object({
-    name      = string
-    valueFrom = string
-  }))
+  default = {}
+  type        = map(string)
 }
 
 variable "environments" {
   description = "environments to set"
-  default     = []
-  type = list(object({
-    name  = string
-    value = string
-  }))
+  default = {}
+  type        = map(string)
 }
 
 variable "ingress_rules" {
   default = []
-  type = list(object({
+  type    = list(object({
     from_port       = number
     to_port         = number
     protocol        = string
@@ -148,29 +174,34 @@ variable "enable_internal_lb" {
 
 variable "deployment_controller" {
   default = ""
+
+  validation {
+    condition     = var.deployment_controller == "ECS" || var.deployment_controller == "CODE_DEPLOY"
+    error_message = "Must be ECS or CODE_DEPLOY"
+  }
 }
 
 variable "volumes" {
   description = "volumes to create in task definition"
   default     = []
-  type = list(object({
-    name = string
-    efs_volume_configuration = object({
-      file_system_id     = string
-      transit_encryption = string
-      root_directory     = optional(string)
+  type        = list(object({
+    name                     = string
+    efs_volume_configuration = optional(object({
+      file_system_id       = string
+      transit_encryption   = string
+      root_directory       = optional(string)
       authorization_config = optional(object({
         access_point_id = string
         iam             = string
       }))
-    })
+    }))
   }))
 }
 
 variable "mountpoints" {
   description = "mountpoints to in container definition"
   default     = []
-  type = list(object({
+  type        = list(object({
     containerPath = string
     sourceVolume  = string
   }))
@@ -188,39 +219,38 @@ variable "task_security_groups" {
 variable "containers" {
   description = "Containers in container definition"
   default     = []
-  type = list(object({
+  type        = list(object({
+    essential           = optional(bool, true)
     application_name    = string
     host_port           = number
     application_port    = number
-    additional_ports    = list(string)
-    application_version = string
+    additional_ports    = optional(list(string), [])
+    application_version = optional(string, "latest")
     ecr_url             = string
     cpu_reservation     = number
     memory_reservation  = number
-    command             = list(string)
-    links               = list(string)
-    docker_labels       = map(string)
-    dependsOn = list(object({
+    command             = optional(list(string), [])
+    entrypoint          = optional(list(string), [])
+    health_check_cmd    = optional(string)
+    links               = optional(list(string), [])
+    docker_labels       = optional(map(string), {})
+    fluent_bit          = optional(bool, false)
+    aws_firelens        = optional(bool, false)
+    dependsOn           = optional(list(object({
       containerName = string
       condition     = string
-    }))
-    mountpoints = list(object({
+    })), [])
+    mountpoints = optional(list(object({
       containerPath = string
       sourceVolume  = string
-      readOnly      = bool
-    }))
-    secrets = list(object({
-      name      = string
-      valueFrom = string
-    }))
-    environments = list(object({
-      name  = string
-      value = string
-    }))
-    environment_files = list(object({
+      readOnly      = optional(bool, false)
+    })), [])
+    secrets           = optional(map(string), {})
+    environments      = optional(map(string), {})
+    environment_files = optional(list(object({
       value = string
       type  = string
-    }))
+    })), [])
   }))
 }
 
@@ -252,4 +282,18 @@ variable "environment_files" {
 variable "enable_execute_command" {
   type    = bool
   default = false
+}
+variable "log_group" {
+  default     = ""
+  type        = string
+  description = "Log-group name to use. If not set, a log-group will be created with the name /aws/ecs/<application_name>"
+}
+variable "redeploy_service" {
+  description = "Changes the updated taskdefinition revision which causes ecs service to redeploy"
+  default = true
+}
+variable "create_ecr" {
+  description = "Controls if ECR repo should be created"
+  type        = bool
+  default     = true
 }

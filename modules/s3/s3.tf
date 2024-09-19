@@ -42,21 +42,21 @@ data "aws_iam_policy_document" "this" {
   policy_id = "s3-bucket-policy"
 
   dynamic "statement" {
-    for_each = var.cloudfront_origin_access_identity_arn == "" ? [] : [var.cloudfront_origin_access_identity_arn]
+    for_each = var.cloudfront_origins != null ? var.cloudfront_origins : []
     content {
-      sid = "PolicyForCouldFrontPrivateContent"
+      sid = "PolicyForCouldFrontPrivateContent${statement.key}"
       principals {
         identifiers = [
-          var.cloudfront_origin_access_identity_arn
+          statement.value.oai_arn
         ]
         type = "AWS"
       }
-      effect  = "Allow"
-      actions = var.cloudfront_origin_access_identity_iam_actions
-      resources = var.cloudfront_allow_path == "" ? [
+      effect    = "Allow"
+      actions   = statement.value.oai_iam_actions
+      resources = statement.value.allow_path == "" ? [
         "arn:aws:s3:::${aws_s3_bucket.this.id}",
         "arn:aws:s3:::${aws_s3_bucket.this.id}/*",
-      ] : ["${aws_s3_bucket.this.arn}/${var.cloudfront_allow_path}"]
+      ] : ["${aws_s3_bucket.this.arn}/${statement.value.allow_path}/*"]
     }
   }
   statement {
@@ -65,7 +65,7 @@ data "aws_iam_policy_document" "this" {
       identifiers = ["*"]
       type        = "*"
     }
-    effect = "Deny"
+    effect  = "Deny"
     actions = [
       "s3:*"
     ]
@@ -105,7 +105,6 @@ data "aws_iam_policy_document" "this" {
 # Lifecycle rules
 resource "aws_s3_bucket_lifecycle_configuration" "this" {
   count = length(var.lifecycle_rules) > 0 ? 1 : 0
-
   bucket = aws_s3_bucket.this.id
 
   dynamic "rule" {

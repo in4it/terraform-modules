@@ -1,29 +1,26 @@
 variable "instance_type" {
-    default = "t3.micro"
+    default = "t3.small"
 }
-variable "db_instance_type" {
-    default = "db.t4g.micro"
-}
+
 variable "vpc_id" {
+    description = "VPC id to launch the VPN Server in"
 
 }
 variable "instance_subnet_id" {
-    description = "subnet to launch the EC2 in"
+    description = "subnet to launch the VPN Server in"
 }
-variable "db_subnet_ids" {
-    description = "subnets to launch the DB in"
+
+variable "instance_profile_name" {
+    default     = ""
+    description = "use a custom instance profile"
 }
+
 variable "efs_subnet_ids" {
     description = "subnets to create the efs mountpoints in"
 }
-variable "external_url" {
-    description = "external url the VPN is going to be reachable over. Starts with https://"
-}
-variable "admin_email" {
-    description = "email of administrator"
-}
-variable "log_retention_days" {
-    default = 30
+
+variable "env" {
+    default = "prod"
 }
 
 variable "listeners" {
@@ -49,14 +46,15 @@ variable "listeners" {
   }]
 }
 
-variable "env" {
-    default = "prod"
-}
-
 variable "tags" {
     default = {}
     type = map(string)
 }
-variable "db_engine_version" {
-  default = "15.5"
+
+variable "ami_owner" {
+    default = "aws-marketplace"
+}
+
+variable "license" {
+    default = "marketplace"
 }
