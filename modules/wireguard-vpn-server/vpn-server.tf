@@ -43,7 +43,7 @@ data "aws_ami" "vpn-server" {
 
   filter {
     name   = "name"
-    values = ["in4it-vpn-server*"]
+    values = [var.license == "marketplace" ? "in4it-vpn-server-licensed-*" : "in4it-vpn-server-byol-*"]
   }
 }
 
