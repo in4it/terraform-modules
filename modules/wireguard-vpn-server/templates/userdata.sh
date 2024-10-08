@@ -20,7 +20,8 @@ git clone https://github.com/aws/efs-utils
 cd efs-utils
 git checkout v2.0.4
 ./build-deb.sh
-mv ./build/amazon-efs-utils*deb /
+chmod 755 ~/efs-utils/build/amazon-efs-utils*deb
+mv ~/efs-utils//build/amazon-efs-utils*deb /
 apt-get -y install /amazon-efs-utils*deb
 rm /amazon-efs-utils*deb
 

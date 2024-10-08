@@ -19,6 +19,16 @@ variable "efs_subnet_ids" {
     description = "subnets to create the efs mountpoints in"
 }
 
+variable "efs_encrypted" {
+    description = "Enable EFS encryption"
+    default     = false
+}
+
+variable "efs_kms_key_id" {
+    description = "EFS CMK ID for encryption"
+    default     = ""
+}
+
 variable "env" {
     default = "prod"
 }

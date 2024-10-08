@@ -34,6 +34,8 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_ami_owner"></a> [ami\_owner](#input\_ami\_owner) | n/a | `string` | `"aws-marketplace"` | no |
+| <a name="input_efs_encrypted"></a> [efs\_encrypted](#input\_efs\_encrypted) | Enable EFS encryption | `bool` | `false` | no |
+| <a name="input_efs_kms_key_id"></a> [efs\_kms\_key\_id](#input\_efs\_kms\_key\_id) | EFS CMK ID for encryption | `string` | `""` | no |
 | <a name="input_efs_subnet_ids"></a> [efs\_subnet\_ids](#input\_efs\_subnet\_ids) | subnets to create the efs mountpoints in | `any` | n/a | yes |
 | <a name="input_env"></a> [env](#input\_env) | n/a | `string` | `"prod"` | no |
 | <a name="input_instance_profile_name"></a> [instance\_profile\_name](#input\_instance\_profile\_name) | use a custom instance profile | `string` | `""` | no |

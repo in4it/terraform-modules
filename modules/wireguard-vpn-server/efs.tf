@@ -1,5 +1,7 @@
 resource "aws_efs_file_system" "vpn-server-config" {
   performance_mode = "generalPurpose"
+  encrypted        = var.efs_encrypted
+  kms_key_id       = var.efs_kms_key_id
 
   tags = {
     Name = "vpn-server-config"
