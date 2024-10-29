@@ -22,3 +22,7 @@ variable "existing_bucket_id" {
   type    = string
   default = ""
 }
+variable cw_log_enabled {
+  type    = bool
+  default = true
+}

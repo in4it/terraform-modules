@@ -33,11 +33,13 @@ resource "aws_s3_bucket_versioning" "global-trail-bucket-access-logs" {
   }
 }
 
-resource "aws_s3_bucket_acl" "global-trail-bucket-access-logs" {
+resource "aws_s3_bucket_ownership_controls" "global-trail-bucket-access-logs" {
   count  = var.use_existing_bucket ? 0 : 1
   bucket = aws_s3_bucket.global-trail-bucket-access-logs.0.id
 
-  acl = "private"
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
 }
 
 resource "aws_s3_bucket_policy" "global-trail-bucket-access-logs" {
