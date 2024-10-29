@@ -7,8 +7,8 @@ resource "aws_cloudtrail" "global-trail" {
   is_organization_trail         = true
   is_multi_region_trail         = true
 
-  cloud_watch_logs_group_arn = "${aws_cloudwatch_log_group.global-trail.arn}:*"
-  cloud_watch_logs_role_arn  = aws_iam_role.global-trail-cw-logs-role.arn
+  cloud_watch_logs_group_arn = var.cw_log_enabled ? "${aws_cloudwatch_log_group.global-trail[0].arn}:*" : ""
+  cloud_watch_logs_role_arn  = var.cw_log_enabled ? aws_iam_role.global-trail-cw-logs-role[0].arn : ""
 
   enable_log_file_validation = true
 

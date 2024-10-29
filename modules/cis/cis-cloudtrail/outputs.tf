@@ -1,8 +1,8 @@
 output "cloudtrail_log_group_name" {
-  value = aws_cloudwatch_log_group.global-trail.name
+  value = var.cw_log_enabled ? aws_cloudwatch_log_group.global-trail[0].name : ""
 }
 output "cloudtrail_log_group_arn" {
-  value = aws_cloudwatch_log_group.global-trail.name
+  value = var.cw_log_enabled ? aws_cloudwatch_log_group.global-trail[0].name : ""
 }
 output "cloudtrail_bucket_name" {
   value = var.use_existing_bucket ? "" : aws_s3_bucket.global-trail-bucket.0.id

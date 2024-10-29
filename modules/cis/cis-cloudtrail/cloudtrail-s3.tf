@@ -41,12 +41,14 @@ resource "aws_s3_bucket_versioning" "global-trail-bucket" {
   }
 }
 
-resource "aws_s3_bucket_acl" "global-trail-bucket" {
+resource "aws_s3_bucket_ownership_controls" "global-trail-bucket" {
 
   count  = var.use_existing_bucket ? 0 : 1
   bucket = aws_s3_bucket.global-trail-bucket.0.id
 
-  acl = "private"
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
 }
 
 data "aws_iam_policy_document" "global-trail-bucket-policy" {
