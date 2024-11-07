@@ -111,6 +111,22 @@ variable "health_check_cmd" {
   description = "Container Health Check command to be executed in the default shell"
 }
 
+variable "health_check_interval" {
+  default = 30
+}
+
+variable "health_check_timeout" {
+  default = 5
+}
+
+variable "health_check_retries" {
+  default = 3
+}
+
+variable "health_check_startPeriod" {
+  default = null
+}
+
 variable "logs_retention_days" {
   default = 30
 }
@@ -220,23 +236,27 @@ variable "containers" {
   description = "Containers in container definition"
   default     = []
   type = list(object({
-    essential              = optional(bool, true)
-    application_name       = string
-    host_port              = number
-    application_port       = number
-    additional_ports       = optional(list(string), [])
-    application_version    = optional(string, "latest")
-    ecr_url                = string
-    cpu_reservation        = number
-    memory_reservation     = number
-    command                = optional(list(string), [])
-    entrypoint             = optional(list(string), [])
-    health_check_cmd       = optional(string)
-    links                  = optional(list(string), [])
-    docker_labels          = optional(map(string), {})
-    fluent_bit             = optional(bool, false)
-    aws_firelens           = optional(bool, false)
-    firelens_configuration = optional(object({
+    essential                = optional(bool, true)
+    application_name         = string
+    host_port                = number
+    application_port         = number
+    additional_ports         = optional(list(string), [])
+    application_version      = optional(string, "latest")
+    ecr_url                  = string
+    cpu_reservation          = number
+    memory_reservation       = number
+    command                  = optional(list(string), [])
+    entrypoint               = optional(list(string), [])
+    health_check_cmd         = optional(string)
+    health_check_interval    = optional(number)
+    health_check_timeout     = optional(number)
+    health_check_retries     = optional(number)
+    health_check_startPeriod = optional(number, null)
+    links                    = optional(list(string), [])
+    docker_labels            = optional(map(string), {})
+    fluent_bit               = optional(bool, false)
+    aws_firelens             = optional(bool, false)
+    firelens_configuration   = optional(object({
       type    = string
       options = map(string)
     }), null)
