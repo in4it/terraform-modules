@@ -29,6 +29,11 @@ variable "efs_kms_key_id" {
     default     = ""
 }
 
+variable "efs_backup_enabled" {
+    description = "Enable EFS backups"
+    default = false
+}
+
 variable "env" {
     default = "prod"
 }
