@@ -60,6 +60,7 @@ locals {
         host_port                = var.launch_type == "FARGATE" ? var.application_port : 0
         application_port         = var.application_port
         additional_ports         = var.additional_ports
+        port_protocol            = var.port_protocol
         application_version      = var.application_version
         ecr_url                  = var.existing_ecr == null ? aws_ecr_repository.ecs-service.0.repository_url : var.existing_ecr.repo_url
         cpu_reservation          = var.cpu_reservation
@@ -71,6 +72,9 @@ locals {
         health_check_timeout     = var.health_check_timeout
         health_check_retries     = var.health_check_retries
         health_check_startPeriod = var.health_check_startPeriod
+        user                     = var.user
+        system_controls          = []
+        volumes_from             = []
         links                    = []
         dependsOn                = []
         mountpoints              = var.mountpoints
@@ -108,7 +112,8 @@ resource "aws_ecs_task_definition" "ecs-service-taskdef" {
   dynamic "volume" {
     for_each = var.volumes
     content {
-      name = volume.value.name
+      name                = volume.value.name
+      configure_at_launch = volume.value.configure_at_launch
       dynamic "efs_volume_configuration" {
         for_each = volume.value.efs_volume_configuration != null ? [volume.value.efs_volume_configuration] : []
         content {
