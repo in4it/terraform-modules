@@ -201,7 +201,8 @@ variable "volumes" {
   description = "volumes to create in task definition"
   default     = []
   type = list(object({
-    name = string
+    name                = string
+    configure_at_launch = optional(bool, false)
     efs_volume_configuration = optional(object({
       file_system_id     = string
       transit_encryption = string
@@ -241,6 +242,7 @@ variable "containers" {
     host_port                = number
     application_port         = number
     additional_ports         = optional(list(string), [])
+    port_protocol            = optional(string, "tcp")
     application_version      = optional(string, "latest")
     ecr_url                  = string
     cpu_reservation          = number
@@ -256,7 +258,7 @@ variable "containers" {
     docker_labels            = optional(map(string), {})
     fluent_bit               = optional(bool, false)
     aws_firelens             = optional(bool, false)
-    firelens_configuration   = optional(object({
+    firelens_configuration = optional(object({
       type    = string
       options = map(string)
     }), null)
@@ -269,6 +271,15 @@ variable "containers" {
       sourceVolume  = string
       readOnly      = optional(bool, false)
     })), [])
+    volumes_from = optional(list(object({
+      sourceContainer = string
+      readOnly        = optional(bool, false)
+    })), [])
+    system_controls = optional(list(object({
+      namespace = string
+      value     = string
+    })), [])
+    user         = optional(string, null)
     secrets      = optional(map(string), {})
     environments = optional(map(string), {})
     environment_files = optional(list(object({
@@ -326,8 +337,15 @@ variable "firelens_configuration" {
   default = {
     type = "fluentbit"
     options = {
-      config-file-type = "file"
+      config-file-type  = "file"
       config-file-value = "/fluent.conf"
     }
   }
+}
+variable "port_protocol" {
+  default = "tcp"
+}
+variable "user" {
+  description = "User to run the container as"
+  default     = null
 }

@@ -30,6 +30,7 @@
           %{if container.host_port != null}
             "hostport": ${container.host_port},
           %{endif}
+          "protocol": "${container.port_protocol}",
           "containerport": ${container.application_port}
         }
         %{ for key, additional_port in container.additional_ports ~}
@@ -39,6 +40,8 @@
         }
         %{ endfor ~}
       ],
+      "systemControls": ${jsonencode(coalesce(container.system_controls, []))},
+      "volumesFrom": ${jsonencode(coalesce(container.volumes_from, []))},
       "secrets": ${jsonencode([for k, v in container.secrets : { name = k, valueFrom = v }])},
       "environment":${jsonencode([for k, v in container.environments : { name = k, value = v }])},
       "environmentFiles":[
@@ -59,7 +62,12 @@
       %{ endfor ~}
       ],
       "links": ${jsonencode([for link in container.links : link])},
-      "dependsOn": ${jsonencode([for dependsOn in container.dependsOn : dependsOn])},
+      %{if length(container.dependsOn)>0 }
+        "dependsOn": ${jsonencode(container.dependsOn)},
+      %{endif}
+      %{if container.user != null}
+        "user": "${container.user}",
+      %{endif}
       %{if container.fluent_bit == true}
         "firelensConfiguration": ${jsonencode(container.firelens_configuration)},
       %{endif}
