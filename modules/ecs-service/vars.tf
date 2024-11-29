@@ -349,6 +349,3 @@ variable "user" {
   description = "User to run the container as"
   default     = null
 }
-variable "configure_at_launch" {
-  default = false
-}
