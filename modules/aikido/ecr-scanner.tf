@@ -26,7 +26,7 @@ resource "aws_iam_role_policy" "aikido-security-ecr-policy" {
   count = var.ecr_scanner_enabled ? 1 : 0
 
   name = "aikido-security-ecr-policy"
-  role = aws_iam_role.aikido-security-ecr-readonly-role.id
+  role = aws_iam_role.aikido-security-ecr-readonly-role[0].id
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [

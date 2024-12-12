@@ -6,7 +6,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.80.0 |
 
 ## Modules
 
@@ -40,3 +40,5 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_aikido-role-arn"></a> [aikido-role-arn](#output\_aikido-role-arn) | n/a |
+| <a name="output_aikido-role-ec2-arn"></a> [aikido-role-ec2-arn](#output\_aikido-role-ec2-arn) | n/a |
+| <a name="output_aikido-role-ecr-arn"></a> [aikido-role-ecr-arn](#output\_aikido-role-ecr-arn) | n/a |

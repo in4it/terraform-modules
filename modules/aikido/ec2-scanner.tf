@@ -26,7 +26,7 @@ resource "aws_iam_role_policy" "aikido-security-ec2-policy" {
   count = var.ec2_scanner_enabled ? 1 : 0
 
   name = "aikido-security-ec2-policy"
-  role = aws_iam_role.aikido-security-ec2-hard.id
+  role = aws_iam_role.aikido-security-ec2-hard[0].id
 
   policy = jsonencode({
     Version = "2012-10-17",
