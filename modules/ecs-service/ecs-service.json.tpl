@@ -52,6 +52,7 @@
         }${envFileKey+1 == length(container.environment_files)? "" : ","}
         %{ endfor ~}
       ],
+      "readOnlyRootFilesystem": ${tobool(try(container.read_only_root_filesystem, false))},
       "mountpoints":[
       %{ for mountKey, mountpoint in container.mountpoints ~}
       {

@@ -266,6 +266,7 @@ variable "containers" {
       containerName = string
       condition     = string
     })), [])
+    read_only_root_filesystem = optional(bool, false)
     mountpoints = optional(list(object({
       containerPath = string
       sourceVolume  = string
@@ -348,4 +349,8 @@ variable "port_protocol" {
 variable "user" {
   description = "User to run the container as"
   default     = null
+}
+variable "read_only_root_filesystem" {
+  description = "Whether the container has a read-only root filesystem"
+  default     = false
 }
