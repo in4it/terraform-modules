@@ -58,7 +58,7 @@ No modules.
 | <a name="input_entrypoint"></a> [entrypoint](#input\_entrypoint) | n/a | `list` | `[]` | no |
 | <a name="input_environment_files"></a> [environment\_files](#input\_environment\_files) | n/a | <pre>list(object({<br/>    value = string<br/>    type  = string<br/>  }))</pre> | `[]` | no |
 | <a name="input_environments"></a> [environments](#input\_environments) | environments to set | `map(string)` | `{}` | no |
-| <a name="input_ephemeral_storage_size_in_gib"></a> [ephemeral\_storage\_size\_in\_gib](#input\_ephemeral\_storage\_size\_in\_gib) | Size of ephemeral storage in GiB | `number` | `20` | no |
+| <a name="input_ephemeral_storage_size_in_gib"></a> [ephemeral\_storage\_size\_in\_gib](#input\_ephemeral\_storage\_size\_in\_gib) | Size of ephemeral storage in GiB | `number` | `null` | no |
 | <a name="input_execution_role_arn"></a> [execution\_role\_arn](#input\_execution\_role\_arn) | n/a | `string` | `""` | no |
 | <a name="input_existing_ecr"></a> [existing\_ecr](#input\_existing\_ecr) | n/a | <pre>object({<br/>    repo_url = string<br/>  })</pre> | `null` | no |
 | <a name="input_exposed_container_name"></a> [exposed\_container\_name](#input\_exposed\_container\_name) | n/a | `string` | `""` | no |
