@@ -87,13 +87,13 @@ variable "cpu_reservation" {
 variable "memory_reservation" {
 }
 variable "ephemeral_storage_size_in_gib" {
-  default     = 21
   description = "Size of ephemeral storage in GiB"
-  nullable    = false
+  default     = null
+  nullable    = true
   type        = number
   validation {
     condition     = var.ephemeral_storage_size_in_gib > 20 && var.ephemeral_storage_size_in_gib <= 200
-    error_message = "Ephemeral storage size should be minimum 20 GiB and maximum 200 GiB"
+    error_message = "Ephemeral storage size should be minimum 21 GiB and maximum 200 GiB"
   }
 }
 
