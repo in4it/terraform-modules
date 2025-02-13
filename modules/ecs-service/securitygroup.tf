@@ -3,7 +3,7 @@ resource "aws_security_group" "ecs-service" {
   vpc_id      = var.vpc_id
   description = var.application_name
 
-  dynamic ingress {
+  dynamic "ingress" {
     for_each = var.ingress_rules
     content {
       from_port       = ingress.value.from_port
