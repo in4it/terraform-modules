@@ -92,7 +92,7 @@ variable "ephemeral_storage_size_in_gib" {
   nullable    = true
   type        = number
   validation {
-    condition     = var.ephemeral_storage_size_in_gib > 20 && var.ephemeral_storage_size_in_gib <= 200
+    condition     = var.ephemeral_storage_size_in_gib != null ? var.ephemeral_storage_size_in_gib > 20 && var.ephemeral_storage_size_in_gib <= 200: true
     error_message = "Ephemeral storage size should be minimum 21 GiB and maximum 200 GiB"
   }
 }
