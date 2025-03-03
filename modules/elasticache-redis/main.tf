@@ -95,6 +95,17 @@ resource "aws_elasticache_replication_group" "redis" {
   data_tiering_enabled       = strcontains(var.redis_node_type, "r6gd")
   auto_minor_version_upgrade = true
 
+  dynamic "log_delivery_configuration" {
+    for_each = var.log_delivery_configurations
+    
+    content {
+      destination      = log_delivery_configuration.value.destination
+      destination_type = log_delivery_configuration.value.destination_type
+      log_format       = log_delivery_configuration.value.log_format
+      log_type         = log_delivery_configuration.value.log_type  
+    }
+  }
+
   tags = local.tags
 
   lifecycle {
