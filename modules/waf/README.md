@@ -25,6 +25,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_env"></a> [env](#input\_env) | optional environment | `string` | `""` | no |
+| <a name="input_geo_match_rules"></a> [geo\_match\_rules](#input\_geo\_match\_rules) | n/a | <pre>list(object({<br/>    name       = string<br/>    priority   = number<br/>    action     = string # "count" or "block"<br/>    statement  = any<br/>    rule_label = optional(list(string), null)<br/>  }))</pre> | `[]` | no |
 | <a name="input_lb_arns"></a> [lb\_arns](#input\_lb\_arns) | ARN of ALBs to associate with WAF | `set(string)` | `[]` | no |
 | <a name="input_managed_rules"></a> [managed\_rules](#input\_managed\_rules) | managed rules | <pre>list(object({<br/>    name                     = string<br/>    priority                 = number<br/>    managed_rule_name        = string<br/>    managed_rule_vendor_name = string<br/>    block                    = bool<br/>    blocking_rules           = optional(list(string))<br/>    allowing_rules           = optional(list(string))<br/>    counting_rules           = optional(list(string))<br/>  }))</pre> | `[]` | no |
 | <a name="input_name"></a> [name](#input\_name) | name of WAF | `string` | `"alb-waf"` | no |
