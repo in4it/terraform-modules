@@ -71,7 +71,7 @@ variable "rule_group_reference_rules" {
   type = list(object({
     name       = string
     priority   = number
-    action     = string # "count" or "block"
+    block      = bool
     statement  = any
     rule_label = optional(list(string), null)
   }))
