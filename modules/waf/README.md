@@ -31,6 +31,7 @@ No modules.
 | <a name="input_name"></a> [name](#input\_name) | name of WAF | `string` | `"alb-waf"` | no |
 | <a name="input_ratelimit_rules"></a> [ratelimit\_rules](#input\_ratelimit\_rules) | ratelimiting rules | <pre>list(object({<br/>    name              = string<br/>    limit             = number<br/>    priority          = number<br/>    exclude_ip_ranges = list(string)<br/>    block             = bool<br/>  }))</pre> | `[]` | no |
 | <a name="input_regex_match_rules"></a> [regex\_match\_rules](#input\_regex\_match\_rules) | n/a | <pre>list(object({<br/>    name       = string<br/>    priority   = number<br/>    action     = string # "count" or "block"<br/>    statement  = any<br/>    rule_label = optional(list(string), null)<br/>  }))</pre> | `[]` | no |
+| <a name="input_rule_group_reference_rules"></a> [rule\_group\_reference\_rules](#input\_rule\_group\_reference\_rules) | n/a | <pre>list(object({<br/>    name       = string<br/>    priority   = number<br/>    block      = bool<br/>    statement  = any<br/>    rule_label = optional(list(string), null)<br/>  }))</pre> | `[]` | no |
 | <a name="input_scope"></a> [scope](#input\_scope) | scope of WAF, use 'CLOUDFRONT' for CloudFront distributions | `string` | `"REGIONAL"` | no |
 
 ## Outputs
