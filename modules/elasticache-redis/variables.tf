@@ -104,3 +104,13 @@ variable "existing_parameter_group" {
   default     = ""
   description = "Use existing parameter group (for resources import)"
 }
+variable "log_delivery_configurations" {
+  default = []
+  description = "List of log delivery configurations"
+  type = list(object({
+    destination      = string
+    destination_type = string
+    log_format       = string
+    log_type         = string
+  }))
+}
