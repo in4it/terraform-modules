@@ -40,8 +40,8 @@ resource "aws_lambda_function" "log_exporter" {
   handler          = "index.handler"
   filename         = "${path.module}/src/tmp/lambda.zip"
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
-  runtime          = "nodejs16.x"
-  timeout          = 300
+  runtime          = "nodejs22.x"
+  timeout          = var.lambda_timeout
 
   environment {
     variables = {
@@ -126,8 +126,8 @@ module "logs_export_bucket" {
   versioning = false
   additional_policy_statements = [
     {
-      sid    = "BucketACL"
-      effect = "Allow"
+      sid       = "BucketACL"
+      effect    = "Allow"
       actions   = ["s3:GetBucketAcl", "s3:PutBucketAcl"]
       resources = [module.logs_export_bucket.bucket_arn]
       principals = {

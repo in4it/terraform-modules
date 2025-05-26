@@ -45,6 +45,7 @@ No requirements.
 | <a name="input_days_to_archive"></a> [days\_to\_archive](#input\_days\_to\_archive) | Number of days to keep logs in S3 before moving to Glacier | `number` | `180` | no |
 | <a name="input_days_to_expire"></a> [days\_to\_expire](#input\_days\_to\_expire) | Number of days to keep logs in S3 before expiring/deleting | `number` | `365` | no |
 | <a name="input_export_days_before"></a> [export\_days\_before](#input\_export\_days\_before) | Number of days to export logs from | `number` | `1` | no |
+| <a name="input_lambda_timeout"></a> [lambda\_timeout](#input\_lambda\_timeout) | Timeout for the Lambda function that exports logs to S3 | `number` | `900` | no |
 | <a name="input_log_groups_list"></a> [log\_groups\_list](#input\_log\_groups\_list) | n/a | `list(string)` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | n/a | `string` | n/a | yes |
 
