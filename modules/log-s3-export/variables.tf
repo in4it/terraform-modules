@@ -46,3 +46,8 @@ variable "check_retry_attempts" {
   default     = 5
   description = "Number of times to retry checking status of an export task"
 }
+variable "lambda_timeout" {
+  type        = number
+  default     = 900
+  description = "Timeout for the Lambda function that exports logs to S3"
+}
