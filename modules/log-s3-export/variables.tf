@@ -51,3 +51,8 @@ variable "lambda_timeout" {
   default     = 900
   description = "Timeout for the Lambda function that exports logs to S3"
 }
+variable "trigger_schedule_expression" {
+  type        = string
+  default     = "cron(1 0 * * ? *)" # Default to run once a day at midnight UTC
+  description = "CloudWatch Event rule schedule expression for triggering the Lambda function"
+}

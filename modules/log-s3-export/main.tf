@@ -10,7 +10,7 @@ resource "random_string" "suffix" {
 resource "aws_cloudwatch_event_rule" "once_a_day" {
   name                = "${var.name}-log-export-run-lambda-${random_string.suffix.result}"
   description         = "Trigger lambda function that grabs yesterdays Cloudwatch logs and sends them to an S3 bucket with CreateExportTask"
-  schedule_expression = "cron(1 0 * * ? *)"
+  schedule_expression = var.trigger_schedule_expression
 }
 
 resource "aws_cloudwatch_event_target" "lambda_target" {
