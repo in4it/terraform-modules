@@ -42,7 +42,7 @@ No modules.
 | <a name="input_instance_subnet_id"></a> [instance\_subnet\_id](#input\_instance\_subnet\_id) | subnet to launch the VPN Server in | `any` | n/a | yes |
 | <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | n/a | `string` | `"t3.small"` | no |
 | <a name="input_license"></a> [license](#input\_license) | n/a | `string` | `"marketplace"` | no |
-| <a name="input_listeners"></a> [listeners](#input\_listeners) | n/a | <pre>list(object({<br>    port        = string<br>    protocol    = string<br>    cidr_blocks = list(string)<br>  }))</pre> | <pre>[<br>  {<br>    "cidr_blocks": [<br>      "0.0.0.0/0"<br>    ],<br>    "port": "51820",<br>    "protocol": "udp"<br>  },<br>  {<br>    "cidr_blocks": [<br>      "0.0.0.0/0"<br>    ],<br>    "port": "80",<br>    "protocol": "tcp"<br>  },<br>  {<br>    "cidr_blocks": [<br>      "0.0.0.0/0"<br>    ],<br>    "port": "443",<br>    "protocol": "tcp"<br>  }<br>]</pre> | no |
+| <a name="input_listeners"></a> [listeners](#input\_listeners) | n/a | <pre>list(object({<br/>    port        = string<br/>    protocol    = string<br/>    cidr_blocks = list(string)<br/>  }))</pre> | <pre>[<br/>  {<br/>    "cidr_blocks": [<br/>      "0.0.0.0/0"<br/>    ],<br/>    "port": "51820",<br/>    "protocol": "udp"<br/>  },<br/>  {<br/>    "cidr_blocks": [<br/>      "0.0.0.0/0"<br/>    ],<br/>    "port": "80",<br/>    "protocol": "tcp"<br/>  },<br/>  {<br/>    "cidr_blocks": [<br/>      "0.0.0.0/0"<br/>    ],<br/>    "port": "443",<br/>    "protocol": "tcp"<br/>  }<br/>]</pre> | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(string)` | `{}` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC id to launch the VPN Server in | `any` | n/a | yes |
 
@@ -52,3 +52,4 @@ No modules.
 |------|-------------|
 | <a name="output_vpn-ip"></a> [vpn-ip](#output\_vpn-ip) | n/a |
 | <a name="output_vpn-sg"></a> [vpn-sg](#output\_vpn-sg) | n/a |
+| <a name="output_vpn_instance_id"></a> [vpn\_instance\_id](#output\_vpn\_instance\_id) | n/a |

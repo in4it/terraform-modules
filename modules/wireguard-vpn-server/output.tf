@@ -5,3 +5,7 @@ output "vpn-ip" {
 output "vpn-sg" {
   value = aws_security_group.vpn-server.id
 }
+
+output "vpn_instance_id" {
+  value = aws_instance.vpn-server.id
+}
