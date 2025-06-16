@@ -45,7 +45,7 @@ No modules.
 | <a name="input_name_suffix"></a> [name\_suffix](#input\_name\_suffix) | Suffix for the Elasticache cluster name | `string` | `"redis"` | no |
 | <a name="input_override_name"></a> [override\_name](#input\_override\_name) | Override name for existing clusters to not recreate the cluster | `bool` | `false` | no |
 | <a name="input_parameters"></a> [parameters](#input\_parameters) | values for the parameters in the parameter group | <pre>list(object({<br/>    name  = string<br/>    value = string<br/>  }))</pre> | `[]` | no |
-| <a name="input_port"></a> [port](#input\_port) | Redis Cluster port | `number` | `6379` | no |
+| <a name="input_port"></a> [port](#input\_port) | Cluster port | `number` | `6379` | no |
 | <a name="input_redis_node_type"></a> [redis\_node\_type](#input\_redis\_node\_type) | [supported node types](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html) and [guidance on selecting node types](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/nodes-select-size.html). | `string` | `"cache.t4g.micro"` | no |
 | <a name="input_redis_shard_number"></a> [redis\_shard\_number](#input\_redis\_shard\_number) | aka num\_node\_groups | `number` | `1` | no |
 | <a name="input_replicas_per_node_group"></a> [replicas\_per\_node\_group](#input\_replicas\_per\_node\_group) | Number of replica nodes in each node group. Valid values are 0 to 5. | `number` | `0` | no |
@@ -60,4 +60,5 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_endpoint"></a> [endpoint](#output\_endpoint) | n/a |
-| <a name="output_redis_security_group_id"></a> [redis\_security\_group\_id](#output\_redis\_security\_group\_id) | n/a |
+| <a name="output_redis_security_group_id"></a> [redis\_security\_group\_id](#output\_redis\_security\_group\_id) | Deprecated: Use `security_group_id` instead |
+| <a name="output_security_group_id"></a> [security\_group\_id](#output\_security\_group\_id) | n/a |

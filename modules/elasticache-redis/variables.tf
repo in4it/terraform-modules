@@ -43,7 +43,7 @@ variable "cluster_mode_enabled" {
   default = true
 }
 variable "port" {
-  description = "Redis Cluster port"
+  description = "Cluster port"
   default     = 6379
 }
 variable "parameters" {
@@ -59,12 +59,12 @@ variable "tags" {
   description = "Tags for all resources"
   type        = map(string)
 }
-variable "redis_node_type" {
+variable "node_type" {
   type        = string
   default     = "cache.t4g.micro"
   description = "[supported node types](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html) and [guidance on selecting node types](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/nodes-select-size.html)."
 }
-variable "redis_shard_number" {
+variable "shard_number" {
   default     = 1
   type        = number
   description = "aka num_node_groups"
@@ -105,7 +105,7 @@ variable "existing_parameter_group" {
   description = "Use existing parameter group (for resources import)"
 }
 variable "log_delivery_configurations" {
-  default = []
+  default     = []
   description = "List of log delivery configurations"
   type = list(object({
     destination      = string
