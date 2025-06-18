@@ -1,5 +1,10 @@
 locals {
   name = var.override_name ? var.name : "${var.name}-${var.env}-${var.name_suffix}"
+
+  is_redis  = strcontains(var.family, "redis")
+  is_valkey = strcontains(var.family, "valkey")
+  engine    = local.is_redis ? "redis" : local.is_valkey ? "valkey" : null
+
   parameters = concat(var.parameters, var.cluster_mode_enabled == false ? [] : [
     {
       name  = "cluster-enabled", # Needed for cluster mode and autoscaling
@@ -10,6 +15,13 @@ locals {
     Name        = local.name
     Environment = var.env
   }, var.tags)
+}
+
+check "check_engine" {
+  assert {
+    condition     = local.engine != null
+    error_message = "Wrong `var.family` given (must contains 'redis' or 'valkey')"
+  }
 }
 
 data "aws_vpc" "this" {
@@ -79,7 +91,7 @@ resource "aws_elasticache_replication_group" "this" {
   replicas_per_node_group = var.replicas_per_node_group
   multi_az_enabled        = var.multi_az_enabled
 
-  engine               = var.family
+  engine               = local.engine
   engine_version       = var.engine_version
   port                 = var.port
   parameter_group_name = var.existing_parameter_group != "" ? var.existing_parameter_group : aws_elasticache_parameter_group.this[0].name
