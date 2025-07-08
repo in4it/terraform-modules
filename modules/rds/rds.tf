@@ -19,6 +19,7 @@ resource "aws_db_instance" "rds" {
   multi_az               = var.multi_az
   vpc_security_group_ids = [aws_security_group.rds.id]
 
+  manage_master_user_password         = var.manage_master_user_password
   storage_type                        = var.storage_type
   backup_retention_period             = var.backup_retention_period
   skip_final_snapshot                 = false

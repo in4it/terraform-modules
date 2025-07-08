@@ -103,3 +103,8 @@ variable "initial_snapshot_id" {
   description = "Initial (Decrypted) snapshot DB to restore from (useful for restoring from a different region or account)"
   default     = ""
 }
+
+variable "manage_master_user_password" {
+  description = "Set to true to allow RDS to manage the master user password in Secrets Manager. Cannot be set if password or password_wo is provided."
+  default     = false
+}
