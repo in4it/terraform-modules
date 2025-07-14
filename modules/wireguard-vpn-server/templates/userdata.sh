@@ -1,10 +1,14 @@
-#!/bin/bash
-
+#!/bin/bash -x
 apt-get update
 apt-get upgrade -y
-apt-get install binutils build-essential git rustc cargo pkg-config libssl-dev -y
+apt-get install binutils build-essential git pkg-config libssl-dev -y
+
+## Install Rust / Cargo 
+# /root/.cargo/env adding wrong path variable so I add it manually with export
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > /root/rustup.sh && chmod +x /root/rustup.sh && /root/rustup.sh -y
-. "$HOME/.cargo/env"
+export PATH="/root/.cargo/bin:$PATH"
+rustc --version
+cargo --version
 
 # reinitialize vpn
 systemctl stop vpn-rest-server
@@ -18,15 +22,14 @@ rm -rf /vpn/tls-certs
 cd /root
 git clone https://github.com/aws/efs-utils
 cd efs-utils
-git checkout v2.0.4
+git switch v2.3.1 --detach
 ./build-deb.sh
-chmod 755 ~/efs-utils/build/amazon-efs-utils*deb
-mv ~/efs-utils//build/amazon-efs-utils*deb /
-apt-get -y install /amazon-efs-utils*deb
-rm /amazon-efs-utils*deb
+chmod 755 ./build/amazon-efs-utils*deb
+apt-get -y install ./build/amazon-efs-utils*deb
 
 # Clean up packages after efs installation
-apt-get remove --purge -y binutils build-essential git rustc cargo pkg-config libssl-dev
+rustup self uninstall -y
+apt-get remove --purge -y binutils build-essential git pkg-config libssl-dev
 apt-get autoremove -y
 apt-get clean
 
