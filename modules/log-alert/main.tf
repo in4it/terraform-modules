@@ -1,5 +1,6 @@
 resource "aws_sns_topic" "alert_topic" {
   name = "${var.env}-app-alert-topic"
+  kms_master_key_id = var.sns_kms_master_key_id
   tags = {
     "Environment" : var.env
   }

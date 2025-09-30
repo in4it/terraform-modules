@@ -4,6 +4,9 @@
 
 resource "aws_ecr_repository" "ecs-task" {
   name = "${var.ECR_PREFIX}${var.APPLICATION_NAME}"
+  encryption_configuration {
+    encryption_type = var.ecr_encryption_type
+  }
 }
 
 #

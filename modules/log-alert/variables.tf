@@ -33,3 +33,8 @@ variable "env" {
   default     = "dev"
   description = "Environment name"
 }
+
+variable "sns_kms_master_key_id" {
+  description = "KMS key arn to encrypt SNS topic"
+  default     = ""
+}
