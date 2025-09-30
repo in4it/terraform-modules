@@ -39,3 +39,7 @@ variable "TASK_ROLE_ARN" {
   default = ""
 }
 
+
+variable "ecr_encryption_type" {
+  default = "AES256"
+}

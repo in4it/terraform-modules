@@ -46,6 +46,7 @@ resource "aws_cloudwatch_event_target" "ssm_event_mapping" {
 resource "aws_sqs_queue" "replication" {
   name                       = "SSM-SQS-replication"
   visibility_timeout_seconds = 1000
+  kms_master_key_id          = var.sqs_kms_master_key_id
 }
 
 resource "aws_lambda_event_source_mapping" "sqs_mapping" {
