@@ -29,6 +29,27 @@ variable "tls" {
   default = true
 }
 
+# oidc setup
+variable "oidc_https" {
+  default = false
+}
+
+variable "oidc_ssm_client_secret_name" {
+  default = ""
+}
+
+variable "oidc_client_id" {
+  default = ""
+}
+
+variable "oidc_subdomain" {
+  default = ""
+}
+
+variable "oidc_target_group_arn" {
+  default = ""
+}
+
 variable "tls_policy" {
   default = "ELBSecurityPolicy-TLS13-1-2-2021-06"
 }

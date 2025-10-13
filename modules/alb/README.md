@@ -1,3 +1,4 @@
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -19,6 +20,7 @@ No modules.
 | Name | Type |
 |------|------|
 | [aws_lb.lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb) | resource |
+| [aws_lb_listener.https_oidc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener) | resource |
 | [aws_lb_listener.lb-http](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener) | resource |
 | [aws_lb_listener.lb-https](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener) | resource |
 | [aws_lb_listener_certificate.alb_https_extra_certificates](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener_certificate) | resource |
@@ -32,6 +34,7 @@ No modules.
 | [aws_acm_certificate.certificate](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/acm_certificate) | data source |
 | [aws_acm_certificate.extra_certificates](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/acm_certificate) | data source |
 | [aws_elb_service_account.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/elb_service_account) | data source |
+| [aws_ssm_parameter.alb_oidc_client_secret](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssm_parameter) | data source |
 
 ## Inputs
 
@@ -46,9 +49,15 @@ No modules.
 | <a name="input_ecs_sg"></a> [ecs\_sg](#input\_ecs\_sg) | n/a | `list` | `[]` | no |
 | <a name="input_enable_deletion_protection"></a> [enable\_deletion\_protection](#input\_enable\_deletion\_protection) | Enable Deletion Protection | `bool` | `true` | no |
 | <a name="input_extra_domains"></a> [extra\_domains](#input\_extra\_domains) | n/a | `list` | `[]` | no |
+| <a name="input_http_to_https_redirect"></a> [http\_to\_https\_redirect](#input\_http\_to\_https\_redirect) | n/a | `bool` | `false` | no |
 | <a name="input_idle_timeout"></a> [idle\_timeout](#input\_idle\_timeout) | n/a | `number` | `60` | no |
 | <a name="input_internal"></a> [internal](#input\_internal) | n/a | `any` | n/a | yes |
 | <a name="input_lb_name"></a> [lb\_name](#input\_lb\_name) | n/a | `any` | n/a | yes |
+| <a name="input_oidc_client_id"></a> [oidc\_client\_id](#input\_oidc\_client\_id) | n/a | `string` | `""` | no |
+| <a name="input_oidc_https"></a> [oidc\_https](#input\_oidc\_https) | oidc setup | `bool` | `false` | no |
+| <a name="input_oidc_ssm_client_secret_name"></a> [oidc\_ssm\_client\_secret\_name](#input\_oidc\_ssm\_client\_secret\_name) | n/a | `string` | `""` | no |
+| <a name="input_oidc_subdomain"></a> [oidc\_subdomain](#input\_oidc\_subdomain) | n/a | `string` | `""` | no |
+| <a name="input_oidc_target_group_arn"></a> [oidc\_target\_group\_arn](#input\_oidc\_target\_group\_arn) | n/a | `string` | `""` | no |
 | <a name="input_tcp_ingress"></a> [tcp\_ingress](#input\_tcp\_ingress) | n/a | `map(list(string))` | <pre>{<br>  "443": [<br>    "0.0.0.0/0"<br>  ],<br>  "80": [<br>    "0.0.0.0/0"<br>  ]<br>}</pre> | no |
 | <a name="input_tls"></a> [tls](#input\_tls) | n/a | `bool` | `true` | no |
 | <a name="input_tls_policy"></a> [tls\_policy](#input\_tls\_policy) | n/a | `string` | `"ELBSecurityPolicy-TLS13-1-2-2021-06"` | no |
@@ -63,5 +72,7 @@ No modules.
 | <a name="output_http_listener_arn"></a> [http\_listener\_arn](#output\_http\_listener\_arn) | n/a |
 | <a name="output_https_listener_arn"></a> [https\_listener\_arn](#output\_https\_listener\_arn) | n/a |
 | <a name="output_lb_arn"></a> [lb\_arn](#output\_lb\_arn) | n/a |
+| <a name="output_oidc_https_listener_arn"></a> [oidc\_https\_listener\_arn](#output\_oidc\_https\_listener\_arn) | n/a |
 | <a name="output_security-group-id"></a> [security-group-id](#output\_security-group-id) | n/a |
 | <a name="output_zone_id"></a> [zone\_id](#output\_zone\_id) | n/a |
+<!-- END_TF_DOCS -->

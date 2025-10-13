@@ -18,6 +18,10 @@ output "https_listener_arn" {
   value = length(aws_lb_listener.lb-https) > 0 ? aws_lb_listener.lb-https[0].arn : null
 }
 
+output "oidc_https_listener_arn" {
+  value = length(aws_lb_listener.https_oidc) > 0 ? aws_lb_listener.https_oidc[0].arn : null
+}
+
 output "security-group-id" {
   value = aws_security_group.lb.id
 }
