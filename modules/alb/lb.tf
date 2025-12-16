@@ -49,12 +49,13 @@ locals {
   ]
 }
 resource "aws_lb_listener" "lb-https" {
-  count             = var.tls ? 1 : 0
-  load_balancer_arn = aws_lb.lb.arn
-  port              = "443"
-  protocol          = "HTTPS"
-  ssl_policy        = var.tls_policy
-  certificate_arn   = data.aws_acm_certificate.certificate[0].arn
+  count                                                        = var.tls ? 1 : 0
+  load_balancer_arn                                            = aws_lb.lb.arn
+  port                                                         = "443"
+  protocol                                                     = "HTTPS"
+  ssl_policy                                                   = var.tls_policy
+  certificate_arn                                              = data.aws_acm_certificate.certificate[0].arn
+  routing_http_response_strict_transport_security_header_value = var.strict_transport_security_header
 
   dynamic "default_action" {
     for_each = var.default_target_arn == "" ? local.fixed_response : local.forward_response

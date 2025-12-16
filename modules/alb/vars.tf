@@ -78,3 +78,7 @@ variable "desync_mitigation_mode"  {
 variable "http_to_https_redirect" {
   default = false
 }
+
+variable "strict_transport_security_header" {
+  default = ""
+}
