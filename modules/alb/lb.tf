@@ -56,6 +56,8 @@ resource "aws_lb_listener" "lb-https" {
   ssl_policy                                                   = var.tls_policy
   certificate_arn                                              = data.aws_acm_certificate.certificate[0].arn
   routing_http_response_strict_transport_security_header_value = var.strict_transport_security_header
+  routing_http_response_x_frame_options_header_value           = var.x_frame_options_header
+  routing_http_response_content_security_policy_header_value   = var.content_security_policy_header
 
   dynamic "default_action" {
     for_each = var.default_target_arn == "" ? local.fixed_response : local.forward_response

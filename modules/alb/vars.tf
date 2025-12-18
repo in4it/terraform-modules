@@ -82,3 +82,11 @@ variable "http_to_https_redirect" {
 variable "strict_transport_security_header" {
   default = ""
 }
+
+variable "x_frame_options_header" {
+  default = ""
+}
+
+variable "content_security_policy_header" {
+  default = ""
+}
