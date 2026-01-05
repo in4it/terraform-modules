@@ -48,6 +48,58 @@ locals {
     }
   ]
 }
+
+
+# Fetch ALB oidc client secret from SSM Parameter Store
+data "aws_ssm_parameter" "alb_oidc_client_secret" {
+  count           = var.oidc_ssm_client_secret_name != "" && var.oidc_https ? 1 : 0
+  name            = var.oidc_ssm_client_secret_name   # change to your parameter path
+  with_decryption = true
+}
+
+
+# ALB listener with authenticate_oidc (default action)
+resource "aws_lb_listener" "https_oidc" {
+  count             = var.oidc_https ? 1 : 0
+  load_balancer_arn = aws_lb.lb.arn      # your ALB resource
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = var.tls_policy
+  certificate_arn   = data.aws_acm_certificate.certificate[0].arn
+
+  default_action {
+    type = "authenticate-oidc"
+
+    authenticate_oidc {
+      # OneLogin/OIDC fields
+      issuer                 = "https://${var.oidc_subdomain}/oidc/2"
+      authorization_endpoint = "https://${var.oidc_subdomain}/oidc/2/auth"
+      token_endpoint         = "https://${var.oidc_subdomain}/oidc/2/token"
+      user_info_endpoint     = "https://${var.oidc_subdomain}/oidc/2/me"
+
+      client_id     = var.oidc_client_id
+      client_secret = data.aws_ssm_parameter.alb_oidc_client_secret[0].value
+
+      # behavior options
+      on_unauthenticated_request = "authenticate"
+      scope                      = "openid profile email"
+      session_cookie_name        = "AWSELBAuthSessionCookie"
+      session_timeout            = 3600
+
+      authentication_request_extra_params = {
+        prompt = "login"
+      }
+    }
+  }
+
+  # after successful auth forward to target group
+  default_action {
+    type             = "forward"
+    target_group_arn = var.oidc_target_group_arn
+  }
+}
+
+
 resource "aws_lb_listener" "lb-https" {
   count                                                        = var.tls ? 1 : 0
   load_balancer_arn                                            = aws_lb.lb.arn
