@@ -56,3 +56,25 @@ variable "regex_match_rules" {
   }))
   default = []
 }
+variable "geo_match_rules" {
+  type = list(object({
+    name       = string
+    priority   = number
+    action     = string # "count" or "block"
+    statement  = any
+    rule_label = optional(list(string), null)
+  }))
+  default = []
+
+}
+variable "rule_group_reference_rules" {
+  type = list(object({
+    name       = string
+    priority   = number
+    block      = bool
+    statement  = any
+    rule_label = optional(list(string), null)
+  }))
+  default = []
+
+}
