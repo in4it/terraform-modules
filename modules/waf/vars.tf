@@ -40,6 +40,7 @@ variable "managed_rules" {
     managed_rule_name        = string
     managed_rule_vendor_name = string
     block                    = bool
+    exclude_ip_ranges        = optional(list(string))
     blocking_rules           = optional(list(string))
     allowing_rules           = optional(list(string))
     counting_rules           = optional(list(string))
