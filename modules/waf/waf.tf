@@ -29,11 +29,15 @@ resource "aws_wafv2_web_acl" "this" {
           limit              = rule.value.limit
           aggregate_key_type = "IP"
 
-          scope_down_statement {
-            not_statement {
-              statement {
-                ip_set_reference_statement {
-                  arn = aws_wafv2_ip_set.ratelimit_ipset[rule.value.name].arn
+          dynamic "scope_down_statement" {
+            for_each = lookup(rule.value, "exclude_ip_ranges", null) != null ? [1] : []
+
+            content {
+              not_statement {
+                statement {
+                  ip_set_reference_statement {
+                    arn = aws_wafv2_ip_set.ratelimit_ipset[rule.value.name].arn
+                  }
                 }
               }
             }
@@ -99,18 +103,17 @@ resource "aws_wafv2_web_acl" "this" {
             }
           }
           dynamic "scope_down_statement" {
-            for_each = lookup(rule.value, "scope_down_statement", null) != null ? [rule.value.scope_down_statement] : []
+            for_each = lookup(rule.value, "exclude_ip_ranges", null) != null ? [1] : []
 
             content {
               not_statement {
                 statement {
                   ip_set_reference_statement {
-                    arn = aws_wafv2_ip_set.ratelimit_ipset[rule.value.name].arn
+                    arn = aws_wafv2_ip_set.managed_rule_ipset[rule.value.name].arn
                   }
                 }
               }
             }
-
           }
         }
       }
@@ -362,11 +365,29 @@ resource "aws_wafv2_web_acl" "this" {
 }
 
 resource "aws_wafv2_ip_set" "ratelimit_ipset" {
-  for_each = { for r in var.ratelimit_rules : r.name => r }
+  for_each = {
+    for r in var.ratelimit_rules :
+    r.name => r
+    if lookup(r, "exclude_ip_ranges", null) != null
+  }
 
-  name               = "${each.value.name}-ipset"
-  description        = "Ratelimit IP exclusion"
-  scope              = "REGIONAL"
+  name               = "${each.value.name}-ratelimit-ipset"
+  description        = "Rate limit exclusion IP set"
+  scope              = var.scope
+  ip_address_version = "IPV4"
+  addresses          = each.value.exclude_ip_ranges
+}
+
+resource "aws_wafv2_ip_set" "managed_rule_ipset" {
+  for_each = {
+    for r in var.managed_rules :
+    r.name => r
+    if lookup(r, "exclude_ip_ranges", null) != null
+  }
+
+  name               = "${each.value.name}-managed-ipset"
+  description        = "Managed rule exclusion IP set"
+  scope              = var.scope
   ip_address_version = "IPV4"
   addresses          = each.value.exclude_ip_ranges
 }
