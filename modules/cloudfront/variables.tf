@@ -78,6 +78,15 @@ variable "s3_origins" {
     origin_path = optional(string)
   }))
 }
+variable "vpc_origins" {
+  description = "List of VPC origins (internal ALB/NLB) for CloudFront"
+  type = list(object({
+    domain_name            = string
+    origin_id              = string
+    vpc_origin_id          = string
+  }))
+  default = []
+}
 variable "aliases" {
   description = "List of aliases for the CloudFront distribution"
   type        = list(string)
