@@ -55,6 +55,19 @@ resource "aws_cloudfront_distribution" "this" {
   }
 
   dynamic "origin" {
+    for_each = { for o in var.vpc_origins : o.origin_id => o }
+    iterator = origin
+    content {
+      domain_name = origin.value.domain_name
+      origin_id   = origin.value.origin_id
+
+      vpc_origin_config {
+        vpc_origin_id = origin.value.vpc_origin_id
+      }
+    }
+  }
+
+  dynamic "origin" {
     for_each = { for origins in var.s3_origins : origins.domain_name => origins }
     iterator = origin
     content {
