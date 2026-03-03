@@ -364,3 +364,8 @@ variable "read_only_root_filesystem" {
   description = "Whether the container has a read-only root filesystem"
   default     = false
 }
+
+variable "propagate_tags" {
+  description = "Whether to propagate tags from the task definition to the tasks. Valid values are 'TASK_DEFINITION' or 'SERVICE'"
+  default     = ""
+}

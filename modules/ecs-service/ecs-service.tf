@@ -158,6 +158,7 @@ resource "aws_ecs_service" "ecs-service" {
   platform_version                   = var.launch_type == "FARGATE" ? var.platform_version : null
   enable_execute_command             = var.enable_execute_command
   health_check_grace_period_seconds  = var.health_check_grace_period_seconds
+  propagate_tags                     = var.propagate_tags != "" ? var.propagate_tags : null
 
   dynamic "load_balancer" {
     for_each = length(aws_lb_target_group.ecs-service) == 0 ? [] : [values(aws_lb_target_group.ecs-service)[0]]
