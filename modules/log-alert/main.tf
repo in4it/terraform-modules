@@ -10,9 +10,10 @@ resource "aws_lambda_function" "alerter" {
   function_name    = "in4it-logs-to-sns-${var.env}"
   handler          = "alerter.handler"
   role             = aws_iam_role.lambda_to_sns.arn
-  runtime          = "python3.11"
+  runtime          = "python3.14"
   filename         = data.archive_file.code.output_path
   source_code_hash = data.archive_file.code.output_base64sha256
+  architectures = ["arm64"]
 
   environment {
     variables = {

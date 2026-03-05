@@ -4,7 +4,7 @@ data "aws_region" "current" {}
 
 locals {
   aws_account_id = data.aws_caller_identity.current.account_id
-  aws_region = data.aws_region.current.name
+  aws_region = data.aws_region.current.id
 }
 
 resource "aws_lambda_permission" "allow_cloudwatch" {
@@ -18,7 +18,7 @@ resource "aws_lambda_permission" "allow_cloudwatch" {
 }
 
 resource "aws_iam_role" "lambda_to_sns" {
-  name = "AlertLambdaRole"
+  name = "AlertLambdaRole-${var.env}"
 
   assume_role_policy = jsonencode({
     Version   = "2012-10-17",
@@ -32,14 +32,15 @@ resource "aws_iam_role" "lambda_to_sns" {
       }
     ]
   })
+}
 
-  managed_policy_arns = [
-    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-  ]
+resource "aws_iam_role_policy_attachment" "lambda_to_sns_basic_execution" {
+  role       = aws_iam_role.lambda_to_sns.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
 resource "aws_iam_role_policy" "lambda_to_sns" {
-  name = "AlertLambdaPolicy"
+  name = "AlertLambdaPolicy-${var.env}"
   role = aws_iam_role.lambda_to_sns.id
 
   policy = jsonencode({
