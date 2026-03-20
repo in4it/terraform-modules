@@ -12,6 +12,16 @@ output "target_group_arn" {
   ], 0) : null
 }
 
+output "ecs_service_target_group_arn" {
+  value = try(
+    one([
+      for lb in aws_ecs_service.ecs-service.load_balancer :
+      lb.target_group_arn
+    ]),
+    null
+  )
+}
+
 output "target_group_names" {
   value = [for ecs-service in aws_lb_target_group.ecs-service : ecs-service.name]
 }
