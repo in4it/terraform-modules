@@ -18,6 +18,7 @@ resource "aws_db_instance" "rds" {
   parameter_group_name   = aws_db_parameter_group.rds.name
   multi_az               = var.multi_az
   vpc_security_group_ids = [aws_security_group.rds.id]
+  monitoring_interval    = var.monitoring_interval
 
   manage_master_user_password         = var.manage_master_user_password
   storage_type                        = var.storage_type
