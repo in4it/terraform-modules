@@ -103,13 +103,69 @@ resource "aws_wafv2_web_acl" "this" {
             }
           }
           dynamic "scope_down_statement" {
-            for_each = lookup(rule.value, "exclude_ip_ranges", null) != null ? [1] : []
+            # Ensures exactly 0 or 1 block is generated per managed rule
+            for_each = (lookup(rule.value, "exclude_ip_ranges", null) != null || lookup(rule.value, "allowing_uri_path_regex", null) != null) ? [1] : []
 
             content {
-              not_statement {
-                statement {
-                  ip_set_reference_statement {
-                    arn = aws_wafv2_ip_set.managed_rule_ipset[rule.value.name].arn
+              # CASE 1: BOTH exclusions are active -> Wrap in an AND statement
+              dynamic "and_statement" {
+                for_each = (lookup(rule.value, "exclude_ip_ranges", null) != null && lookup(rule.value, "allowing_uri_path_regex", null) != null) ? [1] : []
+                content {
+                  statement {
+                    not_statement {
+                      statement {
+                        ip_set_reference_statement {
+                          arn = aws_wafv2_ip_set.managed_rule_ipset[rule.value.name].arn
+                        }
+                      }
+                    }
+                  }
+                  statement {
+                    not_statement {
+                      statement {
+                        regex_match_statement {
+                          regex_string = "^(${join("|", [for p in rule.value.allowing_uri_path_regex : replace(p, "*", ".*")])})"
+                          field_to_match {
+                            uri_path {}
+                          }
+                          text_transformation {
+                            priority = 0
+                            type     = "NONE"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+
+              # CASE 2: ONLY IP Range exclusion is active -> Direct Not Statement
+              dynamic "not_statement" {
+                for_each = (lookup(rule.value, "exclude_ip_ranges", null) != null && lookup(rule.value, "allowing_uri_path_regex", null) == null) ? [1] : []
+                content {
+                  statement {
+                    ip_set_reference_statement {
+                      arn = aws_wafv2_ip_set.managed_rule_ipset[rule.value.name].arn
+                    }
+                  }
+                }
+              }
+
+              # CASE 3: ONLY Regex path exclusion is active -> Direct Not Statement
+              dynamic "not_statement" {
+                for_each = (lookup(rule.value, "exclude_ip_ranges", null) == null && lookup(rule.value, "allowing_uri_path_regex", null) != null) ? [1] : []
+                content {
+                  statement {
+                    regex_match_statement {
+                      regex_string = "^(${join("|", [for p in rule.value.allowing_uri_path_regex : replace(p, "*", ".*")])})"
+                      field_to_match {
+                        uri_path {}
+                      }
+                      text_transformation {
+                        priority = 0
+                        type     = "NONE"
+                      }
+                    }
                   }
                 }
               }
