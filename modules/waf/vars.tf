@@ -44,6 +44,7 @@ variable "managed_rules" {
     blocking_rules           = optional(list(string))
     allowing_rules           = optional(list(string))
     counting_rules           = optional(list(string))
+    allowing_uri_path_regex =  optional(list(string))
   }))
   default = []
 }
