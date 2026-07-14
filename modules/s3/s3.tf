@@ -76,7 +76,7 @@ data "aws_iam_policy_document" "this" {
     condition {
       test     = "Bool"
       values   = ["false"]
-      variable = "aws:secureTransport"
+      variable = "aws:SecureTransport"
     }
   }
   dynamic "statement" {
