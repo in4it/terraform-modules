@@ -108,3 +108,14 @@ variable "manage_master_user_password" {
   description = "Set to true to allow RDS to manage the master user password in Secrets Manager. Cannot be set if password or password_wo is provided."
   default     = false
 }
+
+variable "monitoring_interval" {
+  description = "The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB instance. To disable collecting Enhanced Monitoring metrics, specify 0."
+  type        = number
+  default     = 0
+
+  validation {
+    condition     = contains([0, 1, 5, 10, 15, 30, 60], var.monitoring_interval)
+    error_message = "Invalid monitoring_interval. Allowed values: 0, 1, 5, 10, 15, 30, 60."
+  }
+}
