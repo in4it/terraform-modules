@@ -6,9 +6,10 @@ variable "parameters" {
   description = "list of parameters"
   default     = []
   type = list(object({
-    name  = string
-    type  = string
-    value = string
+    name        = string
+    type        = string
+    value       = string
+    description = optional(string)
   }))
 }
 
