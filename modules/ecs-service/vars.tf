@@ -121,6 +121,11 @@ variable "health_check_cmd" {
   description = "Container Health Check command to be executed in the default shell"
 }
 
+variable "health_check_command" {
+  type = list(string)
+  default = null
+}
+
 variable "health_check_interval" {
   default = 30
 }
@@ -260,6 +265,7 @@ variable "containers" {
     command                  = optional(list(string), [])
     entrypoint               = optional(list(string), [])
     health_check_cmd         = optional(string)
+    health_check_command     = optional(list(string))
     health_check_interval    = optional(number)
     health_check_timeout     = optional(number)
     health_check_retries     = optional(number)

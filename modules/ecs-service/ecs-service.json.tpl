@@ -12,18 +12,19 @@
       %{if container.entrypoint != null}
         "entryPoint": ${jsonencode([for entrypoint in container.entrypoint : entrypoint])},
       %{endif}
-      %{if container.health_check_cmd != null}
+      %{ if container.health_check_command != null ~}
         "healthCheck": {
-          "command": ["CMD-SHELL", "${container.health_check_cmd}"],
+          "command": ${jsonencode(container.health_check_command)},
           "interval": ${container.health_check_interval},
           "timeout": ${container.health_check_timeout},
-          %{if container.health_check_startPeriod != null}
-            "startPeriod": ${container.health_check_startPeriod},
-          %{endif}
+          %{ if container.health_check_startPeriod != null ~}"startPeriod": ${container.health_check_startPeriod},%{ endif ~}
           "retries": ${container.health_check_retries}
-
         },
-      %{endif}
+      %{ else ~}
+      %{ if container.health_check_cmd != null ~}
+        ...unchanged CMD-SHELL block...
+      %{ endif ~}
+      %{ endif ~}
       "essential": ${container.essential},
       "portmappings" : [
         {

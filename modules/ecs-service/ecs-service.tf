@@ -68,6 +68,7 @@ locals {
         command                   = var.command
         entrypoint                = var.entrypoint
         health_check_cmd          = var.health_check_cmd
+        health_check_command      = var.health_check_command
         health_check_interval     = var.health_check_interval
         health_check_timeout      = var.health_check_timeout
         health_check_retries      = var.health_check_retries
