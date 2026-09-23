@@ -7,6 +7,11 @@ variable "versioning" {
   default     = true
 }
 
+variable "transition_default_minimum_object_size" {
+  description = "Default minimum object size for transitions"
+  default     = "all_storage_classes_128K"
+}
+
 variable "cloudfront_origins" {
   description = <<EOF
   List of cloudfront origins to allow access to the bucket. Example:
@@ -16,7 +21,7 @@ variable "cloudfront_origins" {
     allow_path      = string       # S3 path to allow cloudfront access to. Default allows access to the entire bucket.
   }]
   EOF
-  type        = list(object({
+  type = list(object({
     oai_arn         = string
     oai_iam_actions = list(string)
     allow_path      = string
@@ -26,15 +31,15 @@ variable "cloudfront_origins" {
 
 variable "additional_policy_statements" {
   description = "additional policy statements to add to the s3 bucket policy"
-  type        = list(object({
-    sid        = optional(string)
+  type = list(object({
+    sid = optional(string)
     principals = object({
       identifiers = list(string)
       type        = string
     })
-    effect     = string
-    actions    = list(string)
-    resources  = list(string)
+    effect    = string
+    actions   = list(string)
+    resources = list(string)
     conditions = optional(list(object({
       test     = string
       values   = list(string)
@@ -45,7 +50,7 @@ variable "additional_policy_statements" {
 }
 variable "public_access_block" {
   description = "values for the public access block"
-  type        = object({
+  type = object({
     block_public_acls       = bool
     block_public_policy     = bool
     ignore_public_acls      = bool
@@ -61,9 +66,9 @@ variable "public_access_block" {
 
 variable "lifecycle_rules" {
   description = "lifecycle rules to add to the bucket"
-  type        = list(object({
-    id         = string
-    status     = string # "Enabled" or "Disabled"
+  type = list(object({
+    id     = string
+    status = string # "Enabled" or "Disabled"
     transition = optional(object({
       date          = optional(string)
       days          = optional(number)
@@ -77,10 +82,16 @@ variable "lifecycle_rules" {
       object_size_less_than    = optional(number)
       object_size_greater_than = optional(number)
       and                      = optional(any)
-      tag                      = optional(object({
+      tag = optional(object({
         key   = string
         value = string
       }))
+    }))
+    abort_incomplete_multipart_upload = optional(object({
+      days_after_initiation = number
+    }))
+    noncurrent_version_expiration = optional(object({
+      noncurrent_days = number
     }))
   }))
   default = []
