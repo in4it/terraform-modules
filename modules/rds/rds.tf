@@ -31,9 +31,10 @@ resource "aws_db_instance" "rds" {
   enabled_cloudwatch_logs_exports     = var.rds_log_exports
 
 
-  deletion_protection          = var.deletion_protection
-  performance_insights_enabled = var.performance_insight_enabled
-  allow_major_version_upgrade  = var.allow_major_version_upgrade
+  deletion_protection                  = var.deletion_protection
+  performance_insights_enabled         = var.performance_insight_enabled
+  performance_insights_retention_period = var.performance_insight_enabled ? var.performance_insights_retention_period : null
+  allow_major_version_upgrade          = var.allow_major_version_upgrade
 
   snapshot_identifier = var.initial_snapshot_id != "" ? var.initial_snapshot_id : null
 
