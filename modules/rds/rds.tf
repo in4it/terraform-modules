@@ -34,6 +34,7 @@ resource "aws_db_instance" "rds" {
   deletion_protection                  = var.deletion_protection
   performance_insights_enabled         = var.performance_insight_enabled
   performance_insights_retention_period = var.performance_insight_enabled ? var.performance_insights_retention_period : null
+  apply_immediately                    = var.apply_immediately
   allow_major_version_upgrade          = var.allow_major_version_upgrade
 
   snapshot_identifier = var.initial_snapshot_id != "" ? var.initial_snapshot_id : null

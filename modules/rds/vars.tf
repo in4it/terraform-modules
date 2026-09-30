@@ -72,6 +72,10 @@ variable "performance_insights_retention_period" {
   description = "Performance Insights retention period in days"
   default     = 7
 }
+variable "apply_immediately" {
+  description = "Apply modifications immediately instead of at the next maintenance window"
+  default     = false
+}
 variable "deletion_protection" {
   description = "Enable Deletion Protection"
   default     = true
