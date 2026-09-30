@@ -54,7 +54,7 @@ variable "parameters" {
   }))
 }
 variable "multi_az" {
-  default = true
+  default = false
 }
 variable "backup_retention_period" {
   description = "RDS backup retention period"
@@ -66,7 +66,7 @@ variable "iam_database_authentication_enabled" {
 }
 variable "performance_insight_enabled" {
   description = "Enable Performance Insight"
-  default     = true
+  default     = false
 }
 variable "performance_insights_retention_period" {
   description = "Performance Insights retention period in days"
