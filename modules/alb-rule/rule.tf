@@ -1,3 +1,18 @@
+data "aws_lb_listener_rule" "current" {
+  count        = var.ignore_condition_changes ? 1 : 0
+  listener_arn = var.listener_arn
+  priority     = var.priority
+}
+
+locals {
+  live_host_values = var.ignore_condition_changes ? flatten([
+    for c in data.aws_lb_listener_rule.current[0].condition :
+    try(tolist(c.host_header[0].values), [])
+  ]) : []
+
+  host_header_values = length(local.live_host_values) > 0 ? local.live_host_values : var.condition_values
+}
+
 resource "aws_lb_listener_rule" "alb_rule" {
   listener_arn = var.listener_arn
   priority     = var.priority
@@ -26,13 +41,12 @@ resource "aws_lb_listener_rule" "alb_rule" {
       }
     }
   }
-
   # legacy code
   condition {
     dynamic "host_header" {
       for_each = var.condition_field == "host-header" ? [1] : []
       content {
-        values = var.condition_values
+        values = local.host_header_values
       }
     }
     dynamic "path_pattern" {

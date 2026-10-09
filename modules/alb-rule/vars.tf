@@ -60,3 +60,8 @@ variable "redirect" {
     query       = string
   })
 }
+
+variable "ignore_condition_changes" {
+  type    = bool
+  default = false
+}
