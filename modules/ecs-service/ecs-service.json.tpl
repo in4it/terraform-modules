@@ -22,7 +22,13 @@
         },
       %{ else ~}
       %{ if container.health_check_cmd != null ~}
-        ...unchanged CMD-SHELL block...
+        "healthCheck": {
+          "command": ["CMD-SHELL", "${container.health_check_cmd}"],
+          "interval": ${container.health_check_interval},
+          "timeout": ${container.health_check_timeout},
+          %{ if container.health_check_startPeriod != null ~}"startPeriod": ${container.health_check_startPeriod},%{ endif ~}
+          "retries": ${container.health_check_retries}
+        },
       %{ endif ~}
       %{ endif ~}
       "essential": ${container.essential},
