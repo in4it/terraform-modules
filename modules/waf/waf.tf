@@ -267,6 +267,93 @@ resource "aws_wafv2_web_acl" "this" {
     }
   }
 
+  # matches labels set by earlier rules (e.g. managed rules set to count), except on a uri path
+  dynamic "rule" {
+    for_each = { for r in var.label_match_rules : r.name => r }
+    content {
+      name     = rule.value.name
+      priority = rule.value.priority
+      action {
+        dynamic "block" {
+          for_each = rule.value.action == "block" ? [1] : []
+          content {
+          }
+        }
+        dynamic "count" {
+          for_each = rule.value.action == "count" ? [1] : []
+          content {
+          }
+        }
+      }
+      statement {
+        and_statement {
+          statement {
+            dynamic "label_match_statement" {
+              for_each = length(rule.value.labels) == 1 ? rule.value.labels : []
+              content {
+                scope = "LABEL"
+                key   = label_match_statement.value
+              }
+            }
+            dynamic "or_statement" {
+              for_each = length(rule.value.labels) > 1 ? [1] : []
+              content {
+                dynamic "statement" {
+                  for_each = rule.value.labels
+                  content {
+                    label_match_statement {
+                      scope = "LABEL"
+                      key   = statement.value
+                    }
+                  }
+                }
+              }
+            }
+          }
+          statement {
+            not_statement {
+              statement {
+                dynamic "byte_match_statement" {
+                  for_each = rule.value.exclude_uri_path_prefix != null ? [rule.value.exclude_uri_path_prefix] : []
+                  content {
+                    search_string         = byte_match_statement.value
+                    positional_constraint = "STARTS_WITH"
+                    field_to_match {
+                      uri_path {}
+                    }
+                    text_transformation {
+                      priority = 0
+                      type     = "NONE"
+                    }
+                  }
+                }
+                dynamic "regex_match_statement" {
+                  for_each = rule.value.exclude_uri_path_regex != null ? [rule.value.exclude_uri_path_regex] : []
+                  content {
+                    regex_string = regex_match_statement.value
+                    field_to_match {
+                      uri_path {}
+                    }
+                    text_transformation {
+                      priority = 0
+                      type     = "NONE"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = rule.value.name
+        sampled_requests_enabled   = true
+      }
+    }
+  }
+
   dynamic "rule" {
     for_each = { for r in var.geo_match_rules : r.name => r }
 

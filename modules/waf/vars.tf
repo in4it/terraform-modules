@@ -58,6 +58,22 @@ variable "regex_match_rules" {
   }))
   default = []
 }
+variable "label_match_rules" {
+  description = "match any of the labels, except when the uri path starts with exclude_uri_path_prefix or matches exclude_uri_path_regex (set exactly one)"
+  type = list(object({
+    name                    = string
+    priority                = number
+    action                  = string # "count" or "block"
+    labels                  = list(string)
+    exclude_uri_path_prefix = optional(string)
+    exclude_uri_path_regex  = optional(string)
+  }))
+  default = []
+  validation {
+    condition     = alltrue([for r in var.label_match_rules : (r.exclude_uri_path_prefix == null) != (r.exclude_uri_path_regex == null)])
+    error_message = "set exactly one of exclude_uri_path_prefix or exclude_uri_path_regex"
+  }
+}
 variable "geo_match_rules" {
   type = list(object({
     name       = string
