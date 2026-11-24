@@ -1,5 +1,20 @@
+# Legacy OAI, kept for existing consumers. Set use_origin_access_control = true to use OAC instead.
 resource "aws_cloudfront_origin_access_identity" "this" {
+  count   = var.use_origin_access_control ? 0 : 1
   comment = "${var.name}-oai"
+}
+
+moved {
+  from = aws_cloudfront_origin_access_identity.this
+  to   = aws_cloudfront_origin_access_identity.this[0]
+}
+
+resource "aws_cloudfront_origin_access_control" "this" {
+  count                             = var.use_origin_access_control ? 1 : 0
+  name                              = "${var.name}-oac"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
 }
 
 resource "aws_cloudfront_distribution" "this" {
@@ -71,12 +86,16 @@ resource "aws_cloudfront_distribution" "this" {
     for_each = { for origins in var.s3_origins : origins.domain_name => origins }
     iterator = origin
     content {
-      domain_name = origin.value.domain_name
-      origin_id   = origin.value.origin_id
-      origin_path = lookup(origin.value, "origin_path", null)
+      domain_name              = origin.value.domain_name
+      origin_id                = origin.value.origin_id
+      origin_path              = lookup(origin.value, "origin_path", null)
+      origin_access_control_id = one(aws_cloudfront_origin_access_control.this[*].id)
 
-      s3_origin_config {
-        origin_access_identity = aws_cloudfront_origin_access_identity.this.cloudfront_access_identity_path
+      dynamic "s3_origin_config" {
+        for_each = aws_cloudfront_origin_access_identity.this
+        content {
+          origin_access_identity = s3_origin_config.value.cloudfront_access_identity_path
+        }
       }
     }
   }

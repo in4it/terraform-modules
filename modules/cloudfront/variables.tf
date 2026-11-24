@@ -139,3 +139,9 @@ variable "logging_config" {
   })
   default = null
 }
+
+variable "use_origin_access_control" {
+  description = "Use Origin Access Control (OAC) for S3 origins instead of the legacy Origin Access Identity (OAI)"
+  type        = bool
+  default     = false
+}
